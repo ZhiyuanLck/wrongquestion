@@ -1,5 +1,6 @@
 \usepackage{xcolor}
 \usepackage{geometry}
+\usepackage{etoc}
 \usepackage{tasks}
 \usepackage{amsmath, amssymb, bm}
 \usepackage{xeCJKfntef}
@@ -10,6 +11,26 @@
 \usepackage[calc]{datetime2}
 \DTMsetdatestyle{iso}
 \usepackage[hidelinks]{hyperref}
+
+\newcommand*{\DotsAndPage}{%
+  \nobreak\hskip 5pt\leaders\hbox{%
+    \bfseries\normalsize\hbox to .75ex {\hss.\hss}
+  }\hfill\nobreak
+  \makebox{\large\bfseries\normalsize\itshape\etocpage}\par
+}
+\etocsetstyle{subsection}
+  {}
+  {\leftskip 0pt \rightskip .75cm \parfillskip-\rightskip
+  \pagebreak[1]\smallskip}
+  {\large\rmfamily\bfseries\scshape{\color{teal}\etocname}\DotsAndPage}
+  {}
+\renewcommand{\etoccolumnsep}{4em}
+\etocsettocstyle{}{\clearpage}
+\etocmulticolstyle[3]{
+  \noindent\bfseries\Large
+  \leaders\hrule height1pt\hfill
+  \MakeUppercase{Table of Contents}
+}
 
 \ctexset{
   section/format=\raggedright\bfseries\huge,
@@ -127,6 +148,8 @@
       \clist_get:NN \l_date_clist \l_recentdate_tl
     }
   \customlabel{ques\c_colon_str\int_use:N \g_ques_count_int}{\int_use:N \g_ques_count_int}
+  \phantomsection
+  \addcontentsline{toc}{subsection}{题目\int_use:N \g_ques_count_int}
   \ques_label:x {\int_use:N \g_ques_count_int}
   \par\noindent\ques_process_date:x {\int_use:N \g_ques_count_int}
   \begin{minipage}[t]{\dim_eval:n {\textwidth-\l_left_dim}}
@@ -166,7 +189,6 @@
   \huge\itshape\bfseries\color{teal}\noindent
   \clist_use:Nn \l__review_clist {\quad}
   \endgroup
-  \clearpage
 }
 
 \NewDocumentEnvironment {multichoice} { +b } {
