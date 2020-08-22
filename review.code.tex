@@ -1,0 +1,24 @@
+\ExplSyntaxOn
+\bool_new:N \g_review_bool
+\newcount\datediff
+
+% #1 clist #2 date to be compared
+\prg_new_protected_conditional:Nnn \review_if:Nn {T, F, TF}
+  {
+    \DTMsavedate{recent}{#2}
+    \DTMsavenow{today}
+    \DTMsaveddatediff{today}{recent}{\datediff}
+    \bool_gset_false:N \g_review_bool
+    \clist_map_inline:Nn #1
+      {
+        \int_compare:nT {\datediff == ##1}
+          {
+            \bool_gset_true:N \g_review_bool
+            \clist_map_break:
+          }
+      }
+    \bool_if:nTF {\g_review_bool}
+      {\prg_return_true:}
+      {\prg_return_false:}
+  }
+\ExplSyntaxOff
