@@ -37,6 +37,7 @@
 
 \AtBeginDocument
   {
+    \pdfbookmark[1]{目录}{toc}
     \tableofcontents
     \clearpage
   }
@@ -149,20 +150,19 @@
       {
         \subsection*{\Large\bfseries\sffamily\color{teal}##1}
         \markright{##1单词列表}
-        \en_review_if:nT { ##1 } { \bookmarksetupnext{bold} }
         \en_review_if:nTF { ##1 }
           {
+            \int_gincr:N \g__review_int
+            \bookmarksetup{color=red}
             \addcontentsline{toc}{subsection}{
               \texorpdfstring{\color{red}##1单词列表}{##1单词列表}
             }
-          }
-          { \addcontentsline{toc}{subsection}{##1单词列表} }
-        \en_review_if:nT { ##1 }
-          {
-            \int_gincr:N \g__review_int
-            \bookmarksetupnext{bold}
             \label{wordlist:##1}
             \reviewtoday{\hyperref[review:##1]{前往测试}}
+          }
+          {
+            \bookmarksetup{color=black}
+            \addcontentsline{toc}{subsection}{##1单词列表}
           }
         \begin{baselist}[font=\sffamily\Large]
           \int_step_inline:nn
