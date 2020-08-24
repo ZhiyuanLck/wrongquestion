@@ -1,3 +1,10 @@
+\geometry{
+  left=2cm,
+  right=2cm,
+  top=2.5cm,
+  bottom=2.5cm,
+}
+
 \input{preamble.tex}
 \input{review.code.tex}
 
@@ -33,7 +40,6 @@
 \dim_set:Nn \l_math_after_dim {1cm}
 \clist_set:Nn \l_math_review_point_clist {1, 2, 4, 7}
 \setlength\arrayrulewidth{1pt}
-\setlength\parindent{0pt}
 
 %% keys
 \keys_define:nn {math-ques}
@@ -172,11 +178,6 @@
 
 \newtcbox{\idea}{
   colframe=teal, colback=teal!10
-}
-
-\newtcbox{\reviewtoday}{
-  colframe=red!20, colback=yellow!10, fontupper=\small\itshape,
-  size=small,
 }
 
 \newtcolorbox{ideabox}{

@@ -1,5 +1,5 @@
 \documentclass{ctexart}
-\input{preamble.tex}
+\input{math.code.tex}
 \everymath{\displaystyle}
 \newcount\test
 
@@ -33,7 +33,7 @@
     \sqrt{n}) + (n - \sqrt{n})}\\
     &= \lim_{n \to \infty} \frac{2}{\sqrt{1 + \frac{1}{\sqrt{n}}} + \sqrt{1 -
     \frac{1}{\sqrt{n}}}}\\
-    &= \frac{2}{\error{\sqrt{1} + \sqrt{1}}} = 2
+    &= \frac{2}{\error{\sqrt{1} + \sqrt{1}}} = 1
   \end{align*}
 \end{solution}
 \end{ques}
@@ -43,13 +43,18 @@
   $\lim_{n \to \infty} x_n$ 存在, 并求$\lim_{n \to \infty} x_n$.
   \begin{solution}
     \idea{单调有界数列必有极限}
-    \begin{step}{证明单调性}
+    \begin{step}{证明单调性(3种方法)}
       \begin{enumerate}
         \item 令$f(x) = \sqrt{2 + x}$ 证明$f(x)$的单调性
         \item 作差$x_{n} - x_{n - 1} = \sqrt{2 + x_{n - 1}} - x_{n - 1} = \frac{2
-          + x_{n - 1} - x_{n - 1}^2}{\sqrt{2 + x_{n - 1}} + x_{n - 1}}$\\
+          + x_{n - 1} - x_{n - 1}^2}{\sqrt{2 + x_{n - 1}} + x_{n - 1}}$\par
           $2 + x_{n - 1} - x_{n - 1}^2 > 2 + x_{n - 1} - 2x_{n - 1} = 2 - x_{n
-          - 1} > 0$
+          - 1} > 0$\par
+          \idea{方法2需要先进行Step 2证明上界为2才行}
+        \item 证明$x_{n + 1} - x_n$与$x_{n} - x_{n - 1}$同号\par
+          $x_{n + 1} - x_n = \sqrt{2 + x_n} - \sqrt{2 + x_{n - 1}} = \frac{x_n
+          - x_{n - 1}}{\sqrt{2 + x_n} + \sqrt{2 + x_{n - 1}}}$\par
+          又$x_2 - x_1 = \sqrt{2 + \sqrt{2}} - \sqrt{2} > 0$，故$x_n$单调
       \end{enumerate}
     \end{step}
     \begin{step}{证明有界性}
