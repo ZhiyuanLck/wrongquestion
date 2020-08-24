@@ -106,7 +106,7 @@
     {
       \clist_get:NN \l_math_date_clist \l_math_recentdate_tl
     }
-  \customlabel{ques\c_colon_str\int_use:N \g_math_ques_count_int}{\int_use:N \g_math_ques_count_int}
+  \customlabel{ques\c_colon_str\int_use:N \g_math_ques_count_int}
   \phantomsection
   \addcontentsline{toc}{subsection}{题目\int_use:N \g_math_ques_count_int}
   \ques_label:x {\int_use:N \g_math_ques_count_int}
@@ -122,7 +122,7 @@
 \cs_new_protected:Nn \save_solution:nn {
   \seq_gput_right:Nn \g_math_solution_seq
     {
-      \customlabel{solu:#1}{#1}
+      \customlabel{solu:#1}
       \par\noindent{\itshape\bfseries\Large#1}.\hspace{5pt}
       \begingroup
       \sffamily\color{teal}

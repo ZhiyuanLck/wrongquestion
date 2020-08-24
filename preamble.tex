@@ -1,8 +1,10 @@
 \usepackage{xcolor}
 \usepackage{geometry}
+\usepackage{fancyhdr}
 \usepackage{etoc}
 \usepackage{tasks}
 \usepackage{tipa}
+\usepackage{xparse}
 \usepackage{multicol}
 \usepackage{enumitem}
 \usepackage{amsmath, amssymb, bm}
@@ -27,14 +29,19 @@
   }\hfill\nobreak
   \makebox{\large\bfseries\normalsize\itshape\etocpage}\par
 }
-\etocsetstyle{subsection}
+\etocsetstyle{section}
   {}
   {\leftskip 0pt \rightskip .75cm \parfillskip-\rightskip
+  \pagebreak[1]\smallskip}
+  {\Large\rmfamily\bfseries\scshape{\etocname}\DotsAndPage}
+  {}
+\etocsetstyle{subsection}
+  {}
+  {\leftskip 1cm \rightskip .75cm \parfillskip-\rightskip
   \pagebreak[1]\smallskip}
   {\large\rmfamily\bfseries\scshape{\color{teal}\etocname}\DotsAndPage}
   {}
 \renewcommand{\etoccolumnsep}{4em}
-\etocsettocstyle{}{\clearpage}
 \etocmulticolstyle[3]{
   \noindent\bfseries\Large
   \leaders\hrule height1pt\hfill
@@ -63,18 +70,15 @@
 
 \makeatletter
 \ExplSyntaxOn
-\cs_new_protected:Npn \custom_label:nn #1#2
+\cs_new_protected:Npn \custom_label:n #1
   {
-    % \protected@write \@auxout {}{\string \newlabel {#1}{{#2}{\thepage}{#2}{#1}{}} }%
-    \iow_shipout:Nx \@auxout { \token_to_str:N \newlabel{#1}{{#2}{\thepage}{#2}{#1}{}} }%
+    \iow_shipout:Nx \@auxout { \token_to_str:N \newlabel{#1}{{}{\thepage}{}{#1}{}} }
     \hypertarget{#1}{}
   }
-\cs_generate_variant:Nn \custom_label:nn {xx}
-\NewDocumentCommand {\customlabel} {mm}
+
+\NewDocumentCommand {\customlabel} {m}
   {
-    \custom_label:nn {#1} {#2}
+    \custom_label:n {#1}
   }
-% \newcommand{\customlabel}[2]{%
-% }
 \ExplSyntaxOff
 \makeatother

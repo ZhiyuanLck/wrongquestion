@@ -8,115 +8,201 @@
   top=2.5cm,
   bottom=2.5cm,
 }
+\ctexset{
+  subsection/numbering=false,
+  subsection/format=\Large\bfseries\sffamily\color{teal},
+}
 
-\makeatletter
+\fancyhf{}
+\lhead{\itshape\rightmark}
+\rhead{\thepage}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\setlength\headheight{15pt}
+
+\etocmulticolstyle[2]{
+  \noindent\bfseries\Large
+  \leaders\hrule height1pt\hfill
+  \MakeUppercase{Table of Contents}
+}
+
 \ExplSyntaxOn
-%% variables
-% date
-\tl_new:N \l__en_date_tl
-% \tl_new:N \l__word_tl
-% \tl_new:N \l__word_mean_tl
-\int_new:N \l__count_int
-\clist_new:N \g__temp_clist
-% \clist_new:N \g__en_date_clist
-\clist_new:N \l__en_review_point_clist
+\clist_new:N \g__en_date_clist
 \clist_new:N \g__en_review_date_clist
-\clist_new:N \l__en_review_date_clist
-\clist_new:N \l__en_review_word_clist
-\clist_new:N \g__word_card_upper_clist
-\clist_new:N \g__word_card_lower_clist
-\dim_new:N \l__en_word_sep_dim
-\dim_new:N \l__en_word_indent_dim
-\box_new:N \l__word_hbox
-\box_new:N \l__word_mean_hbox
+\clist_new:N \g__en_review_point_clist
+\int_new:N \l__count_int
+\int_new:N \g__review_int
 
-\clist_set:Nn \l__en_review_point_clist {1,2,4,7}
-\dim_set:Nn \l__en_word_sep_dim {1em}
-\dim_set:Nn \l__en_word_indent_dim {1em}
+\clist_gset:Nn \g__en_review_point_clist {1,2,4,7}
 
+\AtBeginDocument
+  {
+    \tableofcontents
+    \clearpage
+  }
 \AtEndDocument
   {
-    \wq_write_to_aux:x
+    \show_word:
+    \show_review_word:
+    \show_word_card:
+  }
+
+\prg_new_protected_conditional:Nnn \en_review_if:n { T, F, TF }
+  {
+    \review_if:NnTF \g__en_review_point_clist { #1 }
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+
+\NewDocumentEnvironment {wordlist} { m +b }
+  {
+    \group_begin:
+    \tl_clear_new:N \l__en_date_tl
+    \tl_set:Nn \l__en_date_tl { #1 }
+    \clist_gput_right:Nn \g__en_date_clist { #1 }
+    \clist_gclear_new:c { g__saved_word_#1 }
+    \clist_gclear_new:c { g__saved_complete_word_#1 }
+    \clist_gclear_new:c { g__saved_word_meaning_#1 }
+    \en_review_if:nT { #1 }
       {
-        \gdef\token_to_str:N \en@reviewdate
-        {\clist_use:Nn \g__en_review_date_clist {,}}
+        \clist_gput_right:Nn \g__en_review_date_clist { #1 }
       }
+    #2
+    \group_end:
+  } {}
+
+% #1 date you do not remember again
+% #2 word, #3 音标, #4 词性, #5 解释
+\NewDocumentCommand { \word } { O{} m D(){} O{} +m }
+  {
+    \errorprone_word:Nn \l__en_date_tl { #1 }
+    \en_review_if:nT { \l__en_date_tl }
+      { \save_word:Nn \l__en_date_tl { #2 } }
+    \save_comlete_word:Nnnn \l__en_date_tl { #2 } { #3 } { #4 }
+    \save_word_meaning:Nn \l__en_date_tl { #5 }
   }
 
-\cs_new_protected:Npn \wq_write_to_aux:n #1
+\cs_new_protected:Nn \errorprone_word:Nn
   {
-    \legacy_if:nT {@filesw} { \iow_now:Nn \@auxout {#1} }
-  }
-\cs_generate_variant:Nn \wq_write_to_aux:n {x}
-
-\prg_new_protected_conditional:Nnn \en_review_if: {T, F, TF}
-  {
-    \review_if:NnTF \l__en_review_point_clist {\l__en_date_tl}
-      {\prg_return_true:}
-      {\prg_return_false:}
   }
 
-\cs_new_protected:Npn \save_wordlist:n #1
+\cs_new_protected:Nn \save_word:Nn
   {
-    \wq_write_to_aux:x
+    \clist_gput_right:cn { g__saved_word_#1 } { #2 }
+  }
+
+\cs_new_protected:Nn \save_comlete_word:Nnnn
+  {
+    \clist_gput_right:cn { g__saved_complete_word_#1 }
+    {
+      {\sffamily\bfseries#2}
+      \tl_if_blank:nF { #3 } { \textipa{[#3]} }
+      \quad{\normalfont\itshape{\tl_if_blank:nF { #4 } { #4.~ }}}
+    }
+  }
+
+\cs_new_protected:Nn \save_word_meaning:Nn
+  {
+    \clist_gput_right:cn { g__saved_word_meaning_#1 } { \itshape#2 }
+  }
+
+\cs_new_protected:Nn \show_review_word:
+  {
+    \phantomsection
+    \addcontentsline{toc}{section}{单词测试}
+    \subsection*{\sffamily REVIEW~TODAY}
+    Date:\today\par\vspace{1cm}
+    \clist_map_inline:Nn \g__en_review_date_clist
       {
-        \token_to_str:N \expandafter\gdef
-        \exp_not:N \csname wordreview#1
-        \token_to_str:N \endcsname
-        {\clist_use:Nn \g__temp_clist {,}}
+        \customlabel{review:##1}
+        \subsection*{\Large\bfseries\sffamily\color{teal}##1~review}
+        \markright{##1单词测试}
+        \addcontentsline{toc}{subsection}{##1单词测试}
+        \reviewtoday{\hyperref[wordlist:##1]{返回列表}}
+        \begin{baselist}[itemsep=1em]
+          \int_zero:N \l__count_int
+          \clist_map_inline:cn { g__saved_word_##1 }
+            {
+              \int_incr:N \l__count_int
+              \item \customlabel{review_word:##1_\int_use:N \l__count_int}
+                {
+                  \sffamily\bfseries\huge
+                  \hyperref[card:##1_\int_use:N \l__count_int]{####1}
+                }
+            }
+        \end{baselist}
       }
-  }
-
-\NewDocumentCommand {\word} { m D(){} O{} +m }
-  {
-    \int_incr:N \l__count_int
-    \en_review_if:T {\clist_gput_right:Nn \g__temp_clist {#1}}
-    % \clist_gput_right:cn {g__word_card_upper_\l__temp_date_tl _clist}
-    \clist_gput_right:cn {g__word_card_upper_\l__en_date_tl _clist}
-      {
-        \zihao{0}
-        #1\tl_if_blank:nF {#2} {\textipa{[#2]}}
-        \quad
-        \tl_if_blank:nF {#3} {#3.~}
-      }
-    % \clist_gput_right:cn {g__word_card_lower_\l__temp_date_tl _clist}
-    \clist_gput_right:cn {g__word_card_lower_\l__en_date_tl _clist}
-      {\zihao{0}#4}
-    \__en_word_item:nn
-      {
-        \int_use:N \l__count_int.~#1
-        \tl_if_blank:nF {#2} {\textipa{[#2]}}
-      }
-      {\tl_if_blank:nF {#3} {#3.~}#4}
-  }
-
-\NewDocumentCommand {\wordcard} {}
-  {
     \clearpage
-    % \pdfpageheight=174.1mm
-    % \pdfpagewidth=250.6mm
-    % \newgeometry{
-      % layoutwidth=250.6mm,
-      % layoutheight=174.1mm,
-      % left=2cm,
-      % right=2cm,
-      % top=2.5cm,
-      % bottom=2.5cm,
-    % }
+  }
+
+\cs_new_protected:Nn \show_next_review:
+  {
+
+  }
+
+\cs_new_protected:Nn \show_word:
+  {
+    \phantomsection
+    \addcontentsline{toc}{section}{单词列表}
+    \int_gzero:N \g__review_int
+    \clist_map_inline:Nn \g__en_date_clist
+      {
+        \subsection*{\Large\bfseries\sffamily\color{teal}##1}
+        \markright{##1单词列表}
+        \en_review_if:nT { ##1 } { \bookmarksetupnext{bold} }
+        \en_review_if:nTF { ##1 }
+          {
+            \addcontentsline{toc}{subsection}{
+              \texorpdfstring{\color{red}##1单词列表}{##1单词列表}
+            }
+          }
+          { \addcontentsline{toc}{subsection}{##1单词列表} }
+        \en_review_if:nT { ##1 }
+          {
+            \int_gincr:N \g__review_int
+            \bookmarksetupnext{bold}
+            \label{wordlist:##1}
+            \reviewtoday{\hyperref[review:##1]{前往测试}}
+          }
+        \begin{baselist}[font=\sffamily\Large]
+          \int_step_inline:nn
+            { \clist_count:c { g__saved_complete_word_##1 } }
+            {
+              \item
+              \begingroup
+              \Large
+              \clist_item:cn
+                { g__saved_complete_word_##1 }
+                { ####1 }
+              \par
+              \clist_item:cn
+                { g__saved_word_meaning_##1 }
+                { ####1 }
+              \endgroup
+            }
+        \end{baselist}
+        \en_review_if:nT { ##1 } { \show_next_review: }
+      }
+    \clearpage
+  }
+
+\cs_new_protected:Nn \show_word_card:
+  {
     \clist_map_inline:Nn \g__en_review_date_clist
       {
         \int_step_inline:nn
-          {\clist_count:c {g__word_card_lower_##1_clist}}
+          { \clist_count:c { g__saved_complete_word_##1 } }
           {
-            \clearpage
-            % \customlabel{card:##1-####1}{##1}
-            \customlabel{card:####1}{##1}
+            \customlabel{card:##1_####1}
             \begin{tcolorbox}[
               title={
-                \hyperref[review-word:##1-####1]{
-                  \clist_item:cn {g__word_card_upper_##1_clist} {####1}
-                }
-              },
+                  \zihao{0}
+                  \hyperref[review_word:##1_####1]{
+                    \clist_item:cn
+                      { g__saved_complete_word_##1 }
+                      { ####1 }
+                  }
+                },
               fonttitle=\raggedright\sffamily,
               fontupper=\itshape,
               height=\textheight,
@@ -125,96 +211,27 @@
               arc=3mm,
               boxsep=1em,
             ]
-              \clist_item:cn {g__word_card_lower_##1_clist} {####1}
+              \zihao{0}
+              \clist_item:cn
+                { g__saved_word_meaning_##1 }
+                { ####1 }
             \end{tcolorbox}
+            \clearpage
           }
       }
   }
 
-\cs_new_protected:Npn \__en_word_item:nn #1#2
+\NewDocumentEnvironment {baselist} { O{} +b }
   {
-    \hbox_set:Nn \l__word_hbox {#1}
-    \hbox_set:Nn \l__word_mean_hbox{#2}
-    % \customlabel{review-word:\l__endate_tl-\l__count_int}{}
-    \parbox{\linewidth}{
-      {\sffamily\bfseries#1}
-      \dim_compare:nTF
-        {
-          \box_wd:N \l__word_hbox +
-          \box_wd:N \l__word_mean_hbox +
-          \l__en_word_sep_dim >
-          \linewidth
-        }
-        { \par\hangindent=1em\hspace{\l__en_word_indent_dim} }
-        { \hspace{\l__en_word_sep_dim} }
-      {\itshape#2}
-    }\par\vspace{2mm}
-  }
-
-\NewDocumentEnvironment {baselist} { m +b }
-  {
-    \subsection*{\Large\bfseries\sffamily\color{teal}#1}
     \begin{multicols}{2}
-      #2
-      \vspace*{\fill}
-    \end{multicols}
-  } {}
-
-\NewDocumentCommand {\enreview} { }
-  {
-    \subsection*{\sffamily REVIEW~TODAY}
-    Date:\today\par\vspace{1cm}
-    \clist_set:No \l__en_review_date_clist
-      {\cs_if_exist_use:c {en@reviewdate}}
-    \clist_map_inline:Nn \l__en_review_date_clist
-      {
-        \customlabel{review:##1}{##1}
-        \clist_clear_new:c {g__word_card_upper_##1_clist}
-        \clist_clear_new:c {g__word_card_lower_##1_clist}
-        \tl_clear_new:N \l__temp_date_tl
-        \tl_set:Nn \l__temp_date_tl {##1}
-        \begin{baselist}{\hyperref[enlist:##1]{##1~review}}
-          \int_set:Nn \l__count_int {0}
-          \clist_set:Nx \l__en_review_word_clist {\exp_not:v {wordreview##1}}
-          \sffamily\bfseries\large
-          \clist_map_inline:Nn \l__en_review_word_clist
-            {
-              \int_incr:N \l__count_int
-              \customlabel{review-word:##1-\int_use:N \l__count_int}{}
-              \hyperref[card:\int_use:N \l__count_int]{
-                \int_use:N \l__count_int.~
-                ####1
-              }
-              \par\vspace{2mm}
-            }
-        \end{baselist}
-      }
-    \clearpage
-  }
-
-% #1 date
-\NewDocumentEnvironment {wordlist} { m +b }
-  {
-    \tl_set:Nn \l__en_date_tl {#1}
-    \int_set:Nn \l__count_int {0}
-    \clist_clear:N \g__temp_clist
-    \clist_gclear_new:c { g__#1_number_clist }
-    \customlabel{enlist:#1}{#1}
-    \begin{baselist}
-      {
+      \begin{enumerate}[
+        font=\sffamily\huge,
         #1
-        \en_review_if:T
-          {
-            \reviewtoday{\hyperref[review:#1]{今日复习}}
-          }
-      }
-      #2
-    \end{baselist}
-    \en_review_if:T
-      {
-        \clist_gput_right:Nn \g__en_review_date_clist {#1}
-        \save_wordlist:n {#1}
-      }
+        ]
+        #2
+        \item[] \vspace*{\fill}
+      \end{enumerate}
+    \end{multicols}
   } {}
 
 \NewDocumentCommand {\enhint} { +m }
@@ -226,6 +243,4 @@
   {
     {\sffamily#1}
   }
-
 \ExplSyntaxOff
-\makeatother
