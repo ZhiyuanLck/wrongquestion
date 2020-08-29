@@ -26,14 +26,44 @@
   \MakeUppercase{Table of Contents}
 }
 
-\ExplSyntaxOn
-\clist_new:N \g__en_date_clist
-\clist_new:N \g__en_review_date_clist
-\clist_new:N \g__en_review_point_clist
-\int_new:N \l__count_int
-\int_new:N \g__review_int
+\tcbset{
+  mark/.style={
+  }
+}
+\newtcolorbox{wordcard}[2][]{
+  fonttitle=\raggedright\sffamily\zihao{0},
+  fontupper=\itshape\zihao{0},
+  height=\textheight,
+  width=\textwidth,
+  boxrule=2pt,
+  arc=3mm,
+  boxsep=1em,
+  enhanced,
+  overlay={
+    \node[
+      anchor=south east,
+      shift={(-1em, 1em)},
+      font=\itshape\zihao{4},
+    ] at (interior.south east) {#2};
+  },
+  #1
+}
 
-\clist_gset:Nn \g__en_review_point_clist {1,2,4,7}
+\ExplSyntaxOn
+\clist_new:N \g__en_info_clist
+\clist_new:N \g__en_review_point_clist
+\clist_new:N \g__saved_star_word_clist
+\clist_new:N \g__saved_star_complete_word_clist
+\clist_new:N \g__saved_star_word_meaning_clist
+\clist_new:N \g__saved_star_word_info_clist
+\int_new:N \l__en_word_count_int
+\int_new:N \g__en_review_int % for \show_word depracated
+\int_new:N \g__en_wordlist_count_int
+\int_new:N \g__en_star_word_count_int
+
+\clist_gset:Nn \g__en_review_point_clist {2,4,15,30}
+\int_gzero:N \g__en_wordlist_count_int
+\int_gzero:N \g__en_star_word_count_int
 
 \AtBeginDocument
   {
@@ -43,9 +73,7 @@
   }
 \AtEndDocument
   {
-    \show_word:
-    \show_review_word:
-    \show_word_card:
+    \en_show:N \l__en_date_tl
   }
 
 \prg_new_protected_conditional:Nnn \en_review_if:n { T, F, TF }
@@ -55,46 +83,98 @@
       { \prg_return_false: }
   }
 
-\NewDocumentEnvironment {wordlist} { m +b }
+% #1 日期 #2 题目信息比如11年真题
+\NewDocumentEnvironment {wordlist} { m m +b }
   {
     \group_begin:
-    \tl_clear_new:N \l__en_date_tl
-    \tl_set:Nn \l__en_date_tl { #1 }
-    \clist_gput_right:Nn \g__en_date_clist { #1 }
-    \clist_gclear_new:c { g__saved_word_#1 }
-    \clist_gclear_new:c { g__saved_complete_word_#1 }
-    \clist_gclear_new:c { g__saved_word_meaning_#1 }
     \en_review_if:nT { #1 }
       {
-        \clist_gput_right:Nn \g__en_review_date_clist { #1 }
+        \init_word_list:nn { #1 } { #2 }
       }
-    #2
+    \tl_clear_new:N \l__en_date_tl
+    \tl_clear_new:N \l__en_info_tl
+    \tl_set:Nn \l__en_date_tl { #1 }
+    \tl_set:Nn \l__en_info_tl { #2 }
+    #3
     \group_end:
   } {}
 
-% #1 date you do not remember again
-% #2 word, #3 音标, #4 词性, #5 解释
-\NewDocumentCommand { \word } { O{} m D(){} O{} +m }
+\cs_new_protected:Nn \init_word_list:nn
   {
-    \errorprone_word:Nn \l__en_date_tl { #1 }
+    \int_gincr:N \g__en_wordlist_count_int
+    \clist_gput_right:Nn \g__en_info_clist { #2 }
+    % list word
+    \clist_gclear_new:c
+      { g__saved_word_info_\int_use:N \g__en_wordlist_count_int _clist }
+    \clist_gclear_new:c
+      { g__saved_word_\int_use:N \g__en_wordlist_count_int _clist }
+    \clist_gclear_new:c
+      { g__saved_complete_word_\int_use:N \g__en_wordlist_count_int _clist }
+    \clist_gclear_new:c
+      { g__saved_word_meaning_\int_use:N \g__en_wordlist_count_int _clist }
+  }
+
+% #1 date you do not remember again #2 题目编号
+% #3 word, #4 音标, #5 词性, #6 解释
+\NewDocumentCommand { \word } { O{} D(){} m D(){} O{} +m }
+  {
+    \tl_if_blank:nF { #1 }
+      {
+        \en_review_if:nT { #1 }
+          {
+            \save_star_word_piece:nnnnn
+              { #2 } { #3 } { #4 } { #5 } { #6 }
+          }
+      }
     \en_review_if:nT { \l__en_date_tl }
-      { \save_word:Nn \l__en_date_tl { #2 } }
-    \save_comlete_word:Nnnn \l__en_date_tl { #2 } { #3 } { #4 }
-    \save_word_meaning:Nn \l__en_date_tl { #5 }
+      {
+        \save_word_piece:nnnnn
+          { #2 } { #3 } { #4 } { #5 } { #6 }
+      }
   }
 
-\cs_new_protected:Nn \errorprone_word:Nn
+\cs_new_protected:Nn \save_star_word_piece:nnnnn
   {
+    \int_gincr:N \g__en_star_word_count_int
+    \save_word_info:nn { g__saved_star_word_info_clist } { #1 }
+    \save_word:nn { g__saved_star_word_clist} { #2 }
+    \save_comlete_word:nnnn { g__saved_star_complete_word_clist }
+      { #2 } { #3 } { #4 }
+    \save_word_meaning:nn { g__saved_star_word_meaning_clist } { #5 }
   }
 
-\cs_new_protected:Nn \save_word:Nn
+\cs_new_protected:Nn \save_word_piece:nnnnn
   {
-    \clist_gput_right:cn { g__saved_word_#1 } { #2 }
+    \save_word_info:nn
+      { g__saved_word_info_\int_use:N \g__en_wordlist_count_int _clist }
+      { #1 }
+    \save_word:nn
+      { g__saved_word_\int_use:N \g__en_wordlist_count_int _clist }
+      { #2 }
+    \save_comlete_word:nnnn
+      { g__saved_complete_word_\int_use:N \g__en_wordlist_count_int _clist }
+      { #2 } { #3 } { #4 }
+    \save_word_meaning:nn
+      { g__saved_word_meaning_\int_use:N \g__en_wordlist_count_int _clist }
+      { #5 }
   }
 
-\cs_new_protected:Nn \save_comlete_word:Nnnn
+\cs_new_protected:Nn \save_word_info:nn
   {
-    \clist_gput_right:cn { g__saved_complete_word_#1 }
+    \clist_gput_right:cx { #1 }
+      {
+        \l__en_info_tl\tl_if_blank:nF { #2 } { -#2 }
+      }
+  }
+
+\cs_new_protected:Nn \save_word:nn
+  {
+    \clist_gput_right:cn { #1 } { #2 }
+  }
+
+\cs_new_protected:Nn \save_comlete_word:nnnn
+  {
+    \clist_gput_right:cn { #1 }
     {
       {\sffamily\bfseries#2}
       \tl_if_blank:nF { #3 } { \textipa{[#3]} }
@@ -102,38 +182,75 @@
     }
   }
 
-\cs_new_protected:Nn \save_word_meaning:Nn
+\cs_new_protected:Nn \save_word_meaning:nn
   {
-    \clist_gput_right:cn { g__saved_word_meaning_#1 } { \itshape#2 }
+    \clist_gput_right:cn { #1 } { \itshape#2 }
+  }
+
+\cs_new_protected:Nn \en_show:N
+  {
+    % \show_word:
+    \en_if_show:NN \g__saved_star_word_clist \show_review_star_word:
+    \en_if_show:NN \g__en_info_clist \show_review_word:
+    \en_if_show:NN \g__saved_star_word_clist \show_star_word_card:
+    \en_if_show:NN \g__en_info_clist \show_word_card:
+  }
+
+\cs_new_protected:Nn \en_if_show:NN
+  {
+    \clist_if_empty:NF #1 { #2 }
+  }
+
+\cs_new_protected:Nn \show_review_star_word:
+  {
+    \subsection*{易错单词测试}
+    \addcontentsline{toc}{section}{易错单词测试}
+    \begin{baselist}[itemsep=1em]
+      \int_step_inline:nn { \g__en_star_word_count_int }
+        {
+          \item \customlabel{review_star_word:##1}
+            {
+              \sffamily\bfseries\huge
+              \hyperref[star_card:##1]{
+                \clist_item:Nn \g__saved_star_word_clist { ## 1 }
+              }
+            }
+        }
+    \end{baselist}
+    \clearpage
   }
 
 \cs_new_protected:Nn \show_review_word:
   {
     \phantomsection
-    \addcontentsline{toc}{section}{单词测试}
-    \subsection*{\sffamily REVIEW~TODAY}
-    Date:\today\par\vspace{1cm}
-    \clist_map_inline:Nn \g__en_review_date_clist
+    \addcontentsline{toc}{section}{文章单词测试}
+    \int_step_inline:nn {\g__en_wordlist_count_int}
       {
         \customlabel{review:##1}
-        \subsection*{\Large\bfseries\sffamily\color{teal}##1~review}
-        \markright{##1单词测试}
-        \addcontentsline{toc}{subsection}{##1单词测试}
-        \reviewtoday{\hyperref[wordlist:##1]{返回列表}}
+        \subsection*{
+          \clist_item:Nn \g__en_info_clist { ##1 }
+        }
+        \markright{
+          \clist_item:Nn \g__en_info_clist { ##1 }
+        }
+        \addcontentsline{toc}{subsection}{
+          \clist_item:Nn \g__en_info_clist { ##1 }
+        }
         \begin{baselist}[itemsep=1em]
-          \int_zero:N \l__count_int
-          \clist_map_inline:cn { g__saved_word_##1 }
+          \int_zero:N \l__en_word_count_int
+          \clist_map_inline:cn { g__saved_word_##1_clist }
             {
-              \int_incr:N \l__count_int
-              \item \customlabel{review_word:##1_\int_use:N \l__count_int}
+              \int_incr:N \l__en_word_count_int
+              \item \customlabel{review_word:##1_\int_use:N \l__en_word_count_int}
                 {
                   \sffamily\bfseries\huge
-                  \hyperref[card:##1_\int_use:N \l__count_int]{####1}
+                 % ####1
+                  \hyperref[card:##1_\int_use:N \l__en_word_count_int]{####1}
                 }
             }
         \end{baselist}
+        \clearpage
       }
-    \clearpage
   }
 
 \cs_new_protected:Nn \show_next_review:
@@ -141,81 +258,73 @@
 
   }
 
-\cs_new_protected:Nn \show_word:
+\cs_new_protected:Nn \show_star_word_card:
   {
     \phantomsection
-    \addcontentsline{toc}{section}{单词列表}
-    \int_gzero:N \g__review_int
-    \clist_map_inline:Nn \g__en_date_clist
+    \addcontentsline{toc}{section}{易错单词卡片}
+    \int_step_inline:nn
+      { \g__en_star_word_count_int }
       {
-        \subsection*{\Large\bfseries\sffamily\color{teal}##1}
-        \markright{##1单词列表}
-        \en_review_if:nTF { ##1 }
-          {
-            \int_gincr:N \g__review_int
-            \bookmarksetup{color=red}
-            \addcontentsline{toc}{subsection}{
-              \texorpdfstring{\color{red}##1单词列表}{##1单词列表}
-            }
-            \label{wordlist:##1}
-            \reviewtoday{\hyperref[review:##1]{前往测试}}
-          }
-          {
-            \bookmarksetup{color=black}
-            \addcontentsline{toc}{subsection}{##1单词列表}
-          }
-        \begin{baselist}[font=\sffamily\Large]
-          \int_step_inline:nn
-            { \clist_count:c { g__saved_complete_word_##1 } }
-            {
-              \item
-              \begingroup
-              \Large
-              \clist_item:cn
-                { g__saved_complete_word_##1 }
-                { ####1 }
-              \par
-              \clist_item:cn
-                { g__saved_word_meaning_##1 }
-                { ####1 }
-              \endgroup
-            }
-        \end{baselist}
-        \en_review_if:nT { ##1 } { \show_next_review: }
+        \customlabel{star_card:##1}
+        \begin{wordcard}[
+          title={
+              \hyperref[review_star_word:##1]{
+                \clist_item:cn
+                  { g__saved_complete_word_##1_clist }
+                  { ##1 }
+              }
+            },
+          colframe=red!30,
+          coltitle=black!80,
+        ]{
+          \clist_item:cn
+            { g__saved_star_word_info_clist }
+            { ##1 }
+        }
+          \clist_item:cn
+            { g__saved_star_word_meaning_clist }
+            { ##1 }
+        \end{wordcard}
+        \clearpage
       }
-    \clearpage
   }
 
 \cs_new_protected:Nn \show_word_card:
   {
-    \clist_map_inline:Nn \g__en_review_date_clist
+    \phantomsection
+    \addcontentsline{toc}{section}{文章单词卡片}
+    \int_step_inline:nn {\g__en_wordlist_count_int}
       {
+        \phantomsection
+        \markright{
+          \clist_item:Nn \g__en_info_clist { ##1 }
+        }
+        \addcontentsline{toc}{subsection}{
+          \clist_item:Nn \g__en_info_clist { ##1 }
+        }
         \int_step_inline:nn
-          { \clist_count:c { g__saved_complete_word_##1 } }
+          { \clist_count:c { g__saved_complete_word_##1_clist } }
           {
             \customlabel{card:##1_####1}
-            \begin{tcolorbox}[
+            \begin{wordcard}[
+              colframe=teal,
+              coltitle=white,
               title={
-                  \zihao{0}
-                  \hyperref[review_word:##1_####1]{
-                    \clist_item:cn
-                      { g__saved_complete_word_##1 }
-                      { ####1 }
-                  }
-                },
-              fonttitle=\raggedright\sffamily,
-              fontupper=\itshape,
-              height=\textheight,
-              width=\textwidth,
-              boxrule=2pt,
-              arc=3mm,
-              boxsep=1em,
-            ]
-              \zihao{0}
+                \hyperref[review_word:##1_####1]{
+                  \clist_item:cn
+                    { g__saved_complete_word_##1_clist }
+                    { ####1 }
+                }
+              },
+            ]{
               \clist_item:cn
-                { g__saved_word_meaning_##1 }
+                { g__saved_word_info_##1_clist }
                 { ####1 }
-            \end{tcolorbox}
+            }
+              \clist_item:cn
+                { g__saved_word_meaning_##1_clist }
+                { ####1 }
+            \end{wordcard}
             \clearpage
           }
       }
@@ -243,4 +352,51 @@
   {
     {\sffamily#1}
   }
+
+% 暂时不用
+% \cs_new_protected:Nn \show_word:
+  % {
+    % \phantomsection
+    % \addcontentsline{toc}{section}{单词列表}
+    % \int_gzero:N \g__en_review_int
+    % \int_step_inline:nn {\g__en_wordlist_count_int}
+      % {
+        % \subsection*{##1}
+        % \markright{##1单词列表}
+        % \en_review_if:nTF { ##1 }
+          % {
+            % \int_gincr:N \g__en_review_int
+            % \bookmarksetup{color=red}
+            % \addcontentsline{toc}{subsection}{
+              % \texorpdfstring{\color{red}##1单词列表}{##1单词列表}
+            % }
+            % \label{wordlist:##1}
+            % \reviewtoday{\hyperref[review:##1]{前往测试}}
+          % }
+          % {
+            % \bookmarksetup{color=black}
+            % \addcontentsline{toc}{subsection}{##1单词列表}
+          % }
+        % \begin{baselist}[font=\sffamily\Large]
+          % \int_step_inline:nn
+            % { \clist_count:c { g__saved_complete_word_##1_clist } }
+            % {
+              % \item
+              % \begingroup
+              % \Large
+              % \clist_item:cn
+                % { g__saved_complete_word_##1_clist }
+                % { ####1 }
+              % \par
+              % \clist_item:cn
+                % { g__saved_word_meaning_##1_clist }
+                % { ####1 }
+              % \endgroup
+            % }
+        % \end{baselist}
+        % \en_review_if:nT { ##1 } { \show_next_review: }
+      % }
+    % \clearpage
+  % }
+
 \ExplSyntaxOff
