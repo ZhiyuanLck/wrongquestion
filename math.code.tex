@@ -1,5 +1,7 @@
 \input{preamble.tex}
 \input{review.code.tex}
+\everymath{\displaystyle}
+\setlength\parindent{0pt}
 
 \geometry{
   left=2cm,
@@ -8,180 +10,34 @@
   bottom=2.5cm,
 }
 
+\newcommand{\mathblank}{\CJKunderline[hidden]{四个汉字}}
 
-\makeatletter
-\ExplSyntaxOn
-
-%% variables
-
-% question counter
-\int_new:N \g_math_ques_count_int
-% date difference
-\int_new:N \l_math_datediff_int
-% review reference list
-\clist_new:N \g_math_review_clist
-\clist_new:N \l__math_review_clist
-% date list
-\clist_new:N \l_math_date_clist
-% review point
-\clist_new:N \l_math_review_point_clist
-% write to file
-\iow_new:N \l_math_ques_iow
-% most recent date
-\tl_new:N \l_math_recentdate_tl
-% width of left column
-\dim_new:N \l_math_left_dim
-% after skip
-\dim_new:N \l_math_after_dim
-% solutions
-\seq_new:N \g_math_solution_seq
-\newcounter{step}
-
-\dim_set:Nn \l_math_left_dim {2.6cm}
-\dim_set:Nn \l_math_after_dim {1cm}
-\clist_set:Nn \l_math_review_point_clist {1, 2, 4, 7}
-\setlength\arrayrulewidth{1pt}
-
-%% keys
-\keys_define:nn {math-ques}
-  {
-    date .code:n = \clist_push:Nn \l_math_date_clist {#1}
-  }
-
-\AtBeginDocument{\quesinput}
-\AtEndDocument{
-  \seq_if_empty:NF \l_solution_seq {\printsolution}
-  \iow_open:Nn \l_math_ques_iow {\c_sys_jobname_str .wq}
-  \iow_now:Nx \l_math_ques_iow
-    {
-      \exp_not:N \gdef \exp_not:N \quesreview{\clist_use:Nn \g_math_review_clist {,}}
-    }
-  \iow_close:N \l_math_ques_iow
-}
-
-\NewDocumentCommand {\quesinput} {} {
-  \file_if_exist:nT { \c_sys_jobname_str .wq }
-    { \file_input:n { \c_sys_jobname_str .wq } }
-}
-
-\cs_new_protected:Nn \ques_process_date:n {
-  \belowbaseline[-\ht\strutbox]{
-    \begin{minipage}[t]{\dim_use:N \l_math_left_dim}
-    \sffamily\small
-    \centering
-    \begin{tabular}{c}
-      \color{brown}\hyperref[review]{$\rightarrow$返回目录}\\[5pt]
-      \hline
-      \clist_use:Nn \l_math_date_clist {\\}
-      \\\hline
-      \\[\dimexpr-\normalbaselineskip+5pt]
-      \color{teal}\hyperref[solu:#1]{$\rightarrow$参考答案}\\
-    \end{tabular}
-    \end{minipage}
-  }
-}
-
-\prg_new_protected_conditional:Nnn \math_review_if: {T, F, TF}
-  {
-    \review_if:NnTF \l_math_review_point_clist {\l_math_recentdate_tl}
-      {\prg_return_true:}
-      {\prg_return_false:}
-  }
-
-\cs_new_protected:Nn \ques_label:n {
-  \math_review_if:T
-    {
-      \clist_gput_right:Nx \g_math_review_clist {\exp_not:N \ref{ques:#1}}
-    }
-}
-
-\cs_generate_variant:Nn \ques_process_date:n {x}
-\cs_generate_variant:Nn \ques_label:n {x}
-
-\NewDocumentEnvironment {ques} { +O{} +b }
-{
-  \clist_clear:N \l_math_date_clist
-  \keys_set:nn {math-ques} {#1}
-  \int_gincr:N \g_math_ques_count_int
-  \clist_if_empty:NF \l_math_date_clist
-    {
-      \clist_get:NN \l_math_date_clist \l_math_recentdate_tl
-    }
-  \customlabel{ques\c_colon_str\int_use:N \g_math_ques_count_int}
-  \phantomsection
-  \addcontentsline{toc}{subsection}{题目\int_use:N \g_math_ques_count_int}
-  \ques_label:x {\int_use:N \g_math_ques_count_int}
-  \par\noindent\ques_process_date:x {\int_use:N \g_math_ques_count_int}
-  \begin{minipage}[t]{\dim_eval:n {\textwidth-\l_math_left_dim}}
-    \noindent\textit{\Large\bfseries\int_use:N \g_math_ques_count_int}%
-    .\hspace{5pt}\ignorespaces#2\par%
-    \math_review_if:T {\reviewtoday{今日复习}}
-  \end{minipage}
-  \vskip\l_math_after_dim
-} {}
-
-\cs_new_protected:Nn \save_solution:nn {
-  \seq_gput_right:Nn \g_math_solution_seq
-    {
-      \customlabel{solu:#1}
-      \par\noindent{\itshape\bfseries\Large#1}.\hspace{5pt}
-      \begingroup
-      \sffamily\color{teal}
-      \hyperref[ques:#1]{$\rightarrow$返回题目}
-      \hspace*{1cm}\color{brown}
-      \hyperref[review]{$\rightarrow$返回目录}
-      \endgroup
-      \par#2\par\vspace{1em}
-    }
-}
-\cs_generate_variant:Nn \save_solution:nn {xn}
-
-\NewDocumentEnvironment {solution} { +b } {
-  \setcounter{step}{0}
-  \save_solution:xn {\int_use:N \g_math_ques_count_int} {#1}
-} {}
-
-\NewDocumentCommand {\printsolution} { } {
-  \clearpage
-  \seq_map_inline:Nn \g_math_solution_seq {##1}
-}
-
-\NewDocumentCommand {\mytoc} { } {
-  \section*{今日待做}\label{review}
-  \pdfbookmark[2]{今日待做}{review}
-  \noindent 日期：\today\par\vskip 1em
-  \clist_set:No \l__math_review_clist {\quesreview}
-  \begingroup
-  \huge\itshape\bfseries\color{teal}\noindent
-  % \clist_use:Nn \l__math_review_clist {\quad}
-  \endgroup
-}
-
-\NewDocumentEnvironment {multichoice} { +b } {
-  \begin{tasks}[label=(\Alph*)](2)
-    #1
-  \end{tasks}
-} {}
-
-\ExplSyntaxOff
-
-\newcommand{\blank}{\CJKunderline[hidden]{四个汉字}}
-
-\newcommand{\hint}[1]{
+\newcommand{\mathhint}[1]{
   \tcbset{highlight math style={colframe=teal, colback=teal!10}}
   \tcbhighmath[boxrule=0.6pt]{#1}
 }
 
-\newcommand{\error}[1]{
+\newcommand{\matherror}[1]{
   \tcbset{highlight math style={colframe=red, colback=red!10}}
   \tcbhighmath[boxrule=0.6pt]{#1}
 }
 
-\newtcbox{\idea}{
-  colframe=teal, colback=teal!10
+\newtcbox{\mathidea}{
+  colframe=teal, colback=teal!10, on line,
 }
 
-\newtcolorbox{ideabox}{
+\newtcbox{\mathtype}{
+  colframe=teal, colback=teal!30!cyan,
+  size=small, on line,
+}
+
+\newtcbox{\mathlink}{
+  colframe=teal, colback=teal!30!yellow,
+  size=small, on line,
+  fontupper=\sffamily,
+}
+
+\newtcolorbox{mathideabox}{
   colframe=teal, colback=teal!10, breakable,
 }
 
@@ -190,4 +46,195 @@
   breakable,
 }
 
-\makeatother
+\newcounter{step}
+
+\ExplSyntaxOn
+
+\AtEndDocument{
+  \math_show:
+}
+
+\cs_new_protected:Nn \math_def_seq:n
+  {
+    \seq_new:c { g__math_saved_all_#1_seq }
+    \seq_new:c { g__math_saved_review_#1_seq }
+    \seq_new:c { g__math_saved_more_#1_seq }
+  }
+
+\tl_new:N       \l__math_date_tl
+\tl_new:N       \l__math_type_tl
+\tl_new:N       \l__math_info_tl
+\tl_new:N       \l__math_content_ques_tl
+\tl_new:N       \l__math_number_style_tl
+\int_new:N      \l__math_mistake_number_int
+\int_new:N      \l__math_count_int
+\dim_new:N      \l__math_ques_after_title_dim
+\bool_new:N     \l__show_all_bool
+\clist_new:N    \l__math_review_point_clist
+\math_def_seq:n { date }
+\math_def_seq:n { type }
+\math_def_seq:n { info }
+\math_def_seq:n { content_ques }
+\math_def_seq:n { content_solu }
+\math_def_seq:n { mistake_number }
+
+\clist_set:Nn     \l__math_review_point_clist { 2,4,7,15,30 }
+\bool_set_false:N \l__show_all_bool
+
+\keys_define:nn { mathques }
+  {
+    show~all     . bool_set:N = \l__show_all_bool,
+    show~all     . default:n  = { true },
+    number~style . tl_set:N   = \l__math_number_style_tl,
+    after~title  . dim_set:N  = \l__math_ques_after_title_dim,
+  }
+
+\NewDocumentCommand { \mathsetup } { +m }
+  {
+    \keys_set:nn { mathques } { #1 }
+  }
+
+\prg_new_protected_conditional:Nnn \math_review_if:n { T, F, TF }
+  {
+    \review_if:NnTF \l__math_review_point_clist { #1 }
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+
+% #1 date #2 seq name #3 data to save
+\cs_new_protected:Nn \math_save:nnn
+  {
+    \bool_if:NT \l__show_all_bool
+      {
+        \seq_gput_right:cn { g__math_saved_all_#2_seq } { #3 }
+      }
+    \math_review_if:nT { #1 }
+      {
+        \seq_gput_right:cn { g__math_saved_review_#2_seq } { #3 }
+      }
+  }
+
+% #1 做错次数 #2 做错日期 #3 题目类型
+  \NewDocumentEnvironment { mathques } { O{} D(){1} m m +b }
+  {
+    \tl_clear_new:N \l__math_date_tl
+
+    \tl_set:Nn \l__math_date_tl { #3 }
+
+    #5
+
+    \math_save:nnn { #3 } { date } { #3 }
+    \math_save:nnn { #3 } { type } { #4 }
+    \math_save:nnn { #3 } { mistake_number } { #2 }
+  } { }
+
+\NewDocumentCommand { \info } { +m }
+  {
+    \math_save:nnn { \l__math_date_tl } { info } { #1 }
+  }
+
+\NewDocumentEnvironment { ques } { +b }
+  {
+    \math_save:nnn { \l__math_date_tl } { content_ques } { #1 }
+  } { }
+
+\NewDocumentEnvironment { solu } { +b }
+  {
+    \math_save:nnn { \l__math_date_tl } { content_solu } { #1 }
+  } { }
+
+\cs_new_protected:Nn \math_show:
+  {
+      { \math_show_content_template:n { review } }
+    \bool_if:NT \l__show_all_bool
+      { \math_show_content_template:n { all } }
+  }
+
+\cs_new_protected:Nn \math_show_content_template:n
+  {
+    \math_show_content:nn { #1 } { ques }
+    \clearpage
+    \math_show_content:nn { #1 } { solu }
+  }
+
+% #1 all/review #2 ques/solu
+\cs_new_protected:Nn \math_show_content:nn
+  {
+    \int_zero:N \l__math_count_int
+    \seq_map_inline:cn { g__math_saved_#1_content_#2_seq }
+      {
+        \setcounter{step}{0}
+        \int_incr:N \l__math_count_int
+        \math_set:nn { #1 } { \l__math_count_int }
+        \cs_if_exist_use:c { math_wrap_content_#2:nn } { #1 } { ##1 }
+      }
+  }
+
+% #1 all/review/more #2 int
+\cs_new_protected:Nn \math_set:nn
+  {
+    \tl_set:Nn \l__math_date_tl
+      { \math_seq_item:nnn { #1 } { date } { #2 } }
+    \tl_set:Nn \l__math_type_tl
+      { \math_seq_item:nnn { #1 } { type } { #2 } }
+    \tl_set:Nn \l__math_info_tl
+      { \math_seq_item:nnn { #1 } { info } { #2 } }
+    \tl_set:Nn \l__math_content_ques_tl
+      { \math_seq_item:nnn { #1 } { content_ques } { #2 } }
+    \int_set:Nn \l__math_mistake_number_int
+      { \math_seq_item:nnn { #1 } { mistake_number } { #2 } }
+  }
+
+% #1 all/review/more #2 date/type... #3 int
+\cs_new:Nn \math_seq_item:nnn
+  {
+    \seq_item:cn { g__math_saved_#1_#2_seq } { #3 }
+  }
+
+% #1 all/review... #2 content
+\cs_new_protected:Nn \math_wrap_content_ques:nn
+  {
+    \customlabel{#1_ques:\int_use:N \l__math_count_int}
+    \begin{tcolorbox}
+      {
+        \l__math_number_style_tl
+        \int_use:N \l__math_count_int
+      }.~
+      \mathtype{ \l__math_type_tl }
+      \mathlink{
+        \hyperref[#1_solu:\int_use:N \l__math_count_int]{
+          前往答案
+        }
+      }
+      \par\vspace{\l__math_ques_after_title_dim}
+      #2
+    \end{tcolorbox}
+  }
+
+\cs_new_protected:Nn \math_wrap_content_solu:nn
+  {
+    \par
+    \customlabel{#1_solu:\int_use:N \l__math_count_int}
+    {
+      \l__math_number_style_tl
+      \int_use:N \l__math_count_int
+    }.~
+    \mathtype{ \l__math_type_tl }
+    \mathlink{
+      \hyperref[#1_ques:\int_use:N \l__math_count_int]{
+        返回题目
+      }
+    }
+    \par\vspace{\l__math_ques_after_title_dim}
+    {\sffamily\bfseries 题目：}\l__math_content_ques_tl
+    \par{\sffamily\bfseries 答案：}
+    #2 \par
+  }
+
+\ExplSyntaxOff
+
+\mathsetup{
+  show all=false,
+  number style={ \zihao{3}\color{teal}\itshape\bfseries },
+  after title=1em,
+}

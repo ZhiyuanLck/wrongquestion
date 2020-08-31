@@ -1,73 +1,78 @@
 \documentclass{ctexart}
 \input{math.code.tex}
-\everymath{\displaystyle}
-\newcount\test
+% \mathsetup{show all}
 
 \begin{document}
-\mytoc
-\tableofcontents
-\clearpage
+% \mytoc
+% \tableofcontents
+% \clearpage
 
-\begin{ques}[date=2020-8-20]
-  极限$\lim_{n \to \infty} \left( \frac{n+1}{n-2} \right) ^n=$\blank.
-\begin{solution}
+\begin{mathques}{2020-8-29}{极限}
+\begin{ques}
+  极限$\lim_{n \to \infty} \left( \frac{n+1}{n-2} \right) ^n=$\mathblank.
+\end{ques}
+\begin{solu}
   \begin{align*}
     \lim_{n \to \infty} \left( \frac{n+1}{n-2} \right) ^n
     &= \lim_{n \to \infty} \frac{\left( 1 + \frac{1}{n} \right) ^n}{\left( 1 -
     \frac{2}{n} \right) ^n}\\
-    & \hint{\lim_{n \to \infty} \left( 1 + \frac{1}{n} \right) ^n = e}
+    & \mathhint{\lim_{n \to \infty} \left( 1 + \frac{1}{n} \right) ^n = e}
     \\
     & = \frac{\lim_{n \to \infty} \left( 1 + \frac{1}{n} \right) ^n}{\lim_{n
     \to \infty} \left( 1 - \frac{2}{n} \right) ^n}\\
     & = \frac{e}{e^{-2}} = e^3
   \end{align*}
-\end{solution}
-\end{ques}
+\end{solu}
+\end{mathques}
 
-\begin{ques}[date=2020-8-20]
+\begin{mathques}{2020-8-29}{极限}
+\begin{ques}
   求极限$\lim_{n \to \infty} (\sqrt{n + \sqrt{n}} - \sqrt{n - \sqrt{n}})$.
-\begin{solution}
+\end{ques}
+\begin{solu}
   \begin{align*}
     \lim_{n \to \infty} (\sqrt{n + \sqrt{n}} - \sqrt{n - \sqrt{n}})
     &= \lim_{n \to \infty} \frac{(n + \sqrt{n}) - (n - \sqrt{n})}{(n +
     \sqrt{n}) + (n - \sqrt{n})}\\
     &= \lim_{n \to \infty} \frac{2}{\sqrt{1 + \frac{1}{\sqrt{n}}} + \sqrt{1 -
     \frac{1}{\sqrt{n}}}}\\
-    &= \frac{2}{\error{\sqrt{1} + \sqrt{1}}} = 1
+    &= \frac{2}{\matherror{\sqrt{1} + \sqrt{1}}} = 1
   \end{align*}
-\end{solution}
-\end{ques}
+\end{solu}
+\end{mathques}
 
-\begin{ques}[date=2020-8-20]
+\begin{mathques}{2020-8-29}{极限}
+\begin{ques}
   设$x_{n + 1} = \sqrt{2 + x_n} (n = 1, 2, \dotsc), x_1 = \sqrt{2}$, 证明
   $\lim_{n \to \infty} x_n$ 存在, 并求$\lim_{n \to \infty} x_n$.
-  \begin{solution}
-    \idea{单调有界数列必有极限}
-    \begin{step}{证明单调性(3种方法)}
-      \begin{enumerate}
-        \item 令$f(x) = \sqrt{2 + x}$ 证明$f(x)$的单调性
-        \item 作差$x_{n} - x_{n - 1} = \sqrt{2 + x_{n - 1}} - x_{n - 1} = \frac{2
-          + x_{n - 1} - x_{n - 1}^2}{\sqrt{2 + x_{n - 1}} + x_{n - 1}}$\par
-          $2 + x_{n - 1} - x_{n - 1}^2 > 2 + x_{n - 1} - 2x_{n - 1} = 2 - x_{n
-          - 1} > 0$\par
-          \idea{方法2需要先进行Step 2证明上界为2才行}
-        \item 证明$x_{n + 1} - x_n$与$x_{n} - x_{n - 1}$同号\par
-          $x_{n + 1} - x_n = \sqrt{2 + x_n} - \sqrt{2 + x_{n - 1}} = \frac{x_n
-          - x_{n - 1}}{\sqrt{2 + x_n} + \sqrt{2 + x_{n - 1}}}$\par
-          又$x_2 - x_1 = \sqrt{2 + \sqrt{2}} - \sqrt{2} > 0$，故$x_n$单调
-      \end{enumerate}
-    \end{step}
-    \begin{step}{证明有界性}
-      \begin{ideabox}
-        \itshape 当界值难以看出来时，可以先假定有界，得出有极限然后求出根据递
-        推公式求出极限得出界值再反过来想怎么证明（见Step 3）
-      \end{ideabox}
-      $x_1 = \sqrt{2} < 2$, 设$x_k < 2$, 则$x_{k + 1} = \sqrt{2 + x_k} < 2$,
-      故$x_n < 2$有上界
-    \end{step}
-    \begin{step}{求极限}
-      $x_n > 0$, 设$\lim_{n \to \infty} x_n = A > 0$, 则$A = \sqrt{2 + A} \Rightarrow A = 2$
-    \end{step}
-  \end{solution}
 \end{ques}
+\begin{solu}
+  \mathidea{单调有界数列必有极限}
+  \begin{step}{证明单调性(3种方法)}
+    \begin{enumerate}
+      \item 令$f(x) = \sqrt{2 + x}$ 证明$f(x)$的单调性
+      \item 作差$x_{n} - x_{n - 1} = \sqrt{2 + x_{n - 1}} - x_{n - 1} = \frac{2
+        + x_{n - 1} - x_{n - 1}^2}{\sqrt{2 + x_{n - 1}} + x_{n - 1}}$\par
+        $2 + x_{n - 1} - x_{n - 1}^2 > 2 + x_{n - 1} - 2x_{n - 1} = 2 - x_{n
+        - 1} > 0$\par
+        \mathidea{方法2需要先进行Step 2证明上界为2才行}
+      \item 证明$x_{n + 1} - x_n$与$x_{n} - x_{n - 1}$同号\par
+        $x_{n + 1} - x_n = \sqrt{2 + x_n} - \sqrt{2 + x_{n - 1}} = \frac{x_n
+        - x_{n - 1}}{\sqrt{2 + x_n} + \sqrt{2 + x_{n - 1}}}$\par
+        又$x_2 - x_1 = \sqrt{2 + \sqrt{2}} - \sqrt{2} > 0$，故$x_n$单调
+    \end{enumerate}
+  \end{step}
+  \begin{step}{证明有界性}
+    \begin{mathideabox}
+      \itshape 当界值难以看出来时，可以先假定有界，得出有极限然后求出根据递
+      推公式求出极限得出界值再反过来想怎么证明（见Step 3）
+    \end{mathideabox}
+    $x_1 = \sqrt{2} < 2$, 设$x_k < 2$, 则$x_{k + 1} = \sqrt{2 + x_k} < 2$,
+    故$x_n < 2$有上界
+  \end{step}
+  \begin{step}{求极限}
+    $x_n > 0$, 设$\lim_{n \to \infty} x_n = A > 0$, 则$A = \sqrt{2 + A} \Rightarrow A = 2$
+  \end{step}
+\end{solu}
+\end{mathques}
 \end{document}
