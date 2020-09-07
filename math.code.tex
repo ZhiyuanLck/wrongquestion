@@ -10,16 +10,21 @@
   bottom=2.5cm,
 }
 
-\newcommand{\mathblank}{\CJKunderline[hidden]{四个汉字}}
-
-\newcommand{\mathhint}[1]{
-  \tcbset{highlight math style={colframe=teal, colback=teal!10}}
-  \tcbhighmath[boxrule=0.6pt]{#1}
+\ctexset{
+  section/numbering=false,
+  section/format=\huge\bfseries\sffamily\color{teal},
 }
+
+\newcommand{\mathblank}{\CJKunderline[hidden]{四个汉字}}
 
 \newcommand{\matherror}[1]{
   \tcbset{highlight math style={colframe=red, colback=red!10}}
-  \tcbhighmath[boxrule=0.6pt]{#1}
+  \tcbhighmath[boxrule=0.6pt, size=small]{#1}
+}
+
+\newcommand{\mathmethod}{%
+  \stepcounter{method}%
+  {\bfseries\sffamily \par\hspace{2em}方法\zhnum{method}}\quad%
 }
 
 \newtcbox{\mathidea}{
@@ -29,6 +34,13 @@
 \newtcbox{\mathtype}{
   colframe=teal, colback=teal!30!cyan,
   size=small, on line,
+  fontupper=\sffamily,
+}
+
+\newtcbox{\mathdate}{
+  colframe=teal, colback=cyan!70!pink,
+  size=small, on line,
+  fontupper=\sffamily,
 }
 
 \newtcbox{\mathlink}{
@@ -47,6 +59,7 @@
 }
 
 \newcounter{step}
+\newcounter{method}
 
 \ExplSyntaxOn
 
@@ -69,7 +82,13 @@
 \int_new:N      \l__math_mistake_number_int
 \int_new:N      \l__math_count_int
 \dim_new:N      \l__math_ques_after_title_dim
-\bool_new:N     \l__show_all_bool
+\dim_new:N      \l__math_before_solu_dim
+\dim_new:N      \l__math_after_solu_dim
+\dim_new:N      \l__math_lable_width_dim
+\dim_new:N      \l__math_label_sep_to_number_dim
+\dim_new:N      \l__math_label_sep_dim
+\bool_new:N     \l__math_show_all_bool
+\bool_new:N     \l__math_is_answer_bool
 \clist_new:N    \l__math_review_point_clist
 \math_def_seq:n { date }
 \math_def_seq:n { type }
@@ -79,14 +98,19 @@
 \math_def_seq:n { mistake_number }
 
 \clist_set:Nn     \l__math_review_point_clist { 2,4,7,15,30 }
-\bool_set_false:N \l__show_all_bool
+\bool_set_false:N \l__math_show_all_bool
 
 \keys_define:nn { mathques }
   {
-    show~all     . bool_set:N = \l__show_all_bool,
-    show~all     . default:n  = { true },
-    number~style . tl_set:N   = \l__math_number_style_tl,
-    after~title  . dim_set:N  = \l__math_ques_after_title_dim,
+    show~all            . bool_set:N = \l__math_show_all_bool,
+    show~all            . default:n  = { true },
+    number~style        . tl_set:N   = \l__math_number_style_tl,
+    after~title         . dim_set:N  = \l__math_ques_after_title_dim,
+    before~solu         . dim_set:N  = \l__math_before_solu_dim,
+    after~solu          . dim_set:N  = \l__math_after_solu_dim,
+    label~sep~to~number . dim_set:N  = \l__math_label_sep_to_number_dim,
+    label~sep           . dim_set:N  = \l__math_label_sep_dim,
+    label~width         . dim_set:N  = \l__math_lable_width_dim,
   }
 
 \NewDocumentCommand { \mathsetup } { +m }
@@ -104,7 +128,7 @@
 % #1 date #2 seq name #3 data to save
 \cs_new_protected:Nn \math_save:nnn
   {
-    \bool_if:NT \l__show_all_bool
+    \bool_if:NT \l__math_show_all_bool
       {
         \seq_gput_right:cn { g__math_saved_all_#2_seq } { #3 }
       }
@@ -140,21 +164,33 @@
 
 \NewDocumentEnvironment { solu } { +b }
   {
-    \math_save:nnn { \l__math_date_tl } { content_solu } { #1 }
+    \math_save:nnn { \l__math_date_tl } { content_solu }
+    {
+      \setcounter{step}{0}
+      \setcounter{method}{0}
+      #1
+    }
   } { }
 
 \cs_new_protected:Nn \math_show:
   {
-      { \math_show_content_template:n { review } }
-    \bool_if:NT \l__show_all_bool
-      { \math_show_content_template:n { all } }
+    \section{\today 复习}
+    \math_show_content_template:n { review }
+    \bool_if:NT \l__math_show_all_bool
+      {
+        \section{所有题目}
+        \math_show_content_template:n { all }
+      }
   }
 
 \cs_new_protected:Nn \math_show_content_template:n
   {
+    \bool_set_false:N \l__math_is_answer_bool
     \math_show_content:nn { #1 } { ques }
     \clearpage
+    \bool_set_true:N \l__math_is_answer_bool
     \math_show_content:nn { #1 } { solu }
+    \clearpage
   }
 
 % #1 all/review #2 ques/solu
@@ -163,10 +199,13 @@
     \int_zero:N \l__math_count_int
     \seq_map_inline:cn { g__math_saved_#1_content_#2_seq }
       {
-        \setcounter{step}{0}
         \int_incr:N \l__math_count_int
         \math_set:nn { #1 } { \l__math_count_int }
         \cs_if_exist_use:c { math_wrap_content_#2:nn } { #1 } { ##1 }
+        \bool_if:NT \l__math_is_answer_bool
+          {
+            \vspace{\l__math_after_solu_dim}
+          }
       }
   }
 
@@ -194,13 +233,18 @@
 % #1 all/review... #2 content
 \cs_new_protected:Nn \math_wrap_content_ques:nn
   {
+    \goodbreak
     \customlabel{#1_ques:\int_use:N \l__math_count_int}
     \begin{tcolorbox}
-      {
+      \makebox[\l__math_lable_width_dim][l]{
         \l__math_number_style_tl
-        \int_use:N \l__math_count_int
-      }.~
+        \int_use:N \l__math_count_int.
+      }
+      \hspace{\l__math_label_sep_to_number_dim}
       \mathtype{ \l__math_type_tl }
+      \hspace{\l__math_label_sep_dim}
+      \mathdate{ \l__math_date_tl }
+      \hspace{\l__math_label_sep_dim}
       \mathlink{
         \hyperref[#1_solu:\int_use:N \l__math_count_int]{
           前往答案
@@ -214,12 +258,15 @@
 \cs_new_protected:Nn \math_wrap_content_solu:nn
   {
     \par
+    \goodbreak
     \customlabel{#1_solu:\int_use:N \l__math_count_int}
     {
       \l__math_number_style_tl
       \int_use:N \l__math_count_int
-    }.~
+    }.
+    \hspace{\l__math_label_sep_to_number_dim}
     \mathtype{ \l__math_type_tl }
+    \hspace{\l__math_label_sep_dim}
     \mathlink{
       \hyperref[#1_ques:\int_use:N \l__math_count_int]{
         返回题目
@@ -227,14 +274,62 @@
     }
     \par\vspace{\l__math_ques_after_title_dim}
     {\sffamily\bfseries 题目：}\l__math_content_ques_tl
-    \par{\sffamily\bfseries 答案：}
+    \par\vspace{\l__math_before_solu_dim}
+    {\sffamily\bfseries 答案：}
     #2 \par
+  }
+
+\NewDocumentEnvironment { multichoice } { +b }
+  {
+    \begin{tasks}[label=(\Alph*), label-width=2em](2)
+      #1
+    \end{tasks}
+  } {}
+
+\NewDocumentCommand { \answer } { +m }
+  {
+    \bool_if:NTF \l__math_is_answer_bool
+      {
+        \tcbox[
+          colframe=teal, colback=teal!10, on~line,
+          arc=0pt, outer~arc=0pt,
+          boxsep=0pt, top=2pt, bottom=2pt, left=0pt, right=0pt,
+          boxrule=0pt, toprule=1pt, bottomrule=1pt,
+          every~box/.style={
+            highlight~math~style={colframe=red, colback=red!10}
+          }
+        ]{#1}
+      }
+      { #1 }
+  }
+
+\NewDocumentCommand { \mathhint } { O{} +m }
+  {
+    \tcbset{
+      highlight~math~style={
+        colframe=teal, colback=teal!10,
+        boxrule=0.6pt, size=small,
+      }
+    }
+    \str_case:nnF { #1 }
+      {
+        { r } { \rlap{\tcbhighmath{#2}} }
+        { l } { \llap{\tcbhighmath{#2}} }
+      }
+      {
+        \tcbhighmath{#2}
+      }
   }
 
 \ExplSyntaxOff
 
 \mathsetup{
-  show all=false,
-  number style={ \zihao{3}\color{teal}\itshape\bfseries },
-  after title=1em,
+  show all            = false,
+  number style        = { \zihao{3}\itshape\bfseries },
+  after title         = 1em,
+  before solu         = 1em,
+  after solu          = 1cm,
+  label sep to number = 1em,
+  label sep           = 1em,
+  label width         = 1cm,
 }

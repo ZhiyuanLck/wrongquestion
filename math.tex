@@ -3,11 +3,8 @@
 % \mathsetup{show all}
 
 \begin{document}
-% \mytoc
-% \tableofcontents
-% \clearpage
 
-\begin{mathques}{2020-8-29}{极限}
+\begin{mathques}{2020-09-05}{极限}
 \begin{ques}
   极限$\lim_{n \to \infty} \left( \frac{n+1}{n-2} \right) ^n=$\mathblank.
 \end{ques}
@@ -25,7 +22,7 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-8-29}{极限}
+\begin{mathques}{2020-09-05}{极限}
 \begin{ques}
   求极限$\lim_{n \to \infty} (\sqrt{n + \sqrt{n}} - \sqrt{n - \sqrt{n}})$.
 \end{ques}
@@ -41,7 +38,7 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-8-29}{极限}
+\begin{mathques}{2020-09-05}{极限}
 \begin{ques}
   设$x_{n + 1} = \sqrt{2 + x_n} (n = 1, 2, \dotsc), x_1 = \sqrt{2}$, 证明
   $\lim_{n \to \infty} x_n$ 存在, 并求$\lim_{n \to \infty} x_n$.
@@ -73,6 +70,184 @@
   \begin{step}{求极限}
     $x_n > 0$, 设$\lim_{n \to \infty} x_n = A > 0$, 则$A = \sqrt{2 + A} \Rightarrow A = 2$
   \end{step}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-06}{极限}
+\begin{ques}
+  求极限$\lim_{x \to 0^+} \frac{x^x - (\sin x)^x}{x^2 \ln (1 + x)}$.
+\end{ques}
+\begin{solu}
+\begin{align*}
+  \text{原式} & = -\matherror{\lim_{x \to x^+} x^x} \lim_{x \to 0^+}
+  \frac{\left( \frac{\sin x}{x} \right) ^x - 1}{x^3}\\
+  &\mathhint{e^x - 1 \sim x (x \to 0)}\\
+  &= -\lim_{x \to 0^+} \frac{\ln \frac{\sin x}{x}}{x^2}\\
+  &= -\lim_{x \to 0^+} \frac{\ln \left( 1 + \frac{\sin x - x}{x} \right) }{x^2}
+  \\
+  &\mathhint{\ln (1+x) \sim x (x \to 0)}\\
+  &= -\lim_{x \to 0^+} \frac{\sin x - x}{x^3}\\
+  &= -\lim_{x \to 0^+} \frac{x - \frac{1}{3!} x^3 + o(x^3) - x}{x^3} = \frac{1}
+  {6}
+\end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-06}{极限}
+\begin{ques}
+  求极限$\lim_{x \to 0} \left( \frac{a_1^x + a_2^x + \dotsb + a_n^x}{n} \right)
+  ^{\frac{n}{x}}$，其中$a_i > 0, i = 1, 2, \dotsc, n$.
+\end{ques}
+\begin{solu}
+  因为$\lim _{x \to 0}a_i^x = 1$，所以原极限是“$1^{\infty}$”型未定式
+  \mathmethod 使用\emph{洛必达法则}求极限
+  \begin{align*}
+    \lim_{x \to 0} \left( \frac{a_1^x + a_2^x + \dotsb + a_n^x}{n} \right)
+    ^{\frac{n}{x}} &= \exp \left\{ \lim_{x \to 0}\frac{n}{x} \ln \left(
+    \frac{a_1^x + a_2^x + \dotsb + a_n^x}{n} \right)  \right\}\\
+    &\mathhint{\text{洛必达}\frac{0}{0}}\\
+    &= \exp \left\{ \lim_{x \to 0} n \cdot \frac{a_1^x \ln a_1 + a_2^x \ln a_2
+    + \dotsb + a_n^x \ln a_n}{a_1^x + a_2^x + \dotsb + a_n^x} \right\} \\
+    &=a_1a_2\dotsi a_n
+  \end{align*}
+  \mathmethod 凑成第二个重要极限（“$1^{\infty}$”型未定式极限都可以凑成第二个重
+  要极限
+  \begin{align*}
+    \lim_{x \to 0} \left( \frac{a_1^x + a_2^x + \dotsb + a_n^x}{n} \right)
+    ^{\frac{n}{x}} &=
+    \lim_{x \to 0} \left( 1 + \frac{a_1^x + a_2^x + \dotsb + a_n^x - n}{n}
+    \right) ^{\frac{n}{a_1^x + a_2^x + \dotsb + a_n^x - n}
+    \cdot \frac{a_1^x + a_2^x + \dotsb + a_n^x - n}{x}}
+  \end{align*}
+  其中
+  \begin{align*}
+    \lim_{x \to 0} \frac{a_1^x + a_2^x + \dotsb + a_n^x - n}{x}
+    &= \ln (a_1a_2\dotsi a_n)\\
+    \mathhint{\lim_{n \to \infty} \left( 1 + \frac{1}{n} \right) ^n = e}\\
+    \lim_{x \to 0} \left( 1 + \frac{a_1^x + a_2^x + \dotsb + a_n^x - n}{n}
+    \right) ^{\frac{n}{a_1^x + a_2^x + \dotsb + a_n^x - n}} &=e
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-06}{极限}
+\begin{ques}
+  设函数$f(x) = \lim_{n \to \infty} \frac{1 + x}{1 + x^{2n}}$，讨论函数的间断
+  点，其结论为(\quad).
+  \begin{multichoice}
+    \task 不存在间断点
+    \task \answer{存在间断点$x = 1$}
+    \task 存在间断点$x = 0$
+    \task 存在间断点$x = -1$
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+\begin{mathideabox}
+  函数$f(x)$以$x$为自变量，但是在对$n$求极限的时候，$x$被看做常数，因此应根据
+  $x$的不同取值求出对应的极限
+\end{mathideabox}
+当$|x| < 1$时, $\lim_{n \to \infty} x^{2n} = 0$，所以$f(x) = 1 + x$
+
+当$|x| > 1$时，$\lim_{n \to \infty} \frac{1 + x}{1 + x^{2n}} = 0$
+
+又$f(1) = 1, f(-1) = 0$，则
+\[
+  f(x) = \lim_{n \to \infty} \frac{1 + x}{1 + x^{2n}} =
+  \begin{dcases}
+    0,     & x \le -1 \\
+    1 + x, & -1 <x < 1 \\
+    1,     & x = 1 \\
+    0,     & x > 1 \\
+  \end{dcases}
+\]
+故$x = 1$为间断点
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-07}{极限}
+\begin{ques}
+  设$f(\sin^2x) = \frac{x}{\sin x}$，则$f(x) = $\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{
+    $\frac{\arcsin \sqrt{x}}{\sqrt{x}} \matherror{(x > 0)}$
+  }\par
+  设$u = \sin^2 x$，则$\sin x = \pm \sqrt{u}$.
+
+  当$\sin x = \sqrt{u}$时，$x = \arcsin \sqrt{u}$
+
+  当$\sin x = - \sqrt{u}$时，$\matherror{\sin(-x) = \sqrt{u}, x = -\arcsin
+  \sqrt{u}}$.因此
+  \begin{align*}
+    f(u) &= \frac{\arcsin \sqrt{u}}{\sqrt{u}} \\
+    f(x) &= \frac{\arcsin \sqrt{x}}{\sqrt{x}} (x > 0)
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-07}{极限}
+\begin{ques}
+  设$f\left(x + \frac{1}{x}\right) = \frac{x + x^3}{1 + x^4}$，则$f(x) =
+  $\mathblank
+\end{ques}
+\begin{solu}
+  \answer{$\frac{x}{x^2 - 2}$}
+
+  \[
+    f\left(\matherror{ x + \frac{1}{x}}\right) = \frac{x + x^3}{1 + x^4} =
+    \frac{x^2 \left( \matherror{\textstyle\frac{1}{x} + x} \right) }{x^2
+    \left( \frac{1}{x^2} + x^2 \right) } = \frac{\frac{1}{x} + x}{\left(
+  \matherror{\textstyle\frac{1}{x} + x} \right) ^2 - 2}
+  \]
+  因此$f(x) = \frac{x}{x^2 - 2}$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-07}{极限}
+\begin{ques}
+  求极限$\lim_{x \to 0^+} \frac{2e^{\frac{1}{x}} + e^{-\frac{1}{x}}}
+  {e^{\frac{2}{x}} - e^{- \frac{1}{x}}}$.
+\end{ques}
+\begin{solu}
+  由于
+  \[
+  \lim_{x \to 0^+} \frac{1}{x} = +\infty, \lim_{x \to 0^+} \frac{-1}{x} =
+  -\infty
+  \]
+  因此
+  \[
+  \lim_{x \to 0^+} e^{\frac{1}{x}} = + \infty, \lim_{x \to 0^+} e^{-\frac{1}
+  {x}} = 0
+  \]
+  则
+  \[
+    \lim_{x \to 0^+} \frac{2e^{\frac{1}{x}} + e^{-\frac{1}{x}}} {e^{\frac{2}
+    {x}} - e^{- \frac{1}{x}}} =
+    \lim_{x \to 0^+} \frac{2 + e^{- \frac{2}{x}}}{e^{\frac{1}{x}} -
+    e^{-\frac{2}{x}}}
+    \mathhint[r]{\text{同除}e^{\frac{1}{x}}}
+  \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-07}{极限}
+\begin{ques}
+  求极限$\lim_{x \to 0} \frac{\sin x + x^2 \sin \frac{1}{x}}{(2 + x^2) \ln(1 +
+  x)}$.
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}
+    所给极限为“$\frac{0}{0}$”型，先进行\emph{等价无穷小代换}，再拆分
+  \end{mathideabox}
+  \begin{align*}
+    \lim_{x \to 0} \frac{\sin x + x^2 \sin \frac{1}{x}}{(2 + x^2) \ln(1 + x)}
+    &= \lim_{x \to 0} \frac{1}{2 + x^2} \cdot \frac{\sin x + x^2 \sin \frac{1}
+    {x}}{x} \mathhint[r]{\text{等价无穷小代换}}\\
+    \mathhint[l]{\text{将非零因子}\frac{1}{2 + x^2}\text{单独求极限}}
+    &= \frac{1}{2} \lim_{x \to 0} \left( \frac{\sin x}{x} + x \sin \frac{1}{x}
+    \right) \\
+    &= \frac{1}{2}
+  \end{align*}
 \end{solu}
 \end{mathques}
 \end{document}

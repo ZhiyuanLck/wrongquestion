@@ -49,6 +49,10 @@
   #1
 }
 
+\title{\today 测试}
+\author{}
+\date{}
+
 \ExplSyntaxOn
 \clist_new:N \g__en_info_clist
 \clist_new:N \g__en_review_point_clist
@@ -67,6 +71,7 @@
 
 \AtBeginDocument
   {
+    \maketitle
     \pdfbookmark[1]{目录}{toc}
     \tableofcontents
     \clearpage
