@@ -27,10 +27,6 @@
   {\bfseries\sffamily \par\hspace{2em}方法\zhnum{method}}\quad%
 }
 
-\newtcbox{\mathidea}{
-  colframe=teal, colback=teal!10, on line,
-}
-
 \newtcbox{\mathtype}{
   colframe=teal, colback=teal!30!cyan,
   size=small, on line,
@@ -49,8 +45,9 @@
   fontupper=\sffamily,
 }
 
-\newtcolorbox{mathideabox}{
-  colframe=teal, colback=teal!10, breakable,
+\newtcolorbox{mathideabox}[1][]{
+  colframe=teal, colback=teal!10, breakable, title=#1,
+  fonttitle=\bfseries\sffamily,
 }
 
 \newtcolorbox[use counter=step]{step}[1]{
@@ -320,6 +317,23 @@
         \tcbhighmath{#2}
       }
   }
+
+\newtcbox{\mathideai}{
+  colframe=teal, colback=teal!10, on~line, size=small
+}
+
+\NewDocumentCommand { \mathidea } { O{} +m }
+  {
+    \str_case:nnF { #1 }
+      {
+        { r } { \rlap{\mathideai{#2}} }
+        { l } { \llap{\mathideai{#2}} }
+      }
+      {
+        \mathideai{#2}
+      }
+  }
+
 
 \ExplSyntaxOff
 

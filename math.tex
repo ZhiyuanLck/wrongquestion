@@ -1,6 +1,6 @@
 \documentclass{ctexart}
 \input{math.code.tex}
-% \mathsetup{show all}
+\mathsetup{show all}
 
 \begin{document}
 
@@ -73,13 +73,13 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-06}{极限}
+\begin{mathques}(2){2020-09-08}{极限}
 \begin{ques}
   求极限$\lim_{x \to 0^+} \frac{x^x - (\sin x)^x}{x^2 \ln (1 + x)}$.
 \end{ques}
 \begin{solu}
 \begin{align*}
-  \text{原式} & = -\matherror{\lim_{x \to x^+} x^x} \lim_{x \to 0^+}
+  \text{原式} & = -\matherror{\lim_{x \to 0^+} x^x} \lim_{x \to 0^+}
   \frac{\left( \frac{\sin x}{x} \right) ^x - 1}{x^3}\\
   &\mathhint{e^x - 1 \sim x (x \to 0)}\\
   &= -\lim_{x \to 0^+} \frac{\ln \frac{\sin x}{x}}{x^2}\\
@@ -93,7 +93,7 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-06}{极限}
+\begin{mathques}(2){2020-09-08}{极限}
 \begin{ques}
   求极限$\lim_{x \to 0} \left( \frac{a_1^x + a_2^x + \dotsb + a_n^x}{n} \right)
   ^{\frac{n}{x}}$，其中$a_i > 0, i = 1, 2, \dotsc, n$.
@@ -130,7 +130,7 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-06}{极限}
+\begin{mathques}(2){2020-09-08}{极限}
 \begin{ques}
   设函数$f(x) = \lim_{n \to \infty} \frac{1 + x}{1 + x^{2n}}$，讨论函数的间断
   点，其结论为(\quad).
@@ -164,7 +164,7 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-07}{极限}
+\begin{mathques}(2){2020-09-09}{极限}
 \begin{ques}
   设$f(\sin^2x) = \frac{x}{\sin x}$，则$f(x) = $\mathblank.
 \end{ques}
@@ -203,34 +203,25 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-07}{极限}
+\begin{mathques}(2){2020-09-09}{极限}
 \begin{ques}
   求极限$\lim_{x \to 0^+} \frac{2e^{\frac{1}{x}} + e^{-\frac{1}{x}}}
   {e^{\frac{2}{x}} - e^{- \frac{1}{x}}}$.
 \end{ques}
 \begin{solu}
-  由于
-  \[
-  \lim_{x \to 0^+} \frac{1}{x} = +\infty, \lim_{x \to 0^+} \frac{-1}{x} =
-  -\infty
-  \]
-  因此
-  \[
-  \lim_{x \to 0^+} e^{\frac{1}{x}} = + \infty, \lim_{x \to 0^+} e^{-\frac{1}
-  {x}} = 0
-  \]
-  则
-  \[
+  \begin{align*}
     \lim_{x \to 0^+} \frac{2e^{\frac{1}{x}} + e^{-\frac{1}{x}}} {e^{\frac{2}
-    {x}} - e^{- \frac{1}{x}}} =
-    \lim_{x \to 0^+} \frac{2 + e^{- \frac{2}{x}}}{e^{\frac{1}{x}} -
-    e^{-\frac{2}{x}}}
-    \mathhint[r]{\text{同除}e^{\frac{1}{x}}}
-  \]
+    {x}} - e^{- \frac{1}{x}}}
+    &= \lim_{t \to +\infty} \frac{2e^t + e^{-t}}{e^{2t} - e^{-t}}
+    \mathhint[r]{\text{令}t = \frac{1}{x}}\\
+    &= \lim_{t \to +\infty} \frac{2 + e^{-2t}}{e^t - e^{-2t}}
+    \mathhint[r]{\text{同除}e^t}\\
+    &= 0
+  \end{align*}
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-07}{极限}
+\begin{mathques}(3){2020-09-11}{极限}
 \begin{ques}
   求极限$\lim_{x \to 0} \frac{\sin x + x^2 \sin \frac{1}{x}}{(2 + x^2) \ln(1 +
   x)}$.
@@ -248,6 +239,384 @@
     \right) \\
     &= \frac{1}{2}
   \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设函数$f(x)$在$x = 0$处连续，且$\lim_{x \to 0} \frac{f(x^2)}{x^2} = 1$，则
+  (\quad)
+  \begin{multichoice}
+    \task $f(0) = 0$且$f'_-(0)$存在
+    \task $f(0) = 1$且$f'_-(0)$存在
+    \task \answer{$f(0) = 0$且$f'_+(0)$存在}
+    \task $f(0) = 1$且$f'_+(0)$存在
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  因为$f(x)$在$x = 0$处连续，且$\lim_{x \to 0} \frac{f(x^2)}{x^2} = 1$
+
+  所以$\lim_{x \to 0} f(x^2) = 0$，即$f(0) = 0$
+
+  从而有
+  \begin{align*}
+    \lim_{x \to 0} \frac{f(x^2)}{x^2}
+    &= \matherror{\lim_{x \to 0} \frac{f(x^2) - f(0)}{x^2 - 0}}\\
+    \mathhint[l]{t = x^2} &= \matherror{\lim_{t \to \color{red} 0^+}
+    \frac{f(t) - f(0)}{t - 0}}\\
+    &= f'_+(0)
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设函数$f(x) = \abs{x^2 - 1}\varphi (x)$，其中$\varphi (x) $在$x = 1$处连续，
+  则$\varphi (1) = 0$是$f(x)$在$x = 1$处可导的(\quad)
+  \begin{multichoice}
+    \task \answer{充分必要条件}
+    \task 充分但非必要条件
+    \task 必要但非充分条件
+    \task 既非充分也非必要条件
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  \mathidea{$\varphi(1) = 0 \Longrightarrow f(x)$在$x = 1$处可导是否成立}\par
+  由$\varphi(1) = 0$可得$\mathhint{f(1) = 0}$
+  \begin{align*}
+    f'_+(1) &= \lim_{x \to 1^+} \frac{f(x) - f(1)}{x - 1}
+    = \lim_{x \to 1^+} \frac{\abs{x^3 - 1}\varphi(x)}{x - 1}
+    = \lim_{x \to 1^+} (x^2 + x + 1)\varphi(x) = 0\\
+    f'_-(1) &= \lim_{x \to 1^-} \frac{f(x) - f(1)}{x - 1}
+    = \lim_{x \to 1^-} \frac{\abs{x^3 - 1}\varphi(x)}{x - 1}
+    = \lim_{x \to 1^-} (x^2 + x + 1)\varphi(x) = 0
+  \end{align*}
+  即$f'_+(1) = f'_-(1) = 0$，则$f'(1) = 0$
+
+  \mathidea{$\varphi(1) = 0 \Longleftarrow f(x)$在$x = 1$处可导是否成立}\par
+  设$f(x)$在$x = 1$处可导，因为$f(1) = 0$，所以
+  \begin{align*}
+    f'_+(1) &= \lim_{x \to 1^+} \frac{f(x) - f(1)}{x - 1}
+    = \lim_{x \to 1^+} \frac{\abs{x^3 - 1}\varphi(x)}{x - 1}
+    = \lim_{x \to 1^+} (x^2 + x + 1)\varphi(x) = 3\varphi(1)\\
+    f'_-(1) &= \lim_{x \to 1^-} \frac{f(x) - f(1)}{x - 1}
+    = \lim_{x \to 1^-} \frac{\abs{x^3 - 1}\varphi(x)}{x - 1}
+    = \lim_{x \to 1^-} (x^2 + x + 1)\varphi(x) = -3\varphi(1)
+  \end{align*}
+  由$f'_+(1) = f'_-(1) = 0$得，$3\varphi(1) = -3\varphi(1)$，即$\varphi(1) = 0$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设函数$y = f(x)$由方程$y = x\ln y$所确定，求$\dv{y}{x}$.
+\end{ques}
+\begin{solu}
+\mathmethod 方程两边同时对$x$求导，得$y' = \ln y + x\cdot \frac{1}{y} \cdot
+y'$，解得$y' = \frac{y \ln y}{y - x}$.
+\mathmethod 令$F(x, y) = y - x\ln y$，则$F'_x = - \ln y, F'_y = 1 - \frac{x}{y}
+$，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  已知$f'(x) = Ae^x$($A$为正常数)，求$f(x)$的反函数的二阶导数.
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[反函数定理]
+    如果从$\mathbb{R}^n$的一个开集$\mathrm{U}$到$\mathbb{R}^n$的连续可微函数
+    $F$的全微分在点$p$可逆（$F$在点p的雅可比行列式不为零），则$F$在点$p$附近具
+    有反函数，且
+    \[
+      J_{F^{-1}}(F(p)) = [J_F(p)]^{-1}
+    \]
+    其中$[\cdot]^{-1}$表示逆矩阵，$J_G(q)$是函数$G$在点$q$的雅可比矩阵。
+
+    也可由链式法则推出：设$G,H$是两个函数，分别在$H(p)$和$p$处有全导数，则
+    \[
+      J_{G\circ H}(p) = J_G(H(p))\cdot J_H(p)
+    \]
+    设$G$为$F$，$H$为$F^{-1}$，$G\circ H$则为恒等函数，其雅可比矩阵也是单位矩
+    阵。
+
+    当$y$为$x$的一元函数时，其雅可比矩阵为$[\dd y / \dd x]$，即
+    \[
+      \dv{x}{y} = \frac{1}{\dv{y}{x}}
+    \]
+  \end{mathideabox}
+  设$y = f(x)$，则$\dv{x}{y} = \frac{1}{f'(x)}$
+  \begin{align*}
+    \dv[2]{y}{x} &= \dv{y}(\dv{x}{y})\\
+    &= \matherror{\dv{x}(\frac{1}{f'(x)}) \cdot \dv{x}{y}}\\
+    &= \matherror{-\frac{f''(x)}{\qty(f'(x))^2} \cdot \frac{1}{f'(x)}}\\
+    &= -\frac{f''(x)}{\qty(f'(x))^3} = - \frac{Ae^x}{(Ae^x)^3} = -\frac{1}
+    {A^2e^{2x}}
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设可导函数$y = f(x)$有反函数$g(x)$，且$f(a) = 3, f'(a) = 1, f''(a) = 2$，求
+  $g''(3)$.
+\end{ques}
+\begin{solu}
+  由链式求导法则得$\qty(g \circ f(x))' = g'\qty(f(x)) \cdot f'(x)$，即
+  \[
+    \matherror{f'(x) \cdot g'(f(x)) = 1}
+  \]
+  两边同时对$x$求导，有
+  \[
+    f''(x)g'(f(x)) + \qty(f'(x))^2 \cdot g''(f(x)) = 0
+  \]
+  两边同乘$f'(x)$
+  \[
+    f''(x) + \qty(f'(x))^3 \cdot g''(f(x)) = 0
+  \]
+  将$x = a$代入得
+  \[
+    f''(a) + \qty(f'(a))^3 \cdot g''(f(a)) = 0
+  \]
+  即
+  \[
+    2 + g''(3) = 0
+  \]
+  则$g''(3) = -2$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设$f(x) =
+  \begin{dcases}
+    x^2 \sin \frac{\pi}{x}, & x < 0, \\
+    A, & x = 0, \\
+    ax^2 + b, & x > 0,\\
+  \end{dcases}
+  $求常数$A, a, b$的值，使$f(x)$在$x = 0$处可导，并求$f'(0)$.
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[可导必然连续（反之不一定）]
+    设函数$y = f(x)$上一点$x_0$，函数在这一点可导，即$f'(x_0) = \lim_{\Delta x
+    \to 0} \frac{\Delta y}{\Delta x}存在$，其中
+    \[
+      \Delta y = f(x_0 + \Delta x) - f(x_0)
+    \]
+    则
+    \begin{align*}
+      \lim_{\Delta x \to 0} \Delta y &= \lim_{\Delta x \to 0} \qty(\frac{\Delta
+      y}{\Delta x}\cdot \Delta x)\\
+      &= f'(x_0) \cdot 0 = 0
+    \end{align*}
+    即函数$f(x)$在$x_0$处连续
+  \end{mathideabox}
+  \begin{mathideabox}[导数存在必然有左右导数相等]
+    由极限的性质可知：
+    \[
+      \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}
+      =\lim_{\Delta x \to 0^-} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}
+      =\lim_{\Delta x \to 0^+} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}
+    \]
+  \end{mathideabox}
+  可导必然连续，即
+  \[
+    \lim_{x \to 0^-} x^2 \frac{\pi}{x} = \lim_{x \to 0^+} (ax^2 + b) = A
+  \]
+  则$A = b = 0$.
+  又
+  \begin{align*}
+    f'_-(0) &= \lim_{x \to 0^-} \frac{x^2 \sin \frac{\pi}{x} - 0}{x - 0} = 0\\
+    f'_+(0) &= \lim_{x \to 0^+} \frac{ax^2 - 0}{x - 0} = 0
+  \end{align*}
+  所以，$a$可以为任意常数，且$f'(0) = 0$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设函数$y = f(x)$由$
+  \begin{dcases}
+    x = \ln(1 + t^2) + 1,\\
+    y = 2 \arctan t - (t + 1)^2,\\
+  \end{dcases}
+  $确定，求$\dv{y}{x}, \dv[2]{y}{x}$
+\end{ques}
+\begin{solu}
+  \begin{align*}
+    \dv{y}{t} &= \frac{2}{\matherror{1 + t^2}} - 2(t + 1)\\
+    \dv{x}{t} &= \frac{2t}{1 + t^2}
+  \end{align*}
+  由链式法则，$\dv{y}{t} = \dv{y}{x}\cdot\dv{x}{t}$，则
+  \begin{align*}
+    \dv{y}{x} &= \frac{\dv{y}{t}}{\dv{x}{t}}
+    = \frac{\frac{2}{1 + t^2} - 2(t + 1)}{\frac{2t}{1 + t^2}}
+    = -(t^2 + t + 1)\\
+    \dv[2]{y}{x} &= \dv{x}(\dv{y}{x})\\
+    &= \dv{x}(-(t^2 + t + 1))\\
+    &= \dv{t}(-(t^2 + t + 1)) \cdot \dv{t}{x}\\
+    &= -\frac{1 + 2t}{\dv{x}{t}}\\
+    &= -\frac{(1 + 2t)(1 + t^2)}{2t}
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-11}{一元微分}
+\begin{ques}
+  设$f(x)$满足$f(0) = 0$，且$f'(0)$存在，求$\lim_{x \to 0} \frac{f(1 -
+  \sqrt{\cos x})}{\ln(1 - x\sin x)}$
+\end{ques}
+\begin{solu}
+  \begin{align*}
+    \lim_{x \to 0} \frac{f(1 - \sqrt{\cos x})}{\ln(1 - x\sin x)}
+    &=\lim_{x \to 0} \frac{f(1 - \sqrt{\cos x}) - f(0)}{(1 - x\sin x) - 0}
+    \cdot \lim_{x \to 0} \frac{1 - \sqrt{\cos x}}{\ln(1 - x\sin x)}\\
+    &=f'(0) \lim_{x \to 0} \frac{1 - \sqrt{\cos x}}{\ln(1 - x\sin x)}\\
+    \mathidea{等价无穷小替换}&=f'(0)\lim_{x \to 0} \frac{1 - \cos x}{-x\sin x}
+    \cdot \frac{1}{1 + \sqrt{\cos x}}\\
+    &= -\frac{1}{2}f'(0)\lim_{x \to 0} \frac{1 - \cos x}{x^2}\\
+    &= -\frac{1}{4}f'(0).
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-12}{一元微分}
+\begin{ques}
+  设函数$f(x)$在$x = 0$处连续，且$\lim_{x \to 0} \frac{f(x)}{x}$存在，则(\quad)
+  \begin{multichoice}
+    \task $f(0) \neq 0$，但$f'(0)$可能不存在
+    \task $f(0) = 0$，但$f'(0)$可能不存在
+    \task \answer{$f'(0)$存在，但$f'(0)$不一定等于零}
+    \task $f'(0)$存在，且必定有$f'(0) = 0$
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[连续的定义]
+    函数$f(x)$在点$p$处连续当且仅当$\lim_{x \to p} f(x) = f(p)$ (隐含着极限必
+    须存在)
+  \end{mathideabox}
+  \begin{mathideabox}[重要结论]
+    若$f(x)$在$x = 0$处连续，且$\lim_{x \to 0} \frac{f(x)}{x} = A$，则
+    \begin{align*}
+      f(0) &= 0\\
+      f'(0) &= A
+    \end{align*}
+  \end{mathideabox}
+  $f(x)$在$x = 0$处连续，则$\lim_{x \to 0} f(x)$存在且$\lim_{x \to 0} f(x) =
+  f(0)$
+
+  由$\lim_{x \to 0} \frac{f(x)}{x}$存在且分母极限为$0$可知，分子极限也为$0$，
+  即$f(0) = 0$
+
+  又
+  \[
+    f'(0) = \lim_{x \to 0} \frac{f(x) - f(0)}{x - 0} = \lim_{x \to 0}
+    \frac{f(x)}{x}
+  \]
+  即$f'(0)$存在
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-12}{一元微分}
+\begin{ques}
+  设$f(x) = x^a \abs{x}$，$a$为正整数，则函数$f(x)$在点$x = 0$处(\quad)
+  \begin{multichoice}
+    \task 不存在极限
+    \task 存在极限，但不连续
+    \task 连续但不可导
+    \task \answer{可导}
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  $\lim_{x \to 0} f(x) = 0 = f(0)$，故$f(x)$在$x = 0$处连续
+  \begin{align*}
+    f'_+(0) &= \lim_{x \to 0^+} \frac{f(x) - f(0)}{x - 0} = \lim_{x \to 0^+}
+    \frac{x^a \abs{x}}{x} = \matherror{\lim_{x \to 0^+} \frac{x^{a + 1}}{x} =
+    0}\\
+    f'_-(0) &= \lim_{x \to 0^-} \frac{f(x) - f(0)}{x - 0} = \lim_{x \to 0^-}
+    \frac{x^a \abs{x}}{x} = \lim_{x \to 0^-} \frac{-x^{a + 1}}{x} = 0
+  \end{align*}
+  即$f'_+(0) = f'_-(0) = 0$，$f(x)$在点$x = 0$处可导，且导数为$0$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-12}{一元微分}
+\begin{ques}
+  若$y = f(x)$可导，则当$\Delta x \to 0$时，$\Delta y - \dd y$为$\Delta x$的
+  (\quad)
+  \begin{multichoice}
+    \task \answer{高阶无穷小}
+    \task 低阶无穷小
+    \task 同阶但不等价无穷小
+    \task 等阶无穷小
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[微分定义]
+    设函数$y = f(x)$在区间$\mathcal{I}$有定义。对于$\mathcal{I}$内的一点$x_0$，
+    当$x_0$变动到附近的$x_0 + \Delta x$（也在此区间）时，如果函数的增量$\Delta
+    y = f(x_0 + \Delta x - f(x_0)$可以表示为
+    \[
+      \Delta y = A\Delta x + o(\Delta x)
+    \]
+    其中$A$是不依赖于$\Delta x$的常数，$o(\Delta x)$是比$\Delta x$高阶的无穷小，
+    则称函数$f(x)$在点$x_0$是可微的.
+
+    $A\Delta x$称作函数在点$x_0$对应与自变量增量$\Delta x$的微分，记做$\dd
+    y$，即$\dd y = A\Delta x$
+
+    把自变量$x$的增量$\Delta x$称作自变量的微分，记做$\dd x$，即$\dd x =
+    \Delta x$
+  \end{mathideabox}
+  由微分的定义可知$\Delta y - \dd y = o(\Delta x)$为$\Delta x$的高阶无穷小
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-12}{一元微分}
+\begin{ques}
+设函数
+\[
+  f(x) =
+  \begin{dcases}
+    x^3\sin \frac{1}{x}, & x \neq 0,\\
+    0, & x= 0,\\
+  \end{dcases}
+\]
+讨论$f(x)$在$x = 0$处的可导性以及$f'(x)$在$x = 0$处的连续性.
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}
+    证明$f(x)$在$x_0$处可导，即证明
+    \begin{align*}
+      f'(x_0) &= \lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x}
+      = \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}
+      \\
+      \text{或}f'(x_0) &= \lim_{x \to x_0} \frac{f(x) - f(x_0)}{x - x_0}
+    \end{align*}
+    存在
+    \par\vspace{1em}
+    证明$f(x)$在$x_0$处连续，即证明
+    \[
+      \lim_{x \to x_0} f(x) = f(x_0)
+    \]
+  \end{mathideabox}
+
+  \matherror{\text{当}x = 0\text{时}}，有
+  \[
+    f'(0) = \lim_{x \to 0} \frac{x^3 \sin \frac{1}{x} - 0}{x - 0} = 0,
+  \]
+  函数$f(x)$在$x = 0$处可导.
+
+  \matherror{\text{当}x \neq 0\text{时}}，有
+  \[
+    f'(x) = 3x^2 \sin \frac{1}{x} - x\cos \frac{1}{x}
+  \]
+  因为
+  \[
+    \lim_{x \to 0} f'(x) = \lim_{x \to 0} \qty(3x^2 \sin \frac{1}{x} - x\cos
+    \frac{1}{x}) = 0 = f'(0),
+  \]
+  故函数f'(x)在$x = 0$处连续
 \end{solu}
 \end{mathques}
 \end{document}
