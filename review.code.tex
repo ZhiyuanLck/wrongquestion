@@ -1,12 +1,27 @@
 \ExplSyntaxOn
 \bool_new:N \g_review_bool
 \newcount\datediff
+\bool_new:N \g__review_today_bool
+\tl_new:N \g__review_date_tl
+\bool_gset_true:N \g__review_today_bool
+
+\NewDocumentCommand { \setdate } { m }
+  {
+    \tl_gset:Nn \g__review_date_tl { #1 }
+    \bool_gset_false:N \g__review_today_bool
+  }
 
 % #1 clist #2 date to be compared
 \prg_new_protected_conditional:Nnn \review_if:Nn {T, F, TF}
   {
     \DTMsavedate{recent}{#2}
-    \DTMsavenow{today}
+    \bool_if:NTF \g__review_today_bool
+      {
+        \DTMsavenow{today}
+      }
+      {
+        \DTMsavedate{today}{\g__review_date_tl}
+      }
     \DTMsaveddatediff{today}{recent}{\datediff}
     \bool_gset_false:N \g_review_bool
     \clist_map_inline:Nn #1
@@ -22,3 +37,4 @@
       {\prg_return_false:}
   }
 \ExplSyntaxOff
+\endinput

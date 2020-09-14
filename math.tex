@@ -1,6 +1,6 @@
 \documentclass{ctexart}
-\input{math.code.tex}
-\mathsetup{show all}
+\input math.code.tex
+\setdate{2020-09-15}
 
 \begin{document}
 
@@ -281,7 +281,7 @@
   \end{multichoice}
 \end{ques}
 \begin{solu}
-  \mathidea{$\varphi(1) = 0 \Longrightarrow f(x)$在$x = 1$处可导是否成立}\par
+  \mathidea{$\varphi(1) = 0 \Longrightarrow f(x)$在$x = 1$处可导}\par
   由$\varphi(1) = 0$可得$\mathhint{f(1) = 0}$
   \begin{align*}
     f'_+(1) &= \lim_{x \to 1^+} \frac{f(x) - f(1)}{x - 1}
@@ -293,7 +293,7 @@
   \end{align*}
   即$f'_+(1) = f'_-(1) = 0$，则$f'(1) = 0$
 
-  \mathidea{$\varphi(1) = 0 \Longleftarrow f(x)$在$x = 1$处可导是否成立}\par
+  \mathidea{$\varphi(1) = 0 \Longleftarrow f(x)$在$x = 1$处可导}\par
   设$f(x)$在$x = 1$处可导，因为$f(1) = 0$，所以
   \begin{align*}
     f'_+(1) &= \lim_{x \to 1^+} \frac{f(x) - f(1)}{x - 1}
@@ -319,7 +319,7 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-11}{一元微分}
+\begin{mathques}(2){2020-09-13}{一元微分}
 \begin{ques}
   已知$f'(x) = Ae^x$($A$为正常数)，求$f(x)$的反函数的二阶导数.
 \end{ques}
@@ -356,12 +356,13 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-11}{一元微分}
+\begin{mathques}(2){2020-09-13}{一元微分}
 \begin{ques}
   设可导函数$y = f(x)$有反函数$g(x)$，且$f(a) = 3, f'(a) = 1, f''(a) = 2$，求
   $g''(3)$.
 \end{ques}
 \begin{solu}
+  \mathmethod
   由链式求导法则得$\qty(g \circ f(x))' = g'\qty(f(x)) \cdot f'(x)$，即
   \[
     \matherror{f'(x) \cdot g'(f(x)) = 1}
@@ -383,10 +384,32 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
     2 + g''(3) = 0
   \]
   则$g''(3) = -2$
+  \mathmethod 公式法
+  \[
+    g''(3) = - \frac{f''(a)}{\qty(f(a))^3} = -2
+  \]
+  \begin{mathideabox}[公式推导过程]
+    已知
+    $\left\{\begin{aligned}
+      \eval{y}_{x = a} &= 3\\
+      \eval{\dv{y}{x}}_{x = a} &= 1\\
+      \eval{\dv[2]{y}{x}}_{x = a} &= 2
+    \end{aligned}\right.$
+    , 求$\eval{\dv[2]{x}{y}}_{y = 3}$
+
+    \begin{align*}
+      \dv[2]{x}{y} &= \dv{y}(\dv{x}{y}) = \dv{x}(\dv{x}{y}) \cdot \dv{x}{y} \\
+      &= \dv{x}(\frac{1}{\dv{y}{x}}) \cdot \frac{1}{\dv{y}{x}} \\
+      &= - \frac{\dv{x}(\dv{y}{x})}{\qty(\dv{y}{x})^2} \cdot \frac{1}{\dv{y}{x}}\\
+      &= - \frac{\dv[2]{y}{x}}{\qty(\dv{y}{x})^3}
+    \end{align*}
+    即$\eval{\dv[2]{x}{y}}_{y = 3} = \eval{- \frac{\dv[2]{y}{x}}{\qty(\dv{y}
+    {x})^3}}_{x = a}$
+  \end{mathideabox}
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-11}{一元微分}
+\begin{mathques}{2020-09-13}{一元微分}
 \begin{ques}
   设$f(x) =
   \begin{dcases}
@@ -461,7 +484,7 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-11}{一元微分}
+\begin{mathques}{2020-09-13}{一元微分}
 \begin{ques}
   设$f(x)$满足$f(0) = 0$，且$f'(0)$存在，求$\lim_{x \to 0} \frac{f(1 -
   \sqrt{\cos x})}{\ln(1 - x\sin x)}$
@@ -555,7 +578,7 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
   \begin{mathideabox}[微分定义]
     设函数$y = f(x)$在区间$\mathcal{I}$有定义。对于$\mathcal{I}$内的一点$x_0$，
     当$x_0$变动到附近的$x_0 + \Delta x$（也在此区间）时，如果函数的增量$\Delta
-    y = f(x_0 + \Delta x - f(x_0)$可以表示为
+    y = f\qty(x_0 + \Delta x - f(x_0))$可以表示为
     \[
       \Delta y = A\Delta x + o(\Delta x)
     \]

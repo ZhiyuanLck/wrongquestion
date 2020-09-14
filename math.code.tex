@@ -1,5 +1,5 @@
-\input{preamble.tex}
-\input{review.code.tex}
+\input preamble.tex
+\input review.code.tex
 \everymath{\displaystyle}
 \setlength\parindent{0pt}
 
@@ -15,6 +15,8 @@
   section/format=\huge\bfseries\sffamily\color{teal},
 }
 
+\newcommand{\at}[2][]{#1|_{#2}}
+
 \newcommand{\mathblank}{\CJKunderline[hidden]{四个汉字}}
 
 \newcommand{\matherror}[1]{
@@ -27,23 +29,18 @@
   {\bfseries\sffamily \par\hspace{2em}方法\zhnum{method}}\quad%
 }
 
-\newtcbox{\mathtype}{
-  colframe=teal, colback=teal!30!cyan,
-  size=small, on line,
-  fontupper=\sffamily,
+\tcbset{
+  math base/.style args={#1:#2}{
+    colframe=#1, colback=#2,
+    size=small, on line,
+    fontupper=\sffamily,
+  }
 }
 
-\newtcbox{\mathdate}{
-  colframe=teal, colback=cyan!70!pink,
-  size=small, on line,
-  fontupper=\sffamily,
-}
-
-\newtcbox{\mathlink}{
-  colframe=teal, colback=teal!30!yellow,
-  size=small, on line,
-  fontupper=\sffamily,
-}
+\newtcbox{\mathtype}{math base={teal:teal!30!cyan}}
+\newtcbox{\mathdate}{math base={teal:cyan!70!pink}}
+\newtcbox{\mathlink}{math base={teal:teal!60!yellow}}
+\newtcbox{\mathnumber}{math base={teal:red!40}}
 
 \newtcolorbox{mathideabox}[1][]{
   colframe=teal, colback=teal!10, breakable, title=#1,
@@ -171,7 +168,14 @@
 
 \cs_new_protected:Nn \math_show:
   {
-    \section{\today 复习}
+    % \section{\today 复习}
+    \bool_if:NTF \g__review_today_bool
+      {
+        \section{\today 复习}
+      }
+      {
+        \section{\g__review_date_tl 复习}
+      }
     \math_show_content_template:n { review }
     \bool_if:NT \l__math_show_all_bool
       {
@@ -238,15 +242,20 @@
         \int_use:N \l__math_count_int.
       }
       \hspace{\l__math_label_sep_to_number_dim}
-      \mathtype{ \l__math_type_tl }
-      \hspace{\l__math_label_sep_dim}
       \mathdate{ \l__math_date_tl }
+      \hspace{\l__math_label_sep_dim}
+      \mathtype{ \l__math_type_tl }
       \hspace{\l__math_label_sep_dim}
       \mathlink{
         \hyperref[#1_solu:\int_use:N \l__math_count_int]{
           前往答案
         }
       }
+      \int_compare:nT { \l__math_mistake_number_int > 1 }
+        {
+          \hfill
+          \mathnumber{ \int_use:N \l__math_mistake_number_int }
+        }
       \par\vspace{\l__math_ques_after_title_dim}
       #2
     \end{tcolorbox}
@@ -347,3 +356,4 @@
   label sep           = 1em,
   label width         = 1cm,
 }
+\endinput

@@ -1,5 +1,5 @@
-\input{preamble.tex}
-\input{review.code.tex}
+\input preamble.tex
+\input review.code.tex
 \geometry{
   paperwidth=250.6mm,
   paperheight=174.1mm,
@@ -49,7 +49,7 @@
   #1
 }
 
-\title{\today 测试}
+% \title{\today 测试}
 \author{}
 \date{}
 
@@ -71,6 +71,13 @@
 
 \AtBeginDocument
   {
+    \bool_if:NTF \g__review_today_bool
+      {
+        \title{\today 复习}
+      }
+      {
+        \title{\g__review_date_tl 复习}
+      }
     \maketitle
     \pdfbookmark[1]{目录}{toc}
     \tableofcontents
@@ -405,3 +412,4 @@
   % }
 
 \ExplSyntaxOff
+\endinput
