@@ -1,6 +1,6 @@
 \documentclass{ctexart}
 \input math.code.tex
-\setdate{2020-09-15}
+\setdate{2020-09-19}
 
 \begin{document}
 
@@ -484,7 +484,7 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-13}{一元微分}
+\begin{mathques}(2){2020-09-15}{一元微分}
 \begin{ques}
   设$f(x)$满足$f(0) = 0$，且$f'(0)$存在，求$\lim_{x \to 0} \frac{f(1 -
   \sqrt{\cos x})}{\ln(1 - x\sin x)}$
@@ -640,6 +640,154 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
     \frac{1}{x}) = 0 = f'(0),
   \]
   故函数f'(x)在$x = 0$处连续
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-16}{一元微分}[最后忘记给$a$加平方]
+\begin{ques}
+已知曲线$y = x^3 - 3a^2x + b$与$x$轴相切，则$b^2$可通过$a$表示为
+$b^2=$\mathblank
+\end{ques}
+\begin{solu}
+  \answer{$4a^6$}
+
+  因为曲线$y = x^3 - 3a^2 x + b$与$x$轴相切，所以，在切点处有
+  \[
+  y' = 3x^2 - 3a^2 = 0.
+  \]
+  由此可解出切点横坐标$x = a$或$x = -a$，且在切点处有
+  \[
+    y(a) = a^3 - 3a^3 + b = 0 \qq{或} y(-a) = -a^3 + 3 a^3 + b = 0
+  \]
+  则$b = \pm 2a^3$，故$b^2 = 4a^6$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-16}{一元微分}[没有考虑导数的分母也会跟着改变正负号]
+\begin{ques}
+设$y = \frac{x^3 + 4}{x^2}$，求函数的增减区间及极值
+\end{ques}
+\begin{solu}
+  $\matherror{y' = 1 - \frac{8}{x^3}}$，故驻点为$x = 2$，又
+  \[
+  \begin{NiceMatrix}[columns-width=2cm]
+  \toprule
+  x & (-\infty, 0) & (0, 2) & 2 & (2, +\infty)\\
+  \midrule
+  y' & + & - & 0 & + \\
+  y & \nearrow & \searrow & 3 & \nearrow\\
+  \bottomrule
+  \end{NiceMatrix}
+  \]
+  所以，$(-\infty, 0)$以及$(2, +\infty)$为增区间，$(0, 2)$为减区间，$x = 2$为
+  极小值点，极小值为$y = 3$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-16}{一元微分}[算到后面忘记开根号]
+\begin{ques}
+给定曲线$y = \frac{1}{x^2}$
+\begin{queslist}
+  \item 求曲线在横坐标为$x_0$的点处的切线方程
+  \item 求曲线的切线被两坐标轴所截线段的最短长度
+\end{queslist}
+\end{ques}
+\begin{solu}
+\begin{solulist}
+  \item 由$y' = -\frac{2}{x^3}$可知曲线$y = \frac{1}{x^2}$在横坐标$x_0$处的切
+    线方程为
+    \[
+      y - \frac{1}{x_0^2} = - \frac{2}{x_0^3}(x - x_0)
+    \]
+  \item 将$x = 0, y = 0$代入$x = x_0$处切线方程可得该切线在$x$轴，$y$轴上的截
+    距分别为
+    \[
+    X = \frac{3}{2}x_0 \qc Y = \frac{3}{x_0^2}.
+    \]
+    设该切线被两坐标轴所截线段长度为$L$，则$L^2 = X^2 + Y^2 = \frac{9}{4}x_0^2
+    + \frac{9}{x_0^4}.$
+
+    令$\dv{L^2}{x_0} = \frac{9}{2}x_0 - \frac{36}{x_0^5} = 0$，得驻点$x_0 =
+    \pm \sqrt{2}.$
+
+    又$\dv[2]{L^2}{x_0} = \frac{9}{2} + \frac{180}{x_0^6}$，显然$\eval{\dv[2]
+    {L^2}{x_0}}_{x_0 = \pm \sqrt{2}} > 0$，由此可知，$L^2$在$x_0 = \pm \sqrt{2}
+    $处取得极小值，即最小值，$L_{\min}^2 = \frac{27}{4}$
+
+    故$L_{\min} = \frac{3}{2}\sqrt{3}.$
+\end{solulist}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-16}{一元微分}[题目问的是最小值不是极小值]
+\begin{ques}
+  设$a > 1, f(t) = a^t - at$在$(-\infty, +\infty)$内的驻点为$t(a)$，问$a$为何
+  值时，$t(a)$最小，并求出最小值.
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}
+    先求驻点函数$t(a)$，然后再求$t(a)$的最小值和最小值点
+  \end{mathideabox}
+  令$f'(t) = a^t\ln a - a = 0$，得唯一驻点函数$t(a) = 1 - \frac{\ln\ln a}{\ln
+  a}.$
+
+  令$t'(a) = - \frac{\frac{1}{a} - \frac{1}{a}\ln \ln a}{(\ln a)^2} = 0$，得唯
+  一驻点$a = e^e.$
+
+  当$a < e^e$时，$t'(a) < 0$；当$a > e^e$时，$t'(a) > 0$，所以，$t(e^e) = 1 -
+  \frac{1}{e}$为极小值，也是最小值.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-17}{一元微分}[没有直接两边取对数，最后没有化到最简]
+\begin{ques}
+  设$y = y(x)$由方程$x = y^y$确定，则$\dd y = $\mathblank
+\end{ques}
+\begin{solu}
+  \answer{$\frac{1}{x(1 + \ln y)}\dd x$}
+
+  两边取对数得，$\ln x = y\ln y,$
+
+  两边关于$x$求导，得$\frac{1}{x} = (1 + \ln y) y'$
+
+  则$y' = \frac{1}{x (1 + \ln y)}$
+
+  即$\dd y = y' \dd x = \frac{1}{x(1 + \ln y)}\dd x$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-17}{一元微分}[漏抄了]
+\begin{ques}
+  设$y = e^{x^2}$，求$\dv{y}{x}, \dv{y}{(x^2)}, \dv[2]{y}{x}.$
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[区分微分符号]
+    $\dd[n]x = \qty(\dd x)^n$是“微分的幂”，$\dd (x^n) = nx^{n - 1}\dd x$是“幂
+    的微分”
+  \end{mathideabox}
+  \begin{align*}
+    \dv{y}{x} &= 2xe^{x^2},\\
+    \dv{y}{(x^2)} &= \matherror{\dv{y}{x}\cdot \dv{x}{(x^2)}} = 2xe^{x^2}\cdot
+    \frac{1}{2x} = e^{x^2},\\
+    \dv[2]{y}{x} &= 2(1 + 2x^2)e^{x^2}.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-17}{一元微分}[计算错误，没有化简后再求导]
+\begin{ques}
+  设$y = \ln \sqrt{\frac{1 - x}{1 + x^2}}$，求$\eval{y''}_{x = 0}.$
+\end{ques}
+\begin{solu}
+  \begin{align*}
+    y &= \matherror{\ln \sqrt{\frac{1 - x}{1 + x^2}} = \frac{1}{2} \qty(\ln (1
+    - x) - \ln(1 + x^2))},\\
+    y' &= \frac{1}{2}\qty(\frac{-1}{1 - x} - \frac{2x}{1 + x^2})
+    = - \frac{1}{2}\qty(\frac{1}{1 - x} + \frac{2x}{1 + x^2}),\\
+    y'' &= -\frac{1}{2}\qty(\frac{1}{(1 - x)^2} + 2\cdot \frac{1 - x^2}{(1 +
+    x^2)^2}),\\
+    \eval{y''}_{x = 0} &= -\frac{3}{2}.
+  \end{align*}
 \end{solu}
 \end{mathques}
 \end{document}

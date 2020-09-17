@@ -1,9 +1,13 @@
 \ExplSyntaxOn
-\bool_new:N \g_review_bool
+
 \newcount\datediff
+
+\bool_new:N \g_review_bool
 \bool_new:N \g__review_today_bool
-\tl_new:N \g__review_date_tl
+\tl_new:N   \g__review_date_tl
+
 \bool_gset_true:N \g__review_today_bool
+\tl_gset:Nn \g__review_date_tl { \today }
 
 \NewDocumentCommand { \setdate } { m }
   {
@@ -15,6 +19,8 @@
 \prg_new_protected_conditional:Nnn \review_if:Nn {T, F, TF}
   {
     \DTMsavedate{recent}{#2}
+        % \DTMsavenow{today}
+    % \DTMsavedate{today}{\g__review_date_tl}
     \bool_if:NTF \g__review_today_bool
       {
         \DTMsavenow{today}

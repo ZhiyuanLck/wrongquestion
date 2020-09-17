@@ -1,3 +1,5 @@
+\usepackage{nicematrix}
+\usepackage[bodytextleadingratio=2]{zhlineskip}
 \input preamble.tex
 \input review.code.tex
 \everymath{\displaystyle}
@@ -13,6 +15,18 @@
 \ctexset{
   section/numbering=false,
   section/format=\huge\bfseries\sffamily\color{teal},
+}
+
+\newlist{queslist}{enumerate}{2}
+\setlist[queslist]{
+  label=(\arabic*),
+  noitemsep,
+  topsep=2pt,
+}
+\newlist{solulist}{enumerate}{2}
+\setlist[solulist]{
+  label=(\arabic*),
+  topsep=2pt,
 }
 
 \newcommand{\at}[2][]{#1|_{#2}}
@@ -57,6 +71,13 @@
 
 \ExplSyntaxOn
 
+\AtBeginDocument{
+  \title{\g__review_date_tl 复习}
+  \author{}
+  \date{}
+  \maketitle
+}
+
 \AtEndDocument{
   \math_show:
 }
@@ -68,22 +89,23 @@
     \seq_new:c { g__math_saved_more_#1_seq }
   }
 
-\tl_new:N       \l__math_date_tl
-\tl_new:N       \l__math_type_tl
-\tl_new:N       \l__math_info_tl
-\tl_new:N       \l__math_content_ques_tl
-\tl_new:N       \l__math_number_style_tl
-\int_new:N      \l__math_mistake_number_int
-\int_new:N      \l__math_count_int
-\dim_new:N      \l__math_ques_after_title_dim
-\dim_new:N      \l__math_before_solu_dim
-\dim_new:N      \l__math_after_solu_dim
-\dim_new:N      \l__math_lable_width_dim
-\dim_new:N      \l__math_label_sep_to_number_dim
-\dim_new:N      \l__math_label_sep_dim
-\bool_new:N     \l__math_show_all_bool
-\bool_new:N     \l__math_is_answer_bool
-\clist_new:N    \l__math_review_point_clist
+\tl_new:N    \l__math_date_tl
+\tl_new:N    \l__math_type_tl
+\tl_new:N    \l__math_info_tl
+\tl_new:N    \l__math_content_ques_tl
+\tl_new:N    \l__math_number_style_tl
+\int_new:N   \l__math_mistake_number_int
+\int_new:N   \g__math_count_int
+\dim_new:N   \l__math_ques_after_title_dim
+\dim_new:N   \l__math_solu_item_sep_dim
+\dim_new:N   \l__math_after_solu_dim
+\dim_new:N   \l__math_lable_width_dim
+\dim_new:N   \l__math_label_sep_to_number_dim
+\dim_new:N   \l__math_label_sep_dim
+\bool_new:N  \l__math_show_all_bool
+\bool_new:N  \l__math_is_answer_bool
+\clist_new:N \l__math_review_point_clist
+
 \math_def_seq:n { date }
 \math_def_seq:n { type }
 \math_def_seq:n { info }
@@ -100,7 +122,7 @@
     show~all            . default:n  = { true },
     number~style        . tl_set:N   = \l__math_number_style_tl,
     after~title         . dim_set:N  = \l__math_ques_after_title_dim,
-    before~solu         . dim_set:N  = \l__math_before_solu_dim,
+    before~solu         . dim_set:N  = \l__math_solu_item_sep_dim,
     after~solu          . dim_set:N  = \l__math_after_solu_dim,
     label~sep~to~number . dim_set:N  = \l__math_label_sep_to_number_dim,
     label~sep           . dim_set:N  = \l__math_label_sep_dim,
@@ -133,23 +155,19 @@
   }
 
 % #1 做错次数 #2 做错日期 #3 题目类型
-  \NewDocumentEnvironment { mathques } { O{} D(){1} m m +b }
+  \NewDocumentEnvironment { mathques } { O{} D(){1} m m O{} +b }
   {
     \tl_clear_new:N \l__math_date_tl
 
     \tl_set:Nn \l__math_date_tl { #3 }
 
-    #5
+    #6
 
     \math_save:nnn { #3 } { date } { #3 }
     \math_save:nnn { #3 } { type } { #4 }
+    \math_save:nnn { #3 } { info } { #5 }
     \math_save:nnn { #3 } { mistake_number } { #2 }
   } { }
-
-\NewDocumentCommand { \info } { +m }
-  {
-    \math_save:nnn { \l__math_date_tl } { info } { #1 }
-  }
 
 \NewDocumentEnvironment { ques } { +b }
   {
@@ -168,27 +186,20 @@
 
 \cs_new_protected:Nn \math_show:
   {
-    % \section{\today 复习}
-    \bool_if:NTF \g__review_today_bool
-      {
-        \section{\today 复习}
-      }
-      {
-        \section{\g__review_date_tl 复习}
-      }
     \math_show_content_template:n { review }
     \bool_if:NT \l__math_show_all_bool
       {
-        \section{所有题目}
         \math_show_content_template:n { all }
       }
   }
 
 \cs_new_protected:Nn \math_show_content_template:n
   {
+    \section{\g__review_date_tl 复习题目}
     \bool_set_false:N \l__math_is_answer_bool
     \math_show_content:nn { #1 } { ques }
     \clearpage
+    \section{\g__review_date_tl 题目答案}
     \bool_set_true:N \l__math_is_answer_bool
     \math_show_content:nn { #1 } { solu }
     \clearpage
@@ -197,11 +208,11 @@
 % #1 all/review #2 ques/solu
 \cs_new_protected:Nn \math_show_content:nn
   {
-    \int_zero:N \l__math_count_int
+    \int_gzero:N \g__math_count_int
     \seq_map_inline:cn { g__math_saved_#1_content_#2_seq }
       {
-        \int_incr:N \l__math_count_int
-        \math_set:nn { #1 } { \l__math_count_int }
+        \int_gincr:N \g__math_count_int
+        \math_set:nn { #1 } { \g__math_count_int }
         \cs_if_exist_use:c { math_wrap_content_#2:nn } { #1 } { ##1 }
         \bool_if:NT \l__math_is_answer_bool
           {
@@ -234,12 +245,17 @@
 % #1 all/review... #2 content
 \cs_new_protected:Nn \math_wrap_content_ques:nn
   {
-    \goodbreak
-    \customlabel{#1_ques:\int_use:N \l__math_count_int}
-    \begin{tcolorbox}
+    \begin{tcolorbox}[
+      % phantom={
+      % }
+    ]
+      \customlabel{#1_ques:\int_use:N \g__math_count_int}
+      \pdfbookmark[2]{\int_use:N \g__math_count_int}{
+        ques_number:\int_use:N \g__math_count_int
+      }
       \makebox[\l__math_lable_width_dim][l]{
         \l__math_number_style_tl
-        \int_use:N \l__math_count_int.
+        \int_use:N \g__math_count_int.
       }
       \hspace{\l__math_label_sep_to_number_dim}
       \mathdate{ \l__math_date_tl }
@@ -247,7 +263,7 @@
       \mathtype{ \l__math_type_tl }
       \hspace{\l__math_label_sep_dim}
       \mathlink{
-        \hyperref[#1_solu:\int_use:N \l__math_count_int]{
+        \hyperref[#1_solu:\int_use:N \g__math_count_int]{
           前往答案
         }
       }
@@ -263,24 +279,31 @@
 
 \cs_new_protected:Nn \math_wrap_content_solu:nn
   {
-    \par
-    \goodbreak
-    \customlabel{#1_solu:\int_use:N \l__math_count_int}
+    \customlabel{#1_solu:\int_use:N \g__math_count_int}
+    \pdfbookmark[2]{\int_use:N \g__math_count_int}{
+      solu_number:\int_use:N \g__math_count_int
+    }
     {
       \l__math_number_style_tl
-      \int_use:N \l__math_count_int
+      \int_use:N \g__math_count_int
     }.
     \hspace{\l__math_label_sep_to_number_dim}
     \mathtype{ \l__math_type_tl }
     \hspace{\l__math_label_sep_dim}
     \mathlink{
-      \hyperref[#1_ques:\int_use:N \l__math_count_int]{
+      \hyperref[#1_ques:\int_use:N \g__math_count_int]{
         返回题目
       }
     }
-    \par\vspace{\l__math_ques_after_title_dim}
+    \par\nopagebreak\vspace{\l__math_ques_after_title_dim}
     {\sffamily\bfseries 题目：}\l__math_content_ques_tl
-    \par\vspace{\l__math_before_solu_dim}
+    \tl_if_blank:eF { \l__math_info_tl }
+      {
+        \par\vspace{\l__math_solu_item_sep_dim}
+        {\sffamily\bfseries 错因：}
+        {\itshape\color{red} \l__math_info_tl}
+      }
+    \par\vspace{\l__math_solu_item_sep_dim}
     {\sffamily\bfseries 答案：}
     #2 \par
   }

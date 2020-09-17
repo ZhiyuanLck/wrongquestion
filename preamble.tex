@@ -10,6 +10,8 @@
 \usepackage{amsmath, amssymb, bm}
 \usepackage{mathtools}
 \usepackage{physics}
+\usepackage{tabularx}
+\usepackage{booktabs}
 \usepackage{extarrows}
 \usepackage{xeCJKfntef}
 \usepackage{tikz}
@@ -54,6 +56,9 @@
 \ctexset{
   section/format=\raggedright\bfseries\huge,
 }
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
 
 \renewcommand{\ellipsisgap}{0.1em}
 \setlength\parindent{0pt}
