@@ -1,0 +1,38 @@
+\RequirePackage{expl3}
+\ProvidesExplPackage
+  {rv-utils}
+  {2020/09/26}
+  {v1.0}
+  {rv-utils}
+
+\cs_generate_variant:Nn \rv_do_kv:nn { nx, xn, xx }
+
+\cs_new_protected:Npn \rv_parse_kv:w #1=#2\rv_nil
+  {
+    \tl_clear_new:N \rv_ra
+    \tl_clear_new:N \rv_rb
+    \tl_set:Nn \rv_ra { #1 }
+    \tl_set:Nn \rv_rb { #2 }
+  }
+
+% #1 key=val #2 code
+\cs_new_protected:Nn \rv_do_kv:nn
+  {
+    \cs_set_protected:Npn \__rv_do_kv_code:nn ##1 ##2 { #2 }
+    \cs_generate_variant:Nn \__rv_do_kv_code:nn { oo }
+    \rv_parse_kv:w #1\rv_nil
+    \__rv_do_kv_code:oo { \rv_ra } { \rv_rb }
+  }
+
+\cs_new_protected:Nn \rv_do_kv_variable:nNNn
+  {
+    \cs_set_protected:Npn \__rv_do_kv_variable_code: { #4 }
+    \rv_parse_kv:w #1\rv_nil
+    \tl_clear_new:N #2
+    \tl_clear_new:N #3
+    \tl_set_eq:NN #2 \rv_ra
+    \tl_set_eq:NN #3 \rv_rb
+    \__rv_do_kv_variable_code:
+  }
+
+\file_input_stop:

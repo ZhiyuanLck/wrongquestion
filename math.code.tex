@@ -1,7 +1,9 @@
 \usepackage{nicematrix}
+\usepackage{siunitx}
 \usepackage[bodytextleadingratio=2]{zhlineskip}
 \input preamble.tex
 \input review.code.tex
+\usetikzlibrary{arrows.meta}
 \everymath{\displaystyle}
 \setlength\parindent{0pt}
 
@@ -29,14 +31,11 @@
   topsep=2pt,
 }
 
+\newcommand{\mathproof}{\par{\itshape 证明：}}
+
 \newcommand{\at}[2][]{#1|_{#2}}
 
 \newcommand{\mathblank}{\CJKunderline[hidden]{四个汉字}}
-
-\newcommand{\matherror}[1]{
-  \tcbset{highlight math style={colframe=red, colback=red!10}}
-  \tcbhighmath[boxrule=0.6pt, size=small]{#1}
-}
 
 \newcommand{\mathmethod}{%
   \stepcounter{method}%
@@ -118,15 +117,16 @@
 
 \keys_define:nn { mathques }
   {
-    show~all            . bool_set:N = \l__math_show_all_bool,
-    show~all            . default:n  = { true },
-    number~style        . tl_set:N   = \l__math_number_style_tl,
-    after~title         . dim_set:N  = \l__math_ques_after_title_dim,
-    before~solu         . dim_set:N  = \l__math_solu_item_sep_dim,
-    after~solu          . dim_set:N  = \l__math_after_solu_dim,
-    label~sep~to~number . dim_set:N  = \l__math_label_sep_to_number_dim,
-    label~sep           . dim_set:N  = \l__math_label_sep_dim,
-    label~width         . dim_set:N  = \l__math_lable_width_dim,
+    show~all            . bool_set:N  = \l__math_show_all_bool,
+    show~all            . default:n   = { true },
+    number~style        . tl_set:N    = \l__math_number_style_tl,
+    review~point        . clist_set:N = \l__math_review_point_clist,
+    after~title         . dim_set:N   = \l__math_ques_after_title_dim,
+    before~solu         . dim_set:N   = \l__math_solu_item_sep_dim,
+    after~solu          . dim_set:N   = \l__math_after_solu_dim,
+    label~sep~to~number . dim_set:N   = \l__math_label_sep_to_number_dim,
+    label~sep           . dim_set:N   = \l__math_label_sep_dim,
+    label~width         . dim_set:N   = \l__math_lable_width_dim,
   }
 
 \NewDocumentCommand { \mathsetup } { +m }
@@ -155,7 +155,7 @@
   }
 
 % #1 做错次数 #2 做错日期 #3 题目类型
-  \NewDocumentEnvironment { mathques } { O{} D(){1} m m O{} +b }
+  \NewDocumentEnvironment { mathques } { O{} D(){1} m m +O{} +b }
   {
     \tl_clear_new:N \l__math_date_tl
 
@@ -186,20 +186,21 @@
 
 \cs_new_protected:Nn \math_show:
   {
-    \math_show_content_template:n { review }
+    \math_show_content_template:nn { review } { \g__review_date_tl }
     \bool_if:NT \l__math_show_all_bool
       {
-        \math_show_content_template:n { all }
+        \math_show_content_template:nn { all } { 所有 }
       }
   }
 
-\cs_new_protected:Nn \math_show_content_template:n
+% #1 all/review #2 date/所有
+\cs_new_protected:Nn \math_show_content_template:nn
   {
-    \section{\g__review_date_tl 复习题目}
+    \section{#2复习题目}
     \bool_set_false:N \l__math_is_answer_bool
     \math_show_content:nn { #1 } { ques }
     \clearpage
-    \section{\g__review_date_tl 题目答案}
+    \section{#2题目答案}
     \bool_set_true:N \l__math_is_answer_bool
     \math_show_content:nn { #1 } { solu }
     \clearpage
@@ -242,6 +243,25 @@
     \seq_item:cn { g__math_saved_#1_#2_seq } { #3 }
   }
 
+% set label and bookmark and number
+% #1 all/review #2 ques/solu
+\cs_new_protected:Nn \math_common:nn
+  {
+    \ignorespaces
+    \customlabel{#1_#2:\int_use:N \g__math_count_int}
+    \pdfbookmark[2]{
+      \int_use:N \g__math_count_int.
+      \space\l__math_date_tl~\l__math_type_tl
+    }{
+      #1_#2_number:\int_use:N \g__math_count_int
+    }
+    \makebox[\l__math_lable_width_dim][l]{
+      \l__math_number_style_tl
+      \int_use:N \g__math_count_int.
+    }
+    \hspace{\l__math_label_sep_to_number_dim}
+  }
+
 % #1 all/review... #2 content
 \cs_new_protected:Nn \math_wrap_content_ques:nn
   {
@@ -249,15 +269,7 @@
       % phantom={
       % }
     ]
-      \customlabel{#1_ques:\int_use:N \g__math_count_int}
-      \pdfbookmark[2]{\int_use:N \g__math_count_int}{
-        ques_number:\int_use:N \g__math_count_int
-      }
-      \makebox[\l__math_lable_width_dim][l]{
-        \l__math_number_style_tl
-        \int_use:N \g__math_count_int.
-      }
-      \hspace{\l__math_label_sep_to_number_dim}
+      \math_common:nn { #1 } { ques }
       \mathdate{ \l__math_date_tl }
       \hspace{\l__math_label_sep_dim}
       \mathtype{ \l__math_type_tl }
@@ -279,15 +291,7 @@
 
 \cs_new_protected:Nn \math_wrap_content_solu:nn
   {
-    \customlabel{#1_solu:\int_use:N \g__math_count_int}
-    \pdfbookmark[2]{\int_use:N \g__math_count_int}{
-      solu_number:\int_use:N \g__math_count_int
-    }
-    {
-      \l__math_number_style_tl
-      \int_use:N \g__math_count_int
-    }.
-    \hspace{\l__math_label_sep_to_number_dim}
+    \math_common:nn { #1 } { solu }
     \mathtype{ \l__math_type_tl }
     \hspace{\l__math_label_sep_dim}
     \mathlink{
@@ -308,10 +312,10 @@
     #2 \par
   }
 
-\NewDocumentEnvironment { multichoice } { +b }
+\NewDocumentEnvironment { multichoice } { O{2} +b }
   {
-    \begin{tasks}[label=(\Alph*), label-width=2em](2)
-      #1
+    \begin{tasks}[label=(\Alph*), label-width=2em](#1)
+      #2
     \end{tasks}
   } {}
 
@@ -322,7 +326,7 @@
         \tcbox[
           colframe=teal, colback=teal!10, on~line,
           arc=0pt, outer~arc=0pt,
-          boxsep=0pt, top=2pt, bottom=2pt, left=0pt, right=0pt,
+          boxsep=0pt, top=4pt, bottom=4pt, left=2pt, right=2pt,
           boxrule=0pt, toprule=1pt, bottomrule=1pt,
           every~box/.style={
             highlight~math~style={colframe=red, colback=red!10}
@@ -366,11 +370,35 @@
       }
   }
 
+\NewDocumentCommand { \matherror } { s m }
+  {
+    \tcbset{matherror/.style={
+      colframe=red, colback=red!10, boxrule=0.6pt, size=small}}
+    \IfBooleanTF { #1 }
+      { \tcbox[matherror, on~line, left=1pt, right=1pt]{#2} }
+      {
+        \tcbset{highlight~math~style=matherror}
+        \tcbhighmath{#2}
+        % \tcbhighmath[boxrule=0.6pt, size=small]{#2}
+      }
+  }
+
+\NewDocumentCommand { \mathmark } { O{red} D(){tmp} O{} m }
+  {
+    \tcbset{mathmark/.style={
+      colframe=#1, colback=white, boxrule=0.6pt, size=small, enhanced
+      }}
+    \tcbset{highlight~math~style=mathmark}
+    \tcbhighmath[remember~as=#2, overlay={#3}]{#4}
+    % \tcboxmath[mathmark, remember~as=#2]{#3}
+    % \tcboxmath[remember~as=#2]{#3}
+  }
 
 \ExplSyntaxOff
 
 \mathsetup{
   show all            = false,
+  review point        = {2, 4, 7, 14, 30},
   number style        = { \zihao{3}\itshape\bfseries },
   after title         = 1em,
   before solu         = 1em,

@@ -1,0 +1,23 @@
+\documentclass{ctexart}
+% \usepackage{rv-utils}
+\input other.code.tex
+% \setclass{politics}
+\rvsetup{
+  review point = { 2, 4, 7, 14, 30 },
+  class = {politics=mypolitics},
+  class = {},
+  % politics/rv-cmd = test,
+}
+
+\begin{document}
+\ExplSyntaxOn
+\rv_do_kv:nn { a=yes } { #1 != #2}\par
+% \str_if_in:nnT { a=b } { = } { yes }
+\__rv_broadcast:n {}
+\ExplSyntaxOff
+abc
+
+% \begin{mypolitics}{2020-09-25}{}
+  % \test[2020-09-24]{yes}
+% \end{mypolitics}
+\end{document}

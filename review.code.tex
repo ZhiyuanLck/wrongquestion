@@ -1,3 +1,31 @@
+\makeatletter
+\renewrobustcmd*{\DTMsaveddatediff}[3]{%
+  \ifcsundef{@dtm@#1@year}%
+  {%
+     \PackageError{datetime2-calc}{Unknown date `#1'}{}%
+  }%
+  {%
+     \ifcsundef{@dtm@#2@year}%
+     {%
+        \PackageError{datetime2-calc}{Unknown date `#1'}{}%
+     }%
+     {%
+       \pgfcalendardatetojulian
+        {\csname @dtm@#1@year\endcsname
+        -\csname @dtm@#1@month\endcsname
+        -\csname @dtm@#1@day\endcsname}
+        {#3}%
+       \pgfcalendardatetojulian
+        {\csname @dtm@#2@year\endcsname
+        -\csname @dtm@#2@month\endcsname
+        -\csname @dtm@#2@day\endcsname}
+        {\@dtm@julianday}%
+       \advance#3 by -\@dtm@julianday\relax
+    }%
+  }%
+}
+\makeatother
+
 \ExplSyntaxOn
 
 \newcount\datediff
@@ -12,6 +40,7 @@
 \NewDocumentCommand { \setdate } { m }
   {
     \tl_gset:Nn \g__review_date_tl { #1 }
+    % \seq_gclear_new:N \g__review_date_seq
     \bool_gset_false:N \g__review_today_bool
   }
 
@@ -19,8 +48,6 @@
 \prg_new_protected_conditional:Nnn \review_if:Nn {T, F, TF}
   {
     \DTMsavedate{recent}{#2}
-        % \DTMsavenow{today}
-    % \DTMsavedate{today}{\g__review_date_tl}
     \bool_if:NTF \g__review_today_bool
       {
         \DTMsavenow{today}
@@ -28,7 +55,7 @@
       {
         \DTMsavedate{today}{\g__review_date_tl}
       }
-    \DTMsaveddatediff{today}{recent}{\datediff}
+    \DTMsaveddatediff{today}{recent}{\datediff}% specious blank
     \bool_gset_false:N \g_review_bool
     \clist_map_inline:Nn #1
       {

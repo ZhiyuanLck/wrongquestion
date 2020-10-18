@@ -1,6 +1,14 @@
 \documentclass{ctexart}
 \input math.code.tex
-\setdate{2020-09-19}
+% 可以设置复习日期，默认\today
+\setdate{2020-10-19}
+% 显示所有题目
+\mathsetup{
+  % show all,
+% 设置复习时间点，默认2, 4, 7, 14, 30
+  % review point = { 2, 4, 7, 14, 30 }
+}
+
 
 \begin{document}
 
@@ -73,7 +81,7 @@
 \end{solu}
 \end{mathques}
 
-\begin{mathques}(2){2020-09-08}{极限}
+\begin{mathques}(3){2020-09-22}{极限}
 \begin{ques}
   求极限$\lim_{x \to 0^+} \frac{x^x - (\sin x)^x}{x^2 \ln (1 + x)}$.
 \end{ques}
@@ -271,7 +279,7 @@
 
 \begin{mathques}{2020-09-11}{一元微分}
 \begin{ques}
-  设函数$f(x) = \abs{x^2 - 1}\varphi (x)$，其中$\varphi (x) $在$x = 1$处连续，
+  设函数$f(x) = \abs{x^3 - 1}\varphi (x)$，其中$\varphi (x) $在$x = 1$处连续，
   则$\varphi (1) = 0$是$f(x)$在$x = 1$处可导的(\quad)
   \begin{multichoice}
     \task \answer{充分必要条件}
@@ -456,7 +464,7 @@ $，故$\dv{y}{x} = - \frac{F'_x}{F'_y} = \frac{y\ln y}{y - x}$.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-11}{一元微分}
+\begin{mathques}(2){2020-09-18}{一元微分}
 \begin{ques}
   设函数$y = f(x)$由$
   \begin{dcases}
@@ -719,7 +727,7 @@ $b^2=$\mathblank
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-09-16}{一元微分}[题目问的是最小值不是极小值]
+\begin{mathques}(2){2020-09-23}{一元微分}[题目问的是最小值不是极小值]
 \begin{ques}
   设$a > 1, f(t) = a^t - at$在$(-\infty, +\infty)$内的驻点为$t(a)$，问$a$为何
   值时，$t(a)$最小，并求出最小值.
@@ -788,6 +796,1234 @@ $b^2=$\mathblank
     x^2)^2}),\\
     \eval{y''}_{x = 0} &= -\frac{3}{2}.
   \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-09-27}{中值定理}[没有注意被积函数的导数与欲证部分的关系+
+  积分中值定理不熟悉]
+\begin{ques}
+  设$f(x)$在$[0, 1]$上连续，在$(0, 1)$内可导，且$f(1) = k\int_{0}^{\frac{1}{k}}
+  x e^{1-x} f(x) \dd x (k > 1).$证明至少存在一点$\xi \in (0, 1)$，使得$f'(\xi)
+  = (1 - \xi^{-1}) f(\xi)$.
+\end{ques}
+\begin{solu}
+\begin{mathideabox}
+  注意到被积函数$x e^{1 - x} f(x)$的导数
+  \[
+    \qty (xe^{1-x} f(x))' = xe^{1-x} \qty(f'(x) - (1 - x^{-1})f(x))
+  \]
+  中含有$f'(x) - (1 - x^{-1})f(x),$这正是欲证结论中的一部分
+\end{mathideabox}
+\mathproof 令$F(x) = xe^{1-x} f(x).$由积分中值定理可知
+\begin{align*}
+  f(1) &= k \int_{0}^{\frac{1}{k}} x e^{1-x} f(x) \dd x \\
+  &= \eta e^{1 - \eta} f(\eta) \\
+  &= \matherror{1} \cdot e^{1 - 1} f(1)
+\end{align*}
+其中$\eta \in \qty(0, \frac{1}{k}) \subset \matherror{(0, 1)}$,
+又$F(x) = xe^{1 - x}f(x)$在$[\eta, 1]$上连续，在$(\eta, 1)$内可导，且$F(\eta)
+= F(1),$则$F(x) = xe^{1 - x}f(x)$在$[\eta, 1]$上满足罗尔定理的条件
+
+即存在$\xi \in (\eta, 1) \subset (0, 1),$使得$F'(\xi) = 0$, 即$f'(\xi) = (1 -
+\xi^{-1}) f(\xi).$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(3){2020-10-01}{中值定理}[费马定理+脱帽性不熟悉]
+\begin{ques}
+  设$f(x)$在$[a, b]$上可导，若$f'_+(a) \neq f'_-(b)$，证明对于任意的介于
+  $f'_+(a)$与$f'_-(b)$之间的$\mu$，存在$\xi \in (a, b)$，使得$f'(\xi) = \mu$.
+\end{ques}
+\begin{solu}
+  \mathproof 因$f'_+(a) \neq f'_-(b)$，不妨设$f'_+(a) < f'_-(b)$. 并设$F(x) =
+  f(x) - \mu x$，则函数$F(x)$在$[a, b]$上可导，且$F'_+(a) = f'_+(a) - \mu < 0,
+  F'_(b) = f'_-(b) - \mu > 0$，于是
+  \begin{align*}
+    F'_+(a) &= \lim_{x \to a^+} \frac{F(x) - F(a)}{x - a} < 0,\\
+    F'_+(b) &= \lim_{x \to b^-} \frac{F(x) - F(b)}{x - b} > 0,
+  \end{align*}
+  根据\matherror*{极限的保号性}，知：
+  {\parindent=2\ccwd\par
+    在点$x=a$的某个右邻域内，$\frac{F(x) - F(a)}{x - a} < 0$，即$F(x) < F(a)$；
+    \vspace{1em}
+
+    在点$x=b$的某个左邻域内，$\frac{F(x) - F(b)}{x - b} > 0$，即$F(x) > F(a)$.
+  }
+
+  故$F(a)$和$F(b)$均不是函数$F(x)$在$[a, b]$上的最小值，又因$F(x)$一定可以取得
+  最小值，则其最小值必在$(a, b)$内取到，设函数$F(x)$在$(a, b)$内的最小值点是
+  $\xi$，根据费马定理，得$F'(\xi) = 0$，即$f'(\xi) = \mu$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-09-27}{中值定理}[没有联系第一小问+拉格朗日中值定理不熟悉]
+\begin{ques}
+  已知$f(x)$在$[0, 1]$上连续，在$(0, 1)$内可导，且$f(0) = 0, f(1) = 1$. 证明：
+  \begin{queslist}
+    \item 存在$\xi \in (0, 1)$，使得$f(\xi) = 1 - \xi$;
+    \item 存在$\eta , \tau \in (0, 1), \eta \neq \tau$，使得$f'(\eta)f'(\tau)
+      = 1.$
+  \end{queslist}
+\end{ques}
+\begin{solu}
+\begin{solulist}
+  \item 令$F(x) = f(x) - 1 + x$, 可得
+    \begin{align*}
+      F(0) &= f(0) - 1 + 0 = -1 < 0,\\
+      F(1) &= f(1) - 1 + 1 = \phantom{-}1 > 0,
+    \end{align*}
+    由零点定理可知，存在$\xi \in (0, 1)$，使得$F(\xi) = 0$，即$f(\xi) = 1 -
+    \xi$.
+  \item 用$\xi$将$[0, 1]$划分为$[0, \xi], [\xi, 1]$，再用拉格朗日中值定理
+    \begin{align*}
+      f(\xi) - f(0) &= f'(\eta)(\xi - 0), & &\eta \in (0, \xi),\\
+      f(1) - f(\xi) &= f'(\tau)(1 - \xi), & &\tau \in (\xi, 1),
+    \end{align*}
+    则
+    \begin{align*}
+      f'(\eta) &= \frac{f(\xi) - f(0)}{\xi} = \frac{1 - \xi}{\xi}, \\
+      f'(\tau) &= \frac{f(1) - f(\xi)}{ 1 - \xi } = \frac{\xi}{1 - \xi},
+    \end{align*}
+    故$f'(\eta)f'(\tau) = 1$.
+\end{solulist}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-01}{零点问题与微分不等式}[没有想到用取对数后的式子证
+  明]
+\begin{ques}
+设$0 < x < 1$，求证$xe^{-x} > \frac{1}{x} e^{-\frac{1}{x}}$.
+\end{ques}
+\begin{solu}
+  \mathproof 要证明$xe^{-x} > \frac{1}{x} e^{-\frac{1}{x}}$，只需证$\ln x - x
+  > -\ln x - \frac{1}{x}$，即$2\ln x -x + \frac{1}{x} > 0$.
+
+  设$f(x) = 1\ln x - x + \frac{1}{x}, x \in (0, 1)$，则$f'(x) = \frac{-(x -
+  1)^2}{x^2} < 0$，故$f(x)$在$(0, 1)$上单调递减
+
+  则$f(x) > f(1) = 0$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-01}{零点问题与微分不等式}[计算繁琐]
+\begin{ques}
+  证明：$\qty(\ln \frac{1+x}{x} - \frac{1}{1+x})^2 < \frac{1}{x(1+x)^2} (x > 0)
+  .$
+\end{ques}
+\begin{solu}
+  只需证明当$x > 0$时，$\abs{\ln \frac{1+x}{x} - \frac{1}{1+x}} - \frac{1}
+  {\sqrt{x}(1 + x)} < 0$.
+
+  令
+  \[
+    f(x) = \ln \frac{1 + x}{x} - \frac{1}{1 + x} = \ln (1 + x) - \ln x -
+    \frac{1}{1 + x},
+  \]
+
+  则
+  \begin{align*}
+    f'(x) &= \frac{1}{1+x} - \frac{1}{x} + \frac{1}{(1+x)^2} \\
+    &= \frac{(1+x)x - (1+x)^2 + x}{x(1 + x)^2} \\
+    &= \frac{-1}{x(1+x)^2} < 0,
+  \end{align*}
+  又$\matherror{\lim_{x \to +\infty} f(x) = 0}$，所以$f(x) > 0$.
+  令
+  \[
+    g(x) = \ln \frac{x + 1}{x} - \frac{1}{1 + x} - \frac{1}{\sqrt{x}(1 + x)},
+  \]
+  则
+  \begin{align*}
+    g'(x) &= \frac{1}{1 + x} - \frac{1}{x} + \frac{1}{(1+x)^2} + \frac{\frac{1}
+    {2\sqrt{x}}\cdot (1 + x) + \sqrt{x}}{x(1 + x)^2} \\
+    &= \frac{-2\sqrt{x} + 1 + x + 2x}{2x^{\frac{3}{2}} (1 + x)^2} \\
+    &= \frac{1 + 3x - 2\sqrt{x}}{2x^{\frac{3}{2}} (1 + x)^2}.
+  \end{align*}
+  再令$h(x) = 1 + 3x - 2\sqrt{x}$，则$h'(x) = 3 - \frac{1}{\sqrt{x}}$，令$h'(x)
+  = 0$得$x = \frac{1}{9}$为唯一极小值点，也就是最小值点，且$h_{\min} = \frac{2}
+  {3} > 0$，故$h(x) > 0$，则$g'(x) > 0$，即$g(x)$单调增加
+
+  又$\lim_{x \to +\infty} f(x) = 0$且$\lim_{x \to +\infty} - \frac{1}
+  {\sqrt{x}(1 + x)} = 0$故$g(x) < 0$，证毕.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[极坐标系下的曲线需要转化成直角
+  坐标系下的参数方程后，再求切线方程]
+\begin{ques}
+  曲线$r = \cos 2\theta$在$\theta = \frac{\pi}{4}$处的切线方程为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$y = x$}
+  曲线参数方程：$
+  \begin{dcases}
+    x = \matherror{r\cos \theta} = \cos 2\theta\cos \theta, \\
+    y = \matherror{r\sin \theta} = \cos 2\theta\sin \theta, \\
+  \end{dcases}
+  \theta = \frac{\pi}{4}
+  $对应$(x_0, y_0) = (0, 0),$
+  \[
+    \eval{\dv{y}{x}}_{\theta = \frac{\pi}{4}} = \eval{\frac{-2\sin 2\theta \sin
+    \theta + \cos 2\theta \cos \theta}{-2 \sin 2\theta \cos \theta - \cos
+    2\theta \sin \theta}}_{\theta = \frac{\pi}{4}} = 1,
+  \]
+  切线方程为$y = x.$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[手残计算错误]
+\begin{ques}
+  函数$y = (x - 1)^2 (x - 2)^2 (-3 \le x \le 4)$的值域是\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$[0, 400]$}
+  \begin{align*}
+    \dv{y}{x} &= 2 (x - 1) (x - 2)^2 + 2(x - 1)^2 (x - 2) \\
+    &= 2(x - 1) (x - 2) (2x - 3).
+  \end{align*}
+  令$\dv{y}{x} = 0$，得驻点：$x = 1, 2, \frac{3}{2},$
+  \begin{align*}
+    y_{\max} &= \max{y(1), y(2), y\qty(\frac{3}{2}), y(-3), y(4)} \\
+    &= \max{0, 0, \frac{1}{16}, 400, 36} = 400, \\
+    y_{\min} &= \min{y(1), y(2), y\qty(\frac{3}{2}), y(-3), y(4)} \\
+    &= \max{0, 0, \frac{1}{16}, 400, 36} = 0,
+  \end{align*}
+  值域是$[0, 400]$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[并不是二阶倒数取不到$0$值就没有
+  拐点，只要发生正负变化即可\par 二阶导数无意义点原函数不一定无意义， 拐点的
+  $y$值通过原函数求出]
+\begin{ques}
+  曲线$y = x^{\frac{5}{3}} + 3x + 5$的拐点坐标为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$(0, 5)$}
+
+  $y = x^{\frac{5}{3}} + 3x + 5$的定义域为$(-\infty, +\infty)$.
+  \begin{align*}
+    y' &= \frac{5}{3}x^{\frac{2}{3}} + 3 \\
+    y'' &= \frac{10}{9}x^{-\frac{1}{3}}.
+  \end{align*}
+  当$x = 0$时，$y''$不存在；
+
+  当$x < 0$时，$y'' < 0$；
+
+  当$x > 0$时，$y'' > 0$；
+
+  当$x = 0$时，$y = 5$，即拐点为$(0, 5)$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[问的是极小值点不是极小值]
+\begin{ques}
+  设$y = x^3 - 3x^2 - 9x + 2$，则$y$在$[-2, 2]$上的最小值点为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$x = 2$}
+
+  $y = x^3 - 3x^2 - 9x + 2$的定义域为$(-\infty, +\infty)$.
+
+  令$y' = 0$得$y$的两个驻点$x_1 = -1, x_2 = 3（舍掉）.$又
+  \[
+    \eval{y}_{x = -1} = 7\qc \eval{y}_{x = -2} = 0 \qc \eval{y}_{x = 2} = -20,
+  \]
+  比较上述三个值可知$y$在$[-2, 2]$上的最小值点为$x = 2.$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[$b$计算错误]
+\begin{ques}
+曲线$y = \frac{x^2}{x + 2}$的斜渐近线为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$y = x - 2$}
+
+  由于
+  \begin{align*}
+    a &= \lim_{x \to \infty} \dv{y}{x} = \lim_{x \to \infty} \frac{x^2}{x(x + 2)} =
+    1, \\
+    b &= \lim_{x \to \infty} (y - ax) \\
+    &= \lim_{x \to \infty} \qty(\frac{x^2}{x + 2} - x) \\
+    &= \lim_{x \to \infty} \frac{x^2 - x^2 - 2x}{x + 2} = -2
+  \end{align*}
+  因此所求斜渐近线方程为$y = x - 2.$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[不知道曲率公式]
+\begin{ques}
+  曲线$4x^2 + y^2 = 4$在点$(0, 2)$处的曲率为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{2}
+
+  $4x^2 + y^2 = 4$两边对$x$求导可得$8x + 2yy' = 0$，则有$y' = -\frac{4x}{y}$,
+  \[
+    y'' = -4\cdot \frac{y - xy'}{y^2} = \frac{-4\qty(y + \frac{4x^2}{y})}{y^2}
+    = -\frac{16}{y^3},
+  \]
+  点$(0, 2)$在曲线上，则$\eval{y''}_{x = 0} = -2, \eval{y'}_{x = 0} = 0$
+
+  由曲率公式$k = \frac{\abs{y''}}{\qty(1 + (y')^2)^{\frac{3}{2}}}$，可得$k =
+  2.$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-28}{一元函数几何应用}[极限不会求]
+\begin{ques}
+曲线$y = \frac{2x^2 - 3}{5x^2 + 2\sin x}$的水平渐近线为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$y = \frac{2}{5}$}
+
+  \[
+  \lim_{x \to \infty} y = \lim_{x \to \infty} \frac{2 - \frac{3}{x^2}}{5 +
+  \frac{2}{x^2} \sin x} = \frac{2}{5}
+  \]
+  因此$y = \frac{2}{5}$为曲线的水平渐近线.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-29}{一元微分应用}[无思路]
+\begin{ques}
+  证明恒等式：$\arcsin x + \arccos x = \frac{\pi}{2} (-1 \le x \le 1)$.
+\end{ques}
+\begin{solu}
+  \matherror*{构造函数$f(x) = \arcsin x + \arccos x, \abs{x} \le 1$}，则其导数为
+  \[
+    f'(x) = \frac{1}{\sqrt{1 - x^2}} - \frac{1}{\sqrt{1 - x^2}} = 0,
+  \]
+  从而$f(x)$在其定义域上恒为常数，即$f(x) \equiv C$，$C$是常数.
+
+  令$x = 0$得
+  \[
+    C = f(x) = \arcsin 0 + \arccos 0 = \frac{\pi}{2},
+  \]
+  即$\arcsin x + \arccos x = \frac{\pi}{2} (-1 \le x \le 1).$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-09-29}{一元微分应用}[无思路]
+\begin{ques}
+  若$\frac{a_n}{n + 1} + \frac{a_{n - 1}}{n} + \dotsb + a_0 = 0$，证明方程
+  $a_n x^n + a_{n-1} x^{n-1} + \dotsb + a_0 = 0$在$(0, 1)$内至少有一个实根.
+\end{ques}
+\begin{solu}
+  \mathidea{零点存在问题，用罗尔定理}
+
+  记
+  \[
+  f(x) = \frac{a_n x^{n + 1}}{n + 1} + \frac{a_{n-1} x^n}{n} + \dotsb + a_0 x
+  \quad\mathhint[r]{\text{构造函数}}
+  \]
+  则
+  \[
+    f'(x) = a_n x^n + a_{n-1} x^{n-1} + \dotsb + a_0 = 0.\quad\mathhint[r]
+    {\text{欲求函数}}
+  \]
+  $f(x)$在$[0, 1]$上连续，在$(0, 1)$内可导，又$f(0) = 0, f(1) = \frac{a_n}{n +
+  1} + \frac{a_{n - 1}}{n} + \dotsb + a_0 = 0 $，由罗尔定理知，方程$f'(x) = 0$
+  即$a_n x^n + a_{n-1} x^{n-1} + \dotsb + a_0 = 0$在$(0, 1)$内至少有一个实根.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-03}{一元微分应用}[无法证明零点存在]
+\begin{ques}
+  设在$[1, +\infty)$上，$f''(x) < 0, f(1) = 2, f'(1) = -3.$ 证明：$f(x) = 0$在
+  $(1, +\infty)$内只有一个实根.
+\end{ques}
+\begin{solu}
+  \mathidea{零点唯一性可通过证明零点存在和函数单调}
+
+  在$[1, +\infty)$上，$f''(x) < 0, f'(x)$单调减少，$f'(x) < f'(1) = -3 < 0$，
+  所以$f(x)$在$[1, +\infty)$上单调减少.
+
+  由拉格朗日中值定理当$x > 1$时，存在$\xi \in (1, \xi)$使得
+  \[
+    f'(\xi) = \frac{f(x) - f(1)}{x - 1}
+  \]
+  即
+  \begin{align*}
+    f(x) &= f(1) + f'(\xi)(x - 1) \\
+    &< 2 + f'(1)(x - 1) \\
+    & = 5 - 3x
+  \end{align*}
+  取$x = \frac{5}{3}$，则$f\qty(\frac{5}{3}) < 0$，又$f(1) = 2 > 0$，由零点定理得$f(x) = 0$
+  在$(1, \frac{5}{3})$内至少有一个实根.
+
+  综上所述，$f(x) = 0$在$(1, +\infty)$内有且只有一个实根.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-02}{一元微分物理应用}[变化速度是对$t$的导数]
+\begin{ques}
+  质点$P$沿抛物线$x = y^2(y > 0)$移动，$P$的横坐标$x$的变化速度为5\si{cm/s}.
+  当$x = 9$时，点$P$到原点$O$的距离变化速度为\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\frac{95}{6\sqrt{10}}$\si{cm/s}}
+
+  \mathidea{已知$x = y^2(y > 0), \dv{x}{t} = 5$，求$\eval{\dv{s}{t}}_{x = 9}$.}
+
+  $P$到原点$O$的距离$s = \sqrt{x ^2 + y^2}$，则
+  \[
+    \dv{s}{t} = \dv{t}\sqrt{x^2 + y^2} = \dv{x}\sqrt{x^2 + y^2} \cdot
+    \matherror{\dv{x}{t}} = \frac{5(2x + 1)}{2\sqrt{x^2 + x}}.
+  \]
+  当$x = 9$时，$\eval{\dv{x}{t}}_{x = 9} = \frac{95}{6\sqrt{10}}$ (\si{cm/s}).
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-02}{一元微分物理应用}[计算错误]
+\begin{ques}
+  球的半径以5\si{cm/s}的速度匀速增长，问球的半径为50\si{cm}时，求的表面积和体
+  积的增长速度各是多少？
+\end{ques}
+\begin{solu}
+  表面积为$S = 4\pi r^2$，则
+  \[
+    \dv{S}{t} = 8\pi r\dv{r}{t} = 8\pi \cdot 50 \cdot 5 = 2000\pi (\si{cm^2 /
+    s}).
+  \]
+  体积为$V = \frac{4}{3}\pi r^3$，则
+  \[
+    \dv{V}{t} = 4\pi r^2\dv{r}{t} = 4\pi \cdot (50)^2 \cdot 5 = 50000\pi (cm^3
+    / s).
+  \]
+\end{solu}
+\end{mathques}
+\begin{mathques}{2020-10-09}{一元积分计算}[没想到可以直接凑微分计算代入计算判
+  断是否收敛]
+\begin{ques}
+  下列反常积分中收敛的是(\quad).
+\begin{multichoice}[4]
+  \task $\int_{e}^{+\infty} \frac{\ln x}{x} \dd x$
+  \task $\int_{e}^{+\infty} \frac{\dd x}{x \ln x}$
+  \task \answer{$\int_{e}^{+\infty} \frac{\dd x}{x (\ln x)^2}$}
+  \task $\int_{e}^{+\infty} \frac{\dd x}{x(\ln x)^{\frac{1}{2}}}$
+\end{multichoice}
+\end{ques}
+\begin{solu}
+\begin{multichoice}[1]
+  \task $\int_{e}^{+\infty} \frac{\ln x}{x} = \eval{\frac{1}{2} (\ln x)^2}_{e}
+  ^{+\infty}$，发散
+  \task $\int_{e}^{+\infty} \frac{\dd x}{x \ln x} = \int_{e}^{+\infty}
+  \frac{\dd (\ln x)}{\ln x} = \eval{\ln(\ln x)}_{e}^{+\infty}$，发散
+  \task $\int_{e}^{+\infty} \frac{\dd x}{x (\ln x)^2} = \int_{e}^{+\infty}
+  \frac{\dd (\ln x)}{(\ln x)^2} = \eval{-\frac{1}{\ln x}}_{e}^{+\infty} = - (0
+  - 1) = 1$，收敛
+  \task $\int_{e}^{+\infty} \frac{\dd x}{x(\ln x)^{\frac{1}{2}}} = \int_{e}
+  ^{+\infty} (\ln x)^{-\frac{1}{2}} \dd (\ln x) = \eval{2(\ln x)^{\frac{1}{2}}}
+  _{e}^{+\infty}$，发散
+\end{multichoice}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-13}{一元积分计算}[对于反三角函数分部积分不熟悉]
+\begin{ques}
+$\int \frac{\arcsin \sqrt{x}}{\sqrt{x}}\dd x =$\mathblank.
+\end{ques}
+\begin{solu}
+  \mathidea{去掉根号会使计算变得简单}
+
+  令$\sqrt{x} = t$，则$x = t^2$，则
+  \begin{align*}
+    \int \frac{\arcsin \sqrt{x}}{\sqrt{x}}\dd x &= 2 \int t \cdot
+    \frac{\arcsin t}{t} \dd t\\
+    &= 2 \int \arcsin t \dd t\\
+    &= 2\matherror{(t\arcsin t + \sqrt{1 - t^2})} + C\\
+    &= 2\sqrt{x}\arcsin \sqrt{x} + 2\sqrt{1 - x} + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-13}{一元积分计算}[漏了$C$]
+\begin{ques}
+$\int e^{\sqrt{2x + 1}} \dd x = $\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$(\sqrt{2x + 1} - 1)e^{\sqrt{2x + 1}} + C$}
+  \mathmethod 令$\sqrt{2x + 1} = t$，则
+  \begin{align*}
+    \int e^{\sqrt{2x + 1}} &= \int te^t \dd t = \int t \dd (e^t)\\
+    \mathidea{\small 分部积分法} &= te^t - e^t + C\\
+    &= (\sqrt{2x + 1} - 1)e^{\sqrt{2x + 1}} + C
+  \end{align*}
+  \mathmethod 凑微分法
+  \begin{align*}
+    \int e^{\sqrt{2x + 1}} &= \int \sqrt{2x + 1}e^{\sqrt{2x + 1}} \dd
+    (\sqrt{2x + 1})\\
+    &= \int \sqrt{2x + 1} \dd (e ^{\sqrt{2x + 1}})\\
+    \mathidea{\small 分部积分} &= \sqrt{2x + 1} e^{\sqrt{2x + 1}} - \int
+    e^{\sqrt{2x + 1}} \dd (\sqrt{2x + 1})\\
+    &= \sqrt{2x + 1}e^{\sqrt{2x + 1}} - e^{\sqrt{2x + 1}} + C\\
+    &= (\sqrt{2x + 1} - 1)e^{\sqrt{2x + 1}} + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(4){2020-10-17}{一元积分计算}[无思路，换元法和分部积分不熟悉]
+\begin{ques}
+  设$x > 1$，则$\int \frac{xe^x}{\sqrt{e^x - 2}}\dd x = $\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$2(x - 2)\sqrt{e^x - 2} + 4\sqrt{2}\arctan \sqrt{\frac{e^x}{2} - 1}
+  + C$}
+
+  令$\sqrt{e^2 - 2} = t$
+
+  \begin{minipage}{\linewidth}
+  \begin{align*}
+    \int \frac{xe^x}{\sqrt{e^x - 2}}\dd x &= 2\int \ln(t^2 + 2) \dd t\\
+    \mathidea{分部积分} &= \matherror{2t}\cdot\ln(t^2 + 2) -
+    \mathmark[blue!30!cyan](t2-a){
+      4\int \frac{t^2}{t^2 + 2} \dd t
+    }\\
+    &= 2t\ln(t^2 + 2) - 4t + 4\sqrt{2}\arctan \frac{t}{\sqrt{2}} + C\\
+    &= 2(x - 2)\sqrt{e^x - 2} + 4\sqrt{2}\arctan \sqrt{\frac{e^x}{2} - 1} + C
+  \end{align*}
+  \[
+  \mathmark[blue!30!cyan][
+  \path[draw=blue!30!cyan, arrows={-Implies[]}, thick, opacity=0.5, double distance=2mm]
+      (t2-a.east) to[bend left=90, distance=3cm] (frame.east);
+  ]{
+    \begin{aligned}
+      \int \frac{t^2}{t^2 + 2} \dd t &= \int \qty(1 - \frac{1}{\qty(\frac{t}
+      {\sqrt{2}})^2 + 1})\dd t\\
+      &= t - \sqrt{2}\int \frac{\dd (\frac{t}{\sqrt{2}})}{\qty(\frac{t}
+      {\sqrt{2}})^2 + 1}\\
+      &= t - \sqrt{2}\arctan \frac{t}{\sqrt{2}} + C
+    \end{aligned}
+  }
+  \]
+  \end{minipage}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(3){2020-10-15}{一元积分计算}[无思路，三角函数积分变换不熟悉]
+\begin{ques}
+$\int \frac{\dd x}{1 + \sin x + \cos x} =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\ln \abs{1 + \tan \frac{x}{2}} + C$}
+  \begin{align*}
+    \int \frac{\dd x}{1 + \sin x + \cos x} &= \int \frac{\dd x}{2\sin \frac{x}
+      {2}\cos \frac{x}{2} + 2\cos[2](\frac{x}{2})}\\
+      &= \frac{1}{2}\int \frac{\dd x}{\cos[2](\frac{x}{2})\cdot \qty(1 + \tan
+      \frac{x}{2})}\\
+      &= \int \frac{\dd (1 + \tan \frac{x}{2})}{1 + \tan \frac{x}{2}}\\
+      &= \ln \abs{1 + \tan \frac{x}{2}} + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-11}{一元微分应用}[三角函数变换不熟悉]
+\begin{ques}
+  求不定积分$\int \frac{x\cos[4](\frac{x}{2})}{\sin[3](x)}\dd x$
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}
+  当被积函数为幂函数与三角函数的乘积，且不能用凑微分法积分时，一定要用分部积分
+  法积分。\par
+  因为分子与分母中三角函数的角度分别为$\frac{x}{2}$和$x$，所以首先要用三角恒等
+  式变成同角度的三角函数形式。
+  \end{mathideabox}
+  \mathmethod
+  \begin{align*}
+    \int \frac{x\cos[4](\frac{x}{2})}{\sin[3](x)}\dd x &= \int \frac{x\cos[4]
+    (\frac{x}{2})}{8\sin[3](\frac{x}{2})\cos[3](\frac{x}{2})}\dd x \\
+    &= \int \frac{x\cos \frac{x}{2}}{8\sin[3](\frac{x}{2})}\dd x\\
+    &= \matherror{\frac{1}{4}\int x \sin[-3](\frac{x}{2}) \dd(\sin \frac{x}{2})}
+    \\
+    &= \matherror{-\frac{1}{8}\int x\dd(\sin[-2](\frac{x}{2}))}\\
+    &= \frac{-x}{8\sin[2](\frac{x}{2})} + \matherror{\frac{1}{8}\int \frac{\dd
+    x}{\sin[2](\frac{x}{2})}}\\
+    &= \frac{-x}{8\sin[2](\frac{x}{2})} - \matherror{\frac{1}{4}\cot \frac{x}
+    {2}} + C
+  \end{align*}
+  \mathmethod
+  \begin{align*}
+    \int \frac{x\cos[4](\frac{x}{2})}{\sin[3](x)}\dd x &= \int \frac{x\cos
+    \frac{x}{2}}{8\sin[3](\frac{x}{2})}\dd x\\
+    &= -\frac{1}{4}\int x \cot \frac{x}{2} \dd(\cot \frac{x}{2})\\
+    &= -\frac{1}{8}\int x\dd(\cot[2](\frac{x}{2}))\\
+    &= -\frac{1}{8}x\cot[2](\frac{x}{2}) + \frac{1}{8}\int \cot[2](\frac{x}{2})
+    \dd x \\
+    &= -\frac{1}{8}x\cot[2](\frac{x}{2}) + \frac{1}{8} \int \qty(\csc[2]
+    (\frac{x}{2}) - 1)\dd x\\
+    &= \frac{-x}{8\sin[2](\frac{x}{2})} - \frac{1}{4}\cot \frac{x}{2} + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-12}{一元积分计算}[没有想到把整个式子直接进行换元]
+\begin{ques}
+  计算$\int \arcsin \sqrt{\frac{x}{a + x}}\dd x (a > 0\text{是常数})$.
+\end{ques}
+\begin{solu}
+  令$\arcsin \sqrt{\frac{x}{a + x}} = t, x = \frac{a\sin[2](t)}{1 - \sin[2](t)}
+  = a\tan[2](t)$，则
+  \begin{align*}
+    \int \arcsin \sqrt{\frac{x}{a + x}}\dd x &= \int t\dd(a\tan[2](t))\\
+    &= at\tan[2](t) - a\int \matherror{\tan[2](t)} \dd t\\
+    &= at\tan[2](t) + a\int \matherror{\qty(1 - \sec[2](t))}\dd t\\
+    &= at\tan[2](t) + at - a\tan t + C\\
+    &= (a + x)\arcsin \sqrt{\frac{x}{a + x}} - \sqrt{ax} + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-12}{一元积分计算}[不需要已知分部积分到底，只需要分到
+  可以积分即可]
+\begin{ques}
+  求不定积分$\int \frac{\arctan e^x}{e^x} \dd x$
+\end{ques}
+\begin{solu}
+  \mathidea{不满足凑微分法的条件，用分部积分}
+
+  \mathmethod
+  \begin{align*}
+    \int \frac{\arctan e^x}{e^x} \dd x &= -\int \arctan e^x \dd(e^{-x})\\
+    &= -e^{-x}\arctan e^x + \int \frac{e^{-x}\cdot e^x}{1 + e^{2x}} \dd x\\
+    &= -e^{-x}\arctan e^x + \int \qty(1 - \frac{e^{2x}}{1 + e^{2x}}) \dd x\\
+    &= -e^{-x}\arctan e^x + x - \frac{1}{2}\ln(1 + e^{2x}) + C
+  \end{align*}
+  \mathmethod 令$e^x = t$，则$x = \ln t, \dd x = \frac{1}{t} \dd t$
+  \begin{align*}
+    \int \frac{\arctan e^x}{e^x} \dd x &= \int \frac{\arctan t}{t^2} \dd t\\
+    &= - \int \arctan t\dd(\frac{1}{t})\\
+    &= - \frac{1}{t}\arctan t + \matherror{\int \frac{\dd t}{t(1 + t^2)}}\\
+    &= -\frac{1}{t}\arctan t + \matherror{\int \frac{\dd t}{t} - \int
+    \frac{t\dd t}{1 + t^2}}\\
+    &= -\frac{1}{t}\arctan t + \ln t - \frac{1}{2}\ln(1 + t^2) + C\\
+    &= -\frac{1}{e^x}\arctan e^x + x - \frac{1}{2} \ln(1 + e^{2x}) + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(4){2020-10-16}{一元积分计算}[没想到需要分类讨论，对三角函数积分
+  不熟悉]
+\begin{ques}
+  计算不定积分$\int \frac{\tan x}{a^2\sin[2](x) + b^2\cos[2](x)}\dd x(a,
+  b\text{不同时为零})$.
+\end{ques}
+\begin{solu}
+\begin{solulist}
+  \item 当$a = 0, b \neq 0$时，原式$= \frac{1}{b^2} \int \frac{\sin x}
+    {\cos[3](x)}\dd x = \frac{1}{2b^2\cos[2](x)} + C$；
+  \item 当$a \neq 0, b = 0$时，
+    \begin{align*}
+      \text{原式} &= \frac{1}{a^2}\int \frac{1}{\sin x\cos x}\dd x\\
+      &= \frac{2}{a^2}\int \frac{1}{\sin 2x}\dd x\\
+      &= \matherror{\frac{1}{a^2} \int \csc 2x \dd (2x)}\\
+      &= \frac{1}{a^2}\ln\abs{\csc 2x - \cot 2x} + C
+    \end{align*}
+  \item 当$ab \neq 0$时，
+    \begin{align*}
+      \text{原式} &= \int \frac{\tan x}{\cos[2](x)\qty{a^2 \tan[2](x) + b^2}}
+      \dd x\\
+      &= \matherror{\int \frac{\tan x}{a^2\tan[2](x) + b^2}\dd(\tan x)}\\
+      &= \matherror{\frac{1}{2a^2}\int \frac{\dd(a^2 \tan[2](x) + b^2)}{a^2
+      \tan[2](x) + b^2}}\\
+      &= \frac{1}{2a^2}\ln(a^2 \tan[2](x) + b^2) + C
+    \end{align*}
+\end{solulist}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-12}{一元积分计算}[夹逼准则和凑定积分可以一起使用]
+\begin{ques}
+求极限$\lim_{n \to \infty} \sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n +
+\frac{1}{i}}$.
+\end{ques}
+\begin{solu}
+  当各项分母相同且均为$n$时，
+  \[
+  \lim_{n \to \infty} \sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n + \frac{1}
+  {i}} = \lim_{n \to \infty} \frac{1}{n}\sum_{i = 1}^n \sin \frac{i}{n}\pi =
+  \int_{0}^{1} \sin \pi x\dd x.
+  \]
+  先对$\sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n + \frac{1}{i}}$进行放缩，有
+  \[
+    \sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n + 1} \le \sum_{i = 1}^n
+    \frac{\sin \frac{i\pi}{n}}{n + \frac{1}{i}} \le \sum_{i = 1}^n \frac{\sin
+    \frac{i\pi}{n}}{n},
+  \]
+  又
+  \begin{align*}
+    \lim_{n \to \infty} \sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n} &=
+    \lim_{n \to \infty} \matherror{\frac{1}{n}} \sum_{i = 1}^n \matherror{\sin
+    \frac{i} {n}\pi} = \int_{0}^{1}\sin \pi x\dd x = \frac{2}{\pi},\\
+    \lim_{n \to \infty} \sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n + 1} &=
+    \lim_{n \to \infty} \matherror{\frac{n}{n + 1} \cdot \frac{1}{n}} \sum_{i
+    = 1}^n \sin \frac{i} {n}\pi = \int_{0}^{1}\sin \pi x\dd x =
+    \frac{2}{\pi},
+  \end{align*}
+  由\matherror*{夹逼准则}即得
+  \[
+  \lim_{n \to \infty} \sum_{i = 1}^n \frac{\sin \frac{i\pi}{n}}{n + \frac{1}
+  {i}} = \frac{2}{\pi}.
+  \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-12}{一元积分计算}[没能求出正确的通项公式来凑积分]
+\begin{ques}
+  $\lim_{n \to \infty} \qty(\frac{1}{n} \cdot \frac{2}{n} \cdot \dotsi \cdot
+  \frac{n}{n})^{\frac{1}{n}} =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\frac{1}{e}$}
+
+  令$x_n = \lim_{n \to \infty} \qty(\frac{1}{n} \cdot \frac{2}{n} \cdot \dotsi
+  \cdot \frac{n}{n})^{\frac{1}{n}}$，则
+  \[
+    \ln x_n = \frac{1}{n}\qty(\ln \frac{1}{n} + \ln\frac{2}{n} + \dotsb + \ln
+    \frac{n}{n}) = \sum_{k = 1}^n \frac{1}{n} \ln \frac{k}{n},
+  \]
+  于是
+  \begin{align*}
+    \lim_{n \to \infty} \ln x_n &= \lim_{n \to \infty} \sum_{k = 1}^n \frac{1}
+    {n} \ln \frac{k}{n}\\
+    &= \int_{0}^{1} \ln x\dd x\\
+    &= \eval{x \ln x}_0^1 - \int_{0}^{1}x \cdot \frac{1}{x} \dd x\\
+    &= 0 - 1 = -1.
+  \end{align*}
+  故$\lim_{n \to \infty} x_n = e^{-1} = \frac{1}{e}.$
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(4){2020-10-18}{一元积分计算}[没有想到正确的换元方法]
+\begin{ques}
+  计算定积分$\int_{\frac{1}{2}}^{\frac{3}{2}} \frac{(1 - x)\arcsin(1 - x)}
+  {\sqrt{2x - x^2}}\dd x.$
+\end{ques}
+\begin{solu}
+  令$1 - x = \sin t$，则
+  \begin{align*}
+  \int_{\frac{1}{2}}^{\frac{3}{2}} \frac{(1 - x)\arcsin(1 - x)} {\sqrt{2x -
+  x^2}}\dd x &= \int_{-\frac{\pi}{6}}^{\frac{\pi}{6}} \frac{t\sin t}{\cos t}
+  \cos t\dd t\\
+  &= \int_{-\frac{\pi}{6}}^{\frac{\pi}{6}} t\sin t\dd t\\
+  &= -\int_{-\frac{\pi}{6}}^{\frac{\pi}{6}}t\dd(\cos t)\\
+  &= \eval{-(t\cos t - \sin t)}_{-\frac{\pi}{6}}^{\frac{\pi}{6}}\\
+  &= 1 - \frac{\sqrt{3}\pi}{6}.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-12}{一元积分计算}[无思路]
+\begin{ques}
+计算定积分$\int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}{2}} \frac{\cos
+x - \sin x}{\sqrt{\cos x}}\dd x.$
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}
+  当被积函数为指函数与三角函数的乘积时，不能使用凑微分法求出原函数，只能使用分
+  部积分法
+  \end{mathideabox}
+  \begin{align*}
+  \int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}{2}} \frac{\cos x - \sin
+  x}{\sqrt{\cos x}}\dd x &= \int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}
+{2}} \sqrt{\cos x}\dd x - \int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}
+{2}} \frac{\sin x}{\sqrt{\cos x}}\dd x\\
+  &= \int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}{2}}\sqrt{\cos x}\dd x
+  + 2\int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}{2}}\dd (\sqrt{\cos x})
+  \\
+  &= \int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}{2}}\sqrt{\cos x}\dd x
+  + \eval{2e^{\frac{x}{2}}\sqrt{\cos x}}_{-\frac{\pi}{4}}^{\frac{\pi}{4}} -
+  \matherror{\int_{-\frac{\pi}{4}}^{\frac{\pi}{4}}e^{\frac{x}{2}} \sqrt{\cos
+  x} \dd x}\\
+  &= \sqrt[4]{8}\qty(e^{\frac{\pi}{8}} - e^{-\frac{\pi}{8}}).
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(3){2020-10-14}{一元积分计算}[没有想到可以通过平移区间来化简]
+\begin{ques}
+  计算定积分$I = \int_{0}^{\pi}\frac{x\sin x}{1 + \cos[2](x)}\dd x.$
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}
+  被积函数中既有幂函数，又有三角函数，是一种较复杂的分式形式，很难直接求出其原
+  函数，但是，注意到被积函数为偶函数，其中$x$及$\sin x$为奇函数，可考虑将其化
+  为对称区间上的定积分，为此，需将积分区间$[0, \pi]$平移成$\qty[-\frac{\pi}{2},
+  \frac{\pi}{2}]$
+  \end{mathideabox}
+  设$x = \frac{\pi}{2} + u$，则有
+  \begin{align*}
+    I &= \int_{0}^{\pi}\frac{x\sin x}{1 + \cos[2](x)}\dd x\\
+    &= \int_{-\frac{\pi}{2}}^{\frac{\pi}{2}} \frac{\qty(\frac{\pi}{2} + u)
+    \cos u}{1 + \sin[2](u)}\dd u\\
+    &= \frac{\pi}{2}\int_{-\frac{\pi}{2}}^{\frac{\pi}{2}}
+    \mathmark[red][
+    \node[red, font=\small] (a) at ([shift={(1.5, 1)}]frame.north east) {偶函数};
+    \draw[->, red] (frame.north east) to[bend left] (a);
+    ]{
+      \frac{\cos u}{1 + \sin[2](u)}
+    }
+    \dd u + \int_{-\frac{\pi}{2}}^{\frac{\pi}{2}}
+    \mathmark[cyan][
+    \node[cyan, font=\small] (b) at ([shift={(1, 1)}]frame.north east) {奇函数};
+    \draw[->, cyan] (frame.north) to[bend left] (b);
+    ]{
+      \frac{u\cos u}{1 + \sin[2](u)}
+    }\dd u\\
+  &= \pi\int_{0}^{\frac{\pi}{2}} \frac{\dd (\sin u)}{1 + \sin[2](u)} + 0\\
+  &= \eval{\pi \arctan(\sin u)}_{0}^{\frac{\pi}{2}}\\
+  &= \pi \times \frac{\pi}{4} = \frac{1}{4} \pi^2.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(4){2020-10-16}{一元积分计算}[计算错误，三角函数积分不熟悉]
+\begin{ques}
+  设$f(x) =
+\begin{dcases}
+  \frac{1}{1 + \sin x}, & x \ge 0,\\
+  \frac{1}{1 + e^x}, & x < 0,
+\end{dcases}
+$求$\int_{-1}^{\frac{\pi}{4}}f(x)\dd x.$
+\end{ques}
+\begin{solu}
+  \[
+    \int_{-1}^{\frac{\pi}{4}}f(x) \dd x = \int_{-1}^{0} f(x) \dd x + \int_{0}
+    ^{\frac{\pi}{4}} f(x) \dd x = \int_{-1}^{0} \frac{\dd x}{1 + e^x} +
+    \int_{0}^{\frac{\pi}{4}} \frac{\dd x}{1 + \sin x},
+  \]
+  令$e^x = t$，则
+  \begin{align*}
+    \int_{-1}^{0}\frac{\dd x}{1 + e^x} &= \int_{e^{-1}}^{1} \frac{1}{1 + t}
+    \cdot \frac{1}{t} \dd t\\
+    &= \int_{e^{-1}}^{1} \qty(\frac{1}{t} - \frac{1}{1 + t}) \dd t\\
+    &= \eval{\ln \frac{t}{1 + t}}_{e^{-1}}^1\\
+    &= -\ln 2 + \ln (1 + e),\\
+    \int_{0}^{\frac{\pi}{4}}\frac{\dd x}{1 + \sin x} &= \int_{0}^{\frac{\pi}
+    {4}} \frac{1 - \sin x}{\cos[2](x)} \dd x\\
+    &= \int_{0}^{\frac{\pi}{4}} \sec[2](x)\dd x - \int_{0}^{\frac{\pi}{4}}
+    \frac{\sin x}{\cos[2](x)} \dd x\\
+    &= \eval{\tan x}_{0}^{\frac{\pi}{4}} - \eval{\frac{1}{\cos x}}_{0}
+    ^{\frac{\pi}{4}} \\
+    & = 1 - (\sqrt{2} - 1) = 2 - \sqrt{2}.
+  \end{align*}
+  从而
+  \[
+    \int_{-1}^{\frac{\pi}{4}} f(x)\dd x = - \ln 2 + \ln(1 + e) + 2 - \sqrt{2}.
+  \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-11}{一元积分计算}[当作复合函数求导，里面的也要求导]
+\begin{ques}
+  设下列不定积分存在，则下列命题正确的是(\quad).
+  \begin{multichoice}
+    \task \answer{$\int f'(2x)\dd x = \frac{1}{2}f(2x) + C$}
+    \task $\qty[\int f(2x) \dd x]' = 2f(2x)$
+    \task $\int f'(2x)\dd x = f(2x) + C$
+    \task $\qty[\int f(2x) \dd x]' = \frac{1}{2}f(2x)$
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  令$t = 2x$，则$\dd x = \frac{1}{2}\dd t$，则
+  \begin{align*}
+    \int f'(2x)\dd x &= \frac{1}{2}\int f'(t) \dd t\\
+    &= \frac{1}{2}f(t) + C\\
+    &= \frac{1}{2}f(2x) + C
+  \end{align*}
+  故(A)选项正确
+  \begin{align*}
+    \qty[\int f(2x) \dd x]' &= \frac{\dd}{\matherror{\dd x}} \qty(\int f(2x)
+    \dd x)\\
+    &= \dv{t}(\frac{1}{2}\int f(t)\dd t)\cdot \dv{t}{x}\\
+    &= \frac{1}{2}f(t) \cdot 2\\
+    &= f(2x)
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-11}{一元积分计算}[只要函数恒小于，积分也恒小于，就算
+  是负的也是小于]
+\begin{ques}
+  设函数$f(x)$与$g(x)$在$[0, 1]$上连续，且$f(x) \le g(x)$，则对任意$c \in (0,
+  1)$，有(\quad).
+  \begin{multichoice}
+    \task $\int_{\frac{1}{2}}^{c} f(t) \dd t \ge \int_{\frac{1}{2}}^{c} g(t)
+    \dd t$
+    \task $\int_{\frac{1}{2}}^{c} f(t) \dd t \le \int_{\frac{1}{2}}^{c} g(t)
+    \dd t$
+    \task $\int_{c}^{1} f(t) \dd t \ge \int_{c}^{1} g(t) \dd t$
+    \task \answer{$\int_{c}^{1} f(t) \dd t \le \int_{c}^{1} g(t) \dd t$}
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[定积分性质]
+    若连续函数$f(x), g(x)$在$[a, b]$上满足$f(x) \le g(x)$，则当$a < b$时，
+    $\int_{a}^{b}f(x) \dd x \le \int_{a}^{b}g(x)\dd x$
+  \end{mathideabox}
+  由于$c \in (0, 1)$，因此$c < 1$恒成立，而$c$可能大于$\frac{1}{2}$，也可能小
+  于$\frac{1}{2}$，可知(A)，(B)不正确。
+
+  由于$f(x) \le g(x)$，可知应有$\int_{c}^{1}f(t) \dd t \le \int_{c}^{1} g(t)
+  \dd t$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-11}{一元积分计算}[$x$和$-x$图画错了orz]
+\begin{ques}
+  设$f(x) =
+  \begin{dcases}
+    1, & x > 0,\\
+    0, & x = 0,\\
+    -1, & x < 0,
+  \end{dcases}
+  F(x) = \int_{0}^{x}f(t)\dd t
+  $，则(\quad).
+  \begin{multichoice}[1]
+    \task $F(x)$在$x = 0$处不连续
+    \task \answer{$F(x)$在$(-\infty, +\infty)$内连续，但在$x = 0$处不可导}
+    \task $F(x)$在$(-\infty, +\infty)$内可导，且满足$F'(x) = f(x)$
+    \task $F(x)$在$(-\infty, +\infty)$内可导，但不一定满足$F'(x) = f(x)$
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  当$f(x)$为连续函数时，$F(x) = \int_{0}^{x}f(t)\dd t$为$f(x)$的原函数，此时有
+  $\qty[\int_{0}^{x}f(t)\dd t]' = f(x)'$
+
+  如果$f(x)$不为连续函数，上述结论不一定成立，因此不能轻易判定(C)成立。
+
+  由于$f(x)$为分段函数，因此$F(x) = \int_{0}^{x}f(t) \dd t$也为分段函数
+
+  当$x < 0$时，$F(x) = \int_{0}^{x}(-1)\dd t = -x$;
+
+  当$x > 0$时，$F(x) = \int_{0}^{x}1\dd t$ = x;
+
+  当$x = 0$时，$F(0) = 0$.
+
+  因此$\matherror{F(x) = \abs{x}}$，可知$F(x)$在$(-\infty, +\infty)$内连续，但在
+    $x = 0$处不可导。
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(3){2020-10-17}{一元积分计算}[凑定积分的公式理解错误]
+\begin{ques}
+  $\lim_{n \to \infty} \ln \sqrt[n]{\qty(1 + \frac{1}{n})^2 \qty(1 + \frac{2}
+  {n})^2 \dotsi \qty(1 + \frac{n}{n})^2 } =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$2(2\ln 2 - 1)$}
+  \begin{align*}
+    \text{原式} &= 2\lim_{n \to \infty} \frac{1}{n}\qty(\ln (1 + \frac{1}{n})
+    + \ln(1 + \frac{2}{n}) + \dotsb + \ln(1 + \frac{n}{n}))\\
+    &= 2\lim_{n \to \infty} \sum_{i = 1}^n \ln(1 + \frac{i}{n})\cdot \frac{1}
+    {n}\\
+    &= \matherror{2\int_{0}^{1} \ln(1+x)\dd x}\\
+    &= \eval{2x\ln x}_1^2 - 2\int_{1}^{2} x \cdot \frac{1}{x} \dd x\\
+    &= 2(2\ln 2 - 1).
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-11}{一元积分计算}[凑定积分的公式理解错误]
+\begin{ques}
+  $\lim_{n \to \infty} \qty(\frac{1}{\sqrt{n^2 + n}} + \frac{1}{\sqrt{n^2 +
+  2n}} + \frac{1}{\sqrt{n^2 + 3n}} + \dotsb + \frac{1}{\sqrt{n^2 + n^2}}) =
+  $\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$2\sqrt{2} - 2$}
+  \begin{mathideabox}[凑定积分]
+    根据定积分的定义凑定积分：$\int_{0}^{1}f(x)dx = \lim_{n \to \infty}
+    \sum_{i = 1}^n f(\frac{i}{n}) \cdot \frac{1}{n}$
+
+    能凑成$\frac{i}{n}$的用定积分定义；凑不成的，先用放缩法，常见的几种凑定积
+    分定义的式子有
+    \begin{flalign*}
+      \lim_{n \to \infty} \qty(\frac{1}{n + 1} + \frac{1}{n + 2} + \dotsb
+      + \frac{1}{n + n}) &= \lim_{n \to \infty} \sum_{i = 1}^n \frac{1}{n
+      + i} &\\
+      &= \lim_{n \to \infty} \sum_{i = 1}^n \frac{1}{1 + \frac{i}{n}}
+      \cdot \frac{1}{n}\\
+      &= \int_{0}^{1} \frac{1}{1 + x}\dd x\\
+      &= \eval{\ln(1 + x)}_0^1 = \ln2.
+    \end{flalign*}
+    \begin{flalign*}
+      \lim_{n \to \infty} \qty(\frac{n}{n^2 + 1^2} + \frac{n}{n^2 + 2^2} +
+      \dotsb + \frac{n}{n^2 + n^2}) &= \lim_{n \to \infty} \sum_{i = 1}^n
+      \frac{n}{n^2 + i^2} &\\
+      &= \lim_{n \to \infty} \sum_{i = 1}^n \frac{n^2}{n^2 + i^2} \cdot
+      \frac{1}{n}\\
+      &= \lim_{n \to \infty} \sum_{i = 1}^n \frac{1}{1 + \qty(\frac{i}
+      {n})^2} \cdot \frac{1}{n}\\
+      &= \int_{0}^{1}\frac{1}{1 + x^2}\dd x\\
+      &= \eval{\arctan x}_0^1 = \frac{\pi}{4}.
+    \end{flalign*}
+  \end{mathideabox}
+  \begin{align*}
+    \text{原式} &= \lim_{n \to \infty} \sum_{i = 1}^n \frac{1}{\sqrt{n^2 + ni}}
+    \\
+    &= \lim_{n \to \infty} \sum_{i = 1}^n \frac{1}{\sqrt{1 + \frac{i}{n}}}
+    \cdot \frac{1}{n}\\
+    &= \int_{0}^{1} \frac{1}{\sqrt{1 + x}}\dd x \\
+    &= \eval{2\sqrt{1 + x}}_0^1 = 2\sqrt{2} - 2.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-14}{一元积分计算}[积分的方法不一样]
+\begin{ques}
+  不定积分$\int \frac{1}{\sqrt{x(4-x)}}\dd x =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\arcsin \frac{x - 2}{x} + C$}
+
+  由于$\sqrt{x(4 - x)} = \sqrt{4 - (x - 2)^2} = 2\sqrt{1 - \qty(\frac{x - 2}
+  {2})^2}$，所以
+  \begin{align*}
+    \int \frac{1}{\sqrt{x(4-x)}}\dd x &= \int \frac{\dd x}{2\sqrt{1 -
+    \qty(\frac{x - 2}{2})^2}} \\
+    &= \int \frac{\dd(\frac{x - 2}{2})}{\sqrt{1 - \qty(\frac{x - 2}{2})^2}}\\
+    &= \arcsin \frac{x - 2}{2} + C.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-14}{一元积分计算}[没有想到可以把1变形]
+\begin{ques}
+  不定积分$\int \frac{1}{\sin[2](x)\cos[4](x)}\dd x =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\frac{1}{3}\tan[3](x) + 2\tan x - \cot x + C$}
+  \begin{align*}
+    \int \frac{1}{\sin[2](x)\cos[4](x)}\dd x &= \int \frac{\matherror{\qty(\sin[2]
+    (x) + \cos[2](x))^2}}{\sin[2](x)\cos[4](x)} \dd x\\
+    &= \int \frac{\sin[2](x)}{\cos[4](x)}\dd x + \int \frac{2}{\cos[2](x)}\dd
+    x + \int \frac{1}{\sin[2](x)}\dd x\\
+    &= \int \tan[2](x) \dd (\tan x) + 2\tan x - \cot x\\
+    &= \frac{1}{3}\tan[3](x) + 2\tan x - \cot x + C.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(3){2020-10-18}{一元积分计算}[抄错了orz]
+\begin{ques}
+  不定积分$\int \frac{\sin x - 3\cos x}{\sin[3](x)}\dd x =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$-\cot x + \frac{3}{2\sin[2](x)} + C$}
+  先将分式变形得
+  \begin{align*}
+    \int \frac{\sin x - 3\cos x}{\sin[3](x)}\dd x &= \int \frac{1}{\sin[2](x)}
+    \dd x - 3\int \frac{\dd(\sin x)}{\sin[3](x)}\\
+    &= -\cot x - 3\cdot \frac{1}{-3 + 1}\qty(\sin x)^{-3 + 1} + C\\
+    &= -\cot x + \frac{3}{2\sin[2](x)} + C
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-15}{一元积分计算}[思路错误]
+\begin{ques}
+不定积分$\int \frac{x^3}{\sqrt{1 - x^2}}\dd x =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\frac{1}{3}(1 - x^2)^{\frac{3}{2}} - (1 - x^2)^{\frac{1}{2}} + C$}
+
+  \mathmethod 令$t = 1 - x^2$，则$\dd t = -2x\dd x$
+  \begin{align*}
+    \int \frac{x^3}{\sqrt{1 - x^2}}\dd x &= -\frac{1}{2}\int \frac{1 - t}
+    {\sqrt{t}} \dd t\\
+    &= -\frac{1}{2}\int \qty(\frac{1}{\sqrt{t}} - \sqrt{t}) \dd t\\
+    &= \frac{1}{3}t^{\frac{3}{2}} - t^{\frac{1}{2}} + C\\
+    &= \frac{1}{3}(1 - x^2)^{\frac{3}{2}} - (1 - x^2)^{\frac{1}{2}} + C
+  \end{align*}
+
+  \mathmethod 令$x = \sin t$，则
+  \begin{align*}
+    \int \frac{x^3}{\sqrt{1 - x^2}}\dd x &= \int \sin[3](t)\dd t\\
+    &= \matherror{\int \sin[2](t)\cdot \sin t\dd t}\\
+    &= \matherror{\int \qty(\cos[2](t) - 1) \dd (\cos t)}\\
+    &= \frac{1}{3} \cos[3](t) - \cos t + C.
+  \end{align*}
+  利用$\cos t = \sqrt{1 - x^2}$得
+  \[
+  \text{原式}= \frac{1}{3}(1 - x^2)^{\frac{3}{2}} - (1 - x^2)^{\frac{1}{2}} + C
+  \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-15}{一元积分计算}[没有想到洛必达，以及分母也需要求导]
+\begin{ques}
+  $\lim_{x \to 0} \frac{\int_{0}^{x} \sin[2](t) \dd t}{x^3} =$\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\frac{1}{3}$}
+
+  此极限属于“$\frac{0}{0}$”型，用洛必达法则，则
+  \[
+  \lim_{x \to 0} \frac{\int_{0}^{x} \sin[2](t) \dd t}{x^3} = \lim_{x \to 0}
+  \frac{\sin[2](x)}{3x^2} = \frac{1}{3}.
+  \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-10-17}{一元积分计算}[中途积分计算错误，简单的可以直接求
+  出没必要和复杂的一起变$\dd x$乘来乘去；倍角要化解成已知角进行还原]
+\begin{ques}
+求不定积分$\int x^2\sqrt{1 - x^2}\dd x$.
+\end{ques}
+\begin{solu}
+  令$x = \sin t$，则
+  \begin{align*}
+    \int x^2\sqrt{1 - x^2}\dd x &= \int \sin[2](t)\cdot \cos t\dd(\sin t)\\
+    &= \int \sin[2](t) \cdot \cos[2](t) \dd t\\
+    &= \frac{1}{4}\int \sin[2](2t)\dd t\\
+    &= \frac{1}{4}\int \frac{1}{2}(1 - \cos 4t)\dd t\\
+    &= \frac{1}{8}t - \frac{1}{32}\sin 4t + C\\
+    &= \frac{1}{8}\qty(\arcsin x - x\sqrt{1 - x^2}(1 - 2x^2)) + C.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-15}{一元积分计算}[没有对根号进行换元；反三角函数基本
+  都需要进行分部积分后求出]
+\begin{ques}
+求不定积分$\int \frac{\arcsin \sqrt{x}}{\sqrt{x}}\dd x$.
+\end{ques}
+\begin{solu}
+令$t = \sqrt{x}$，则$x = t^2$，即有
+\begin{align*}
+  \int \frac{\arcsin \sqrt{x}}{\sqrt{x}}\dd x &= 2\int \arcsin t\dd t\\
+  &= 2\qty(t\cdot \arcsin t - \int \frac{t}{\sqrt{1 - t^2}}\dd t)\\
+  &= 2\qty(t\cdot \arcsin t + \sqrt{1 - t^2}) + C\\
+  &= 2\sqrt{x}\arcsin\sqrt{x} + 2\sqrt{1 - x} + C.
+\end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-15}{一元积分计算}[计算过程中符号出错；像答案直接代入
+  计算出错的可能性小些]
+\begin{ques}
+  设$xe^{-x}$为$f(x)$的一个原函数，求$\int xf(x)\dd x$.
+\end{ques}
+\begin{solu}
+  因为$xe^{-x}$为$f(x)$的一个原函数，故
+  \[
+    f(x) = (xe^{-x})' = e^{-x}(1 - x).
+  \]
+  所以
+  \begin{align*}
+    \int xf(x)\dd x &= \int e^{-x}(x - x^2) \dd x\\
+    \mathidea{分部积分}&= -e^{-x}(x - x^2) + \int e^{-x}(1 - 2x)\dd x\\
+    \mathidea{再次分部积分}&= e^{-x}(x^2 - x) -e^{-x}(1 - 2x) - \int 2e^{-x}
+    \dd x\\
+    &= e^{-x}(x^2 + x + 1) + C.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-15}{一元积分计算}[凑反三角函数的公式不熟悉]
+\begin{ques}
+  求不定积分$\int \frac{\dd x}{(x^2 + 1)(x^2 + x + 1)}.$
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[部分分式分解]
+  设$f$和$g$是非零多项式，将$g$写作若干互不相同的不可约多项式的幂的乘积：
+  \[
+  g = \prod_{i = 1}^k p_i^{n_i}.
+  \]
+  则存在多项式$b$（不唯一）和多项式$a_{ij}$，且$\deg a_{ij} < \deg p_i$使得
+  \[
+  \frac{f}{g} = b + \sum_{i = 1}^k\sum_{j = 1}^{n_i} \frac{a_{ij}}{p_i^j}.
+  \]
+  如果$\deg f < \deg g$，则$b = 0$.
+  \tcblower
+  比如可设$\frac{3x + 5}{(1 - 2x)^2} = \frac{A}{(1 - 2x)^2} + \frac{B}{1 - 2x}
+  .$
+  则$3x + 5 = A + B(1 - 2x)$，解方程
+  \[
+  \begin{dcases}
+  5 = A + B\\
+  3x = -2Bx
+  \end{dcases}
+  \]
+  得$A = \frac{13}{2}, B = -\frac{3}{2}$
+  \end{mathideabox}
+  由部分分式分解设
+  \[
+    \frac{1}{(x^2 + 1)(x^2 + x + 1)} = \frac{ax + b}{x^2 + 1} + \frac{cx + d}
+    {x^2 + x + 1}
+  \]
+  消去分母得
+  \[
+    (a + c)x^3 + (a + b + d)x^2 + (a + b + c)x + (b + d) = 1
+  \]
+  解方程组
+  \[
+  \begin{dcases}
+  a + c = 0,\\
+  a + b + d = 0,\\
+  a + b + c = 0,\\
+  b + d = 1,
+  \end{dcases}
+  \]
+  得$a = -1, b = 0, c=d = 1$
+  则
+  \begin{align*}
+    \int \frac{\dd x}{(x^2 + 1)(x^2 + x + 1)} &= \int \qty(\frac{-x}{x^2 + 1}
+    + \matherror{\frac{x + 1}{x^2 + x + 1}})\dd x\\
+    &= -\frac{1}{2}\int \frac{\dd (x^2 + 1)}{x^2 + 1} + \matherror{\frac{1}
+    {2}\int \frac{2x + 1 + 1}{x^2 + x + 1}\dd x} \\
+    &= -\frac{1}{2}\ln(x^2 + 1) + \frac{1}{2}\int \frac{\dd (x ^2 + x + 1)}
+    {x^2 + x + 1} + \frac{1}{2}\int \frac{\dd x}{x^2 + x + 1}\\
+    &= -\frac{1}{2}\ln(x^2 + 1) + \frac{1}{2}\ln(x^2 + x + 1) + \frac{1}{2}
+    \int \frac{\dd(x + \frac{1}{2})}{\qty(x + \frac{1}{2})^2 + \frac{3}{4}}\\
+    &= -\frac{1}{2}\ln \frac{x^2 + 1}{x^2 + x + 1} +
+    \matherror{\frac{\sqrt{3}}{3}\arctan \frac{2x + 1}{\sqrt{3}}} + C.
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-10-15}{一元积分计算}[忘了有理函数的积分如何分解（见
+  《30》p. 113）]
+\begin{ques}
+  求不定积分$\int \frac{1}{x^3 + 4x^2 + 5x + 2}\dd x.$
+\end{ques}
+\begin{solu}
+  \begin{mathideabox}[试根法]
+  对于复杂多项式，求其因式时，用试根法：
+
+  对于整数多项式方程
+  \[
+  a_nx^n + a_{n - 1}x^{n - 1} + \dotsb + a_0 = 0
+  \]
+  设其有理数解为$x = \frac{p}{q}$，则
+  $p$为$a_0$的因数，$q$为$a_n$的因数，且$p, q$互质（最大公约数为1）
+  \tcblower
+  对于$x^3 + 4x^2 + 5x + 2$，若有有理数根，则必定在$\pm1, \pm2$中，
+  易得$-1$为其一个有理跟，则
+  \[
+    x^3 + 4x^2 + 5x + 2 = (x + 1)(x^2 + 3x + 2) = (x + 1)^2(x + 2)
+  \]
+  \end{mathideabox}
+设$\frac{1}{x^3 + 4x^2 + 5x + 2} = \frac{1}{(x + 1)^2 (x + 2)} = \frac{A}{x +
+2} + \frac{B}{x + 1} + \frac{C}{(x + 1)2}$
+
+消去分母得
+\[
+  (A + B)x^2 + (2A + 3B +C)x + (A + 2B + 2C) = 1,
+\]
+解方程组
+\[
+A + B = 0,
+2A + 3B + C = 0,
+A + 2B + 2C = 1,
+\]
+得$A = 1, B = -1, C = 1$，则
+\begin{align*}
+  \int \frac{1}{x^3 + 4x^2 + 5x + 2}\dd x &= \int \frac{\dd x}{x + 2} - \int
+  \frac{\dd x}{x + 1} + \int \frac{\dd x}{(x + 1)^2}\\
+  &= \ln\abs{x + 2} - \ln\abs{x + 1} - \frac{1}{x + 1} + C.
+\end{align*}
 \end{solu}
 \end{mathques}
 \end{document}
