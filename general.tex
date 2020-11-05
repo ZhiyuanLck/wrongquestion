@@ -1,0 +1,246 @@
+\documentclass{ctexart}
+\usepackage{showdata}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{enumitem}
+
+\edef\mydate{2020-11-05}
+
+\setCJKmainfont{Source Han Serif SC}
+\setCJKsansfont{Source Han Sans SC}
+
+
+\def\myright#1{%
+  \unskip\nobreak\xleaders\hbox to .75ex {\hss.\hss}%
+  \hfill\nobreak\hskip0.5em%
+  \makebox[2em]{\color{red}\bfseries#1}}
+
+\sdsetdomain{politics}
+\sdsetupsub{politics}{
+  group={normal},
+  global-group={star},
+  prop={index, info, count},
+}
+
+\NewsdReviewPoint{default}{2, 4, 7, 15, 30, 60}
+\NewsdBatchEnvironment { politics } { m m +b }
+  {
+    \sdIfReviewT{default}{#1}{\mydate}{
+      \sdaddtogroup{normal}
+      \sdsave*{normal}{info}{#2}
+    }
+    \DeclareDocumentCommand { \addto } { O{} D(){1} m }
+      {
+        \IfBlankF { ##1 }
+          {
+            \sdIfReviewF{default}{#1}{\mydate}{
+              \sdIfReviewT{default}{##1}{\mydate}{
+                \sdsave*{star}{info}{#2}
+                \sdsave*{star}{count}{##2}
+                \sdsave*{star}{index}{##3}
+              }
+            }
+          }
+        \sdsave{normal}{index}{##3}
+      }
+    #3
+  } {}
+
+\sdsetshowstyle*{politics}{star}{index}
+{
+  \section{\mydate 政治易错复习}
+  \sdIfEmptyPropF{\begin{multicols}{2}\begin{enumerate}}
+}
+{
+  \sdIfEmptyPropF{\end{enumerate}\end{multicols}}
+}
+{
+\item \textit{\sduse{info}}
+    \myright{\textcolor{red}{\textbf{\sduse{index}}}}
+}
+
+\sdsetshowstyle{politics}{normal}{index}
+{\section{\mydate 政治模块复习}}{}
+{\subsection{\sduse[normal]{info}}}{}
+{
+  \textbf{\sduse{index}}\hspace{1em}
+}
+
+\AtEndDocument{
+  \sdshow*{politics}{star}
+  \sdshow{politics}{normal}
+}
+
+\begin{document}
+\begin{sdpolitics}{2020-10-27}{导论，唯物论（单选）}
+  \addto[2020-10-29](2){2}
+  \addto[2020-10-31](2){3}
+  \addto{4}
+  \addto{5}
+  \addto{7}
+  \addto{12}
+  \addto{19}
+  \addto{20}
+  \addto[2020-10-31](3){25}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-10-28}{导论，唯物论（多选）}
+  \addto[2020-10-30](2){1}
+  \addto[2020-10-30](2){3}
+  \addto[2020-11-01](3){8}
+  \addto{9}
+  \addto[2020-11-01](3){13}
+  \addto{14}
+  \addto{21}
+  \addto{22}
+  \addto[2020-11-01](3){24}
+  \addto[2020-10-30](2){29}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-10-29}{辩证法（单选）}
+  \addto[2020-10-31](2){34}
+  \addto[2020-10-31](2){36}
+  \addto{45}
+  \addto[2020-11-02](2){52}
+  \addto[2020-10-31](2){59}
+  \addto{64}
+  \addto{67}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-10-30}{辩证法（多选）}
+  \addto{33}
+  \addto[2020-11-01](3){35}
+  \addto[2020-11-01](3){36}
+  \addto[2020-11-01](3){38}
+  \addto[2020-11-01](3){39}
+  \addto[2020-11-01](3){41}
+  \addto{42}
+  \addto{43}
+  \addto[2020-11-03](4){45}
+  \addto[2020-11-01](3){46}
+  \addto[2020-11-01](3){47}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-10-31}{辩证法（多选）}
+  \addto[2020-11-02](2){48}
+  \addto[2020-11-02](2){49}
+  \addto{51}
+  \addto{53}
+  \addto[2020-11-02](2){54}
+  \addto[2020-11-02](2){55}
+  \addto[2020-11-02](2){57}
+  \addto{58}
+  \addto{59}
+  \addto[2020-11-02](2){60}
+  \addto[2020-11-02](2){61}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-01}{认识论（单选）}
+  \addto{68}
+  \addto{70}
+  \addto{72}
+  \addto{74}
+  \addto{79}
+  \addto{81}
+  \addto[2020-11-03](2){84}
+  \addto{87}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-02}{认识论（多选）}
+  \addto{64}
+  \addto{67}
+  \addto{69}
+  \addto{71}
+  \addto{72}
+  \addto{73}
+  \addto{75}
+  \addto{78}
+  \addto{80}
+  \addto{83}
+  \addto{84}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-03}{认识论（多选）}
+  \addto{88}
+  \addto{89}
+  \addto{90}
+  \addto{91}
+  \addto{92}
+  \addto{93}
+  \addto{94}
+  \addto{95}
+  \addto{96}
+  \addto{97}
+  \addto{99}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-04}{唯物史观（单选）}
+  \addto{97}
+  \addto{100}
+  \addto{109}
+  \addto{114}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-05}{唯物史观（多选）}
+  \addto{100}
+  \addto{101}
+  \addto{104}
+  \addto{106}
+  \addto{107}
+  \addto{108}
+  \addto{109}
+  \addto{113}
+  \addto{114}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-06}{唯物史观（多选）}
+  \addto{115}
+  \addto{116}
+  \addto{118}
+  \addto{119}
+  \addto{122}
+  \addto{123}
+  \addto{124}
+  \addto{126}
+  \addto{127}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-07}{政经第五章（单选）}
+  \addto{120}
+  \addto{121}
+  \addto{127}
+  \addto{128}
+  \addto{131}
+  \addto{136}
+  \addto{137}
+  \addto{139}
+  \addto{140}
+  \addto{146}
+  \addto{150}
+  \addto{151}
+  \addto{152}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-08}{政经第五章（单选）}
+  \addto{153}
+  \addto{154}
+  \addto{155}
+  \addto{156}
+  \addto{159}
+  \addto{160}
+  \addto{165}
+  \addto{166}
+  \addto{167}
+  \addto{171}
+  \addto{172}
+  \addto{174}
+  \addto{178}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-08}{政经第六章（单选）}
+  \addto{184}
+  \addto{190}
+\end{sdpolitics}
+
+\end{document}

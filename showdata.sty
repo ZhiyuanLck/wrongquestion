@@ -1,0 +1,814 @@
+%%
+%% This is file `showdata.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% showdata.dtx  (with options: `package')
+%% 
+%% Copyright (C) 2020 Li Changkai <lichangkai225@qq.com>
+%% 
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in:
+%% 
+%% http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+\def\myfileversion{1.0}
+\def\myfiledate{2020/10/12}
+\RequirePackage{expl3, xparse, sdutil}
+\ProvidesExplPackage
+  { showdata }
+  { \myfiledate }
+  { \myfileversion }
+  { Store and show your data }
+\seq_new:N \g__showdata_domain_seq
+\seq_set_from_clist:Nn \g__showdata_reserved_counter_seq
+  { sdenv, sdgroup, sditem }
+\prop_gset_from_keyval:Nn \g__showdata_reserved_counter_prop
+  { sdenv=, sdgroup=, sditem= }
+\sdutil_set_msg_cs:n { showdata }
+\__showdata_msg_new:nn { domain-not-set }
+  {
+    Domains~ are~ not~ set~ or~ empty.~ Please~ set~ domains~ by~ command~
+    \sdsetdomain~ first.
+  }
+\__showdata_msg_new:nn { sd-not-define }
+  {
+    #4~ uses~ an~ undefined~ #2~ `#3'~ of~ domain~ `#1'~ \msg_line_context:.
+  }
+\__showdata_msg_new:nn { domain-not-define }
+  {
+    domain `#1'~ not~ defined!
+  }
+\__showdata_msg_new:nn { reserved-counter }
+  {
+    counter~ name~ `#1'~ is~ reserved~ for~ package.
+  }
+\__showdata_msg_new:nn { counter-read-only }
+  {
+    reserved counter~ `#1'~ is~ read-only.
+  }
+\__showdata_msg_new:nn { counter-use-only }
+  {
+    counter~ `#1'~ is~ used~ only~ in~ #2.
+  }
+\__showdata_msg_new:nn { addto-multi-times }
+  {
+    You~ have~ used~ \c_backslash_str sdaddtogroup~ to~ append~ subgroup~ to~
+    the~ local~ group~ `#2'~ more~ than~ once~ in~ batch~ environment~ of~
+    domain~ `#1'.~ This~ will~ cause~ the~ same~ subgroup~ to~ be~ printed~
+    multiple~ times.
+  }
+\__showdata_msg_new:nn { step-set-not-allowed }
+  {
+    \c_backslash_str #1~ is~ not~ allowed~ in~ \c_backslash_str sdsetshowstyle.
+  }
+\__showdata_msg_new:nn { show-counter-use-only }
+  {
+    Only~ counters~ `sditem'~ and~ `sdgroup'~ are~ available~ in~ \c_backslash_str
+    sdsetshowstle.
+  }
+\__showdata_msg_new:nn { show-global-ignore-optional }
+  {
+    optional~ argument~ of~ \c_backslash_str sduse~ in~ \c_backslash_str
+    sdsetshowstyle*~ is~ ignored.
+  }
+\__showdata_msg_new:nn { item-index-out-of-range }
+  {
+    index~ out~ of~ range~ when~ requiring~ the~ item~ of~ property~ `#4'~ of~
+    #2~ group~ `#3'~ in~ domain~ `#1',~ nothing~ returned.
+  }
+\__showdata_msg_new:nn { global-item-index-out-of-range-detail }
+  {
+    property~ `#2'~ of~ global~ group~ `#1'~ has~ #3~ items~ but~ you~ are~
+    requiring~ the~ item~ of~ index~ #4.
+    \\ \\
+    Please~ make~ sure~ there~ are~ an~ equal~ number~ of~ items~ of~
+    properties~ in~ global~ group~ `#1'.
+  }
+
+\__showdata_msg_new:nn { local-item-index-out-of-range-detail }
+  {
+    subgroup of property~ `#2'~ of~ local~ group~ `#1'~ has~ #3~ items~ but~ you~ are~
+    requiring~ the~ item~ of~ index~ #4.
+    \\ \\
+    Please~ make~ sure~ there~ are~ an~ equal~ number~ of~ items~ of~
+    properties~ in~ local~ group~ `#1'.
+  }
+\cs_new_protected:Nn \__showdata_check_undefined:nnnn
+  {
+    \str_if_in:nnTF { #2 } { = }
+      { \sdutil_get_kv:nNN { #2 } }
+      { \sdutil_get_kv:nNN { #2=#2 } }
+    \l_tmpa_tl \l_tmpb_tl
+    \regex_replace_all:nnN { \s } { _ } \l_tmpa_tl
+    \seq_if_in:cnF { g__showdata_#1_\l_tmpa_tl _seq } { #3 }
+      {
+        \sdutil_regex_replace_all:nnnN
+          { . } { \c{string} \0 } { #4 } \l_tmpc_tl
+        \__showdata_msg_error:nxxxx { sd-not-define }
+          { #1 } { \l_tmpb_tl } { #3 } { \l_tmpc_tl }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_domain_not_set:
+  {
+    \bool_if:nT
+      {
+        ! \seq_if_exist_p:N \g__showdata_domain_seq ||
+        \seq_if_empty_p:N \g__showdata_domain_seq
+      }
+      { \__showdata_msg_critical:n { domain-not-set } }
+  }
+\cs_new_protected:Nn \__showdata_check_domain_not_define:nn
+  {
+    \seq_if_in:NnF \g__showdata_domain_seq { #1 }
+      {
+        \cs_if_exist_use:c { __showdata_msg_#2:nn }
+          { domain-not-define } { #1 }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_reserved_counter:n
+  {
+    \prop_if_in:NnT \g__showdata_reserved_counter_prop { #1 }
+      {
+        \__showdata_msg_error:nn { reserved-counter } { #1 }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_counter_use:nn
+  {
+    \str_if_eq:nnF { #1 } { #2 }
+      {
+        \__showdata_check_counter_use_only:n { #1 }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_counter_use_only:n
+  {
+    \str_case:nn { #1 }
+      {
+        { sdenv }
+        {
+          \__showdata_msg_error:nnn { counter-use-only }
+            { #1 } { group~environment }
+        }
+        { sdgroup }
+        {
+          \__showdata_msg_error:nxx { counter-use-only }
+            { #1 } { \c_backslash_str sdsetshowstyle }
+        }
+        { sditem }
+        {
+          \__showdata_msg_error:nxx { counter-use-only } { #1 }
+            {
+              \c_backslash_str sdsetshowstyle~ or~
+              \c_backslash_str sdsetshowstyle*
+            }
+        }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_couter_not_define:nnnn
+  {
+    \prop_if_in:cnF { g__showdata_#1_#2_counter_prop } { #3 }
+      {
+        \str_if_eq:nnTF { #2 } { global }
+          {
+            \__showdata_msg_error:nxxxx { sd-not-define } { #1 }
+              { #2~counter } { #3 } { \c_backslash_str#4* }
+          }
+          {
+            \__showdata_msg_error:nxxxx { sd-not-define } { #1 }
+              { #2~counter } { #3 } { \c_backslash_str#4 }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_group_add_once:nn
+  {
+    \int_compare:nT
+      {
+        \int_use:c
+          { g__showdata_#1_addto_local_group_#2_counter_int }
+        > 1
+      }
+      {
+        \__showdata_msg_warning:nnn { addto-multi-times } { #1 } { #2 }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_counter_not_allowed:nn
+  {
+    \str_if_eq:nnT { #1 } { show }
+      {
+        \__showdata_msg_fatal:nn { step-set-not-allowed } { #2 }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_show_counter_use:nn
+  {
+    \bool_if:nT
+      {
+        \str_if_eq_p:nn { #1 } { show } &&
+        ! \str_if_eq_p:nn { #2 } { sditem } &&
+        ! \str_if_eq_p:nn { #2 } { sdgroup }
+      }
+      {
+        \__showdata_msg_fatal:n { show-counter-use-only }
+      }
+  }
+\cs_new_protected:Nn \__showdata_check_invalid_index:nnnnnn
+  {
+    \int_compare:nT
+      { \int_use:c { #6 } > \seq_count:c { #5 } }
+      {
+        \__showdata_msg_warning:nnnnn { item-index-out-of-range }
+          { #1 } { #2 } { #3 } { #4 }
+
+        \__showdata_msg_warning:nxxxx { #2-item-index-out-of-range-detail }
+          { #3 } { #4 } { \seq_count:c { #5 } } { \int_use:c { #6 } }
+      }
+  }
+\NewDocumentCommand { \sdsetdomain } { m }
+  {
+    \__showdata_set_domain:n { #1 }
+  }
+\cs_new_protected:Nn \__showdata_set_domain:n
+  {
+    \seq_set_from_clist:Nn \g__showdata_domain_seq { #1 }
+    \clist_map_inline:nn { #1 }
+      { \__showdata_set_single_domain:n { ##1 } }
+  }
+\cs_new_protected:Nn \__showdata_set_single_domain:n
+  {
+    \__showdata_init_single_domain_attr:n { #1 }
+    \__showdata_def_single_domain_opt:n { #1 }
+  }
+\cs_new_protected:Nn \__showdata_init_single_domain_attr:n
+  {
+    \seq_gset_from_clist:cn { g__showdata_#1_global_group_seq }
+      { star, date, all }
+    \seq_gset_from_clist:cn { g__showdata_#1_local_group_seq }
+      { date, all }
+    \seq_gclear_new:c { g__showdata_#1_global_counter_seq }
+    \seq_gclear_new:c { g__showdata_#1_local_counter_seq }
+    \prop_gclear_new:c { g__showdata_#1_global_counter_prop }
+    \prop_gclear_new:c { g__showdata_#1_local_counter_prop }
+    \seq_gclear_new:c { g__showdata_#1_prop_seq }
+  }
+\cs_new_protected:Nn \__showdata_def_single_domain_opt:n
+  {
+    \keys_define:nn { showdata / #1 }
+      {
+        prop .code:n =
+          {
+            \sdutil_seq_gappend_clist:cn
+              { g__showdata_#1_prop_seq } { ##1 }
+          },
+        local-group .code:n =
+          {
+            \sdutil_seq_gappend_clist:cn
+              { g__showdata_#1_local_group_seq } { ##1 }
+          },
+        global-group .code:n =
+          {
+            \sdutil_seq_gappend_clist:cn
+              { g__showdata_#1_global_group_seq } { ##1 }
+          },
+        group .code:n =
+          {
+            \sdutil_seq_gappend_clist:cn
+              { g__showdata_#1_global_group_seq } { ##1 }
+            \sdutil_seq_gappend_clist:cn
+              { g__showdata_#1_local_group_seq } { ##1 }
+          },
+        local-counter .code:n =
+          {
+            \__showdata_counter_seq_append:nnn { #1 } { local } { ##1 }
+          },
+        global-counter .code:n =
+          {
+            \__showdata_counter_seq_append:nnn { #1 } { global } { ##1 }
+          },
+        counter .code:n =
+          {
+            \__showdata_counter_seq_append:nnn { #1 } { local } { ##1 }
+            \__showdata_counter_seq_append:nnn { #1 } { global } { ##1 }
+          },
+      }
+  }
+\cs_new_protected:Nn \__showdata_counter_seq_append:nnn
+  {
+    \clist_map_inline:nn { #3 }
+      {
+        \seq_gput_right:cn { g__showdata_#1_#2_counter_seq } { ##1 }
+        \prop_gput:cnn { g__showdata_#1_#2_counter_prop } { ##1 } { }
+      }
+  }
+\NewDocumentCommand { \sdsetup } { m }
+  {
+    \__showdata_check_domain_not_set:
+    \keys_set:nn { showdata } { #1 }
+  }
+\NewDocumentCommand { \sdsetupsub } { m m }
+  {
+    \__showdata_check_domain_not_set:
+    \clist_map_inline:nn { #1 }
+      { \__showdata_setup_single:nn { ##1 } { #2 } }
+  }
+\NewDocumentCommand { \sdsetupall } { m }
+  {
+    \__showdata_check_domain_not_set:
+    \seq_map_inline:Nn \g__showdata_domain_seq
+      { \__showdata_setup_single:nn { ##1 } { #1 } }
+  }
+\cs_new_protected:Nn \__showdata_setup_single:nn
+  {
+    \__showdata_check_domain_not_define:nn { #1 } { critical }
+    \keys_set:nn { showdata / #1 } { #2 }
+  }
+\clist_map_inline:nn { New, Renew, Declare, Provide }
+  {
+    \cs_new_protected:cpn { #1sdBatchEnvironment } ##1##2##3##4
+      {
+        \__showdata_new_batch_env:nnnnn { #1 } { ##1 } { ##2 } { ##3} { ##4 }
+      }
+  }
+\cs_new_protected:Nn \__showdata_new_batch_env:nnnnn
+  {
+    \__showdata_check_domain_not_set:
+    \tl_set:Nn \l__showdata_env_tmpa_tl { #4 }
+    \tl_set:Nn \l__showdata_env_tmpb_tl { #5 }
+    \clist_map_inline:nn { #2 }
+      {
+        \__showdata_parse_single_batch_env:nnnVV { #1 } { ##1 } { #3 }
+        \l__showdata_env_tmpa_tl
+        \l__showdata_env_tmpb_tl
+      }
+  }
+\cs_new_protected:Nn \__showdata_parse_single_batch_env:nnnnn
+  {
+    \str_if_in:nnTF { #2 } { = }
+      { \sdutil_get_kv:nNN { #2 } }
+      { \sdutil_get_kv:nNN { #2=sd#2 } }
+    \l__showdata_domain_tl \l__showdata_env_tl
+    \__showdata_init_before_env:V \l__showdata_domain_tl
+    \__showdata_set_single_batch_env:nVVnnn { #1 }
+      \l__showdata_domain_tl \l__showdata_env_tl
+      { #3 } { #4 } { #5 }
+  }
+\cs_generate_variant:Nn \__showdata_parse_single_batch_env:nnnnn { nnnVV }
+\cs_new_protected:Nn \__showdata_init_before_env:n
+  {
+    \__showdata_check_domain_not_define:nn { #1 } { critical }
+    \__showdata_init_global_group:n { #1 }
+    \__showdata_add_default_counter:n { #1 }
+    \__showdata_init_counter:nnn { #1 } { env } { global }
+    \int_gzero_new:c { g__showdata_#1_reserved_counter_sdenv_int }
+    \__showdata_init_index_seq:n { #1 }
+  }
+\cs_generate_variant:Nn \__showdata_init_before_env:n { V }
+\cs_new_protected:Nn \__showdata_init_index_seq:n
+  {
+    \seq_map_inline:cn { g__showdata_#1_local_group_seq }
+      {
+        \seq_gclear_new:c { g__showdata_#1_subgroup_##1_index_seq }
+      }
+  }
+\cs_new_protected:Nn \__showdata_init_global_group:n
+  {
+    \seq_map_inline:cn { g__showdata_#1_global_group_seq }
+      {
+        \seq_map_inline:cn { g__showdata_#1_prop_seq }
+          {
+            \seq_gclear_new:c { g__showdata_#1_global_group_##1_prop_####1_seq }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_add_default_counter:n
+  {
+    \__showdata_set_group_default_counter:nnn { #1 } { global } { global }
+    \__showdata_set_group_default_counter:nnn { #1 } { global } { local }
+    \__showdata_set_group_default_counter:nnn { #1 } { local } { local }
+  }
+\cs_new_protected:Nn \__showdata_set_group_default_counter:nnn
+  {
+    \seq_map_inline:cn { g__showdata_#1_#3_group_seq }
+      {
+        \seq_gput_left:cn { g__showdata_#1_#2_counter_seq } { ##1 }
+        \prop_gput:cnn { g__showdata_#1_#2_counter_prop } { ##1 } { }
+      }
+  }
+\cs_new_protected:Nn \__showdata_init_counter:nnn
+  {
+    \seq_map_inline:cn { g__showdata_#1_#3_counter_seq }
+      {
+        \__showdata_check_reserved_counter:n { ##1 }
+        \int_gzero_new:c { g__showdata_#1_#2_#3_counter_##1_int }
+      }
+  }
+\cs_new_protected:Nn \__showdata_set_single_batch_env:nnnnnn
+  {
+    \cs_if_exist_use:c { #1DocumentEnvironment } { #3 } { #4 }
+      {
+        \__showdata_env_init:n { #2 }
+        #5
+      } { #6 }
+  }
+\cs_generate_variant:Nn \__showdata_set_single_batch_env:nnnnnn { nVVnnn }
+\cs_new_protected:Nn \__showdata_env_init:n
+  {
+    % step counter first
+    \int_gincr:c { g__showdata_#1_reserved_counter_sdenv_int }
+    \__showdata_env_init_local_group:n { #1 }
+    \__showdata_init_counter:nnn { #1 } { env } { local }
+    \__showdata_env_init_cs:n { #1 }
+  }
+\cs_new_protected:Nn \__showdata_env_init_local_group:n
+  {
+    \seq_map_inline:cn { g__showdata_#1_local_group_seq }
+      {
+        \seq_map_inline:cn { g__showdata_#1_prop_seq }
+          {
+            \seq_gclear_new:c
+              {
+                g__showdata_#1_local_group_##1_prop_####1_
+                \int_use:c { g__showdata_#1_reserved_counter_sdenv_int }
+                _seq
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_env_init_cs:n
+  {
+    \__showdata_env_init_cs_save:n { #1 }
+    \__showdata_init_cs_addto_group:n { #1 }
+    \__showdata_init_cs_counter:nn { #1 } { env }
+  }
+\cs_new_protected:Nn \__showdata_env_init_cs_save:n
+  {
+    \DeclareDocumentCommand { \sdsave } { s m m +m }
+      {
+        \IfBooleanTF { ##1 }
+          {
+            \__showdata_save_global_group_prop:nnnn
+              { #1 } { ##2 } { ##3 } { ##4 }
+          }
+          {
+            \__showdata_save_local_group_prop:nnnn
+              { #1 } { ##2 } { ##3 } { ##4 }
+          }
+      }
+    \DeclareDocumentCommand { \sdesave } { s m m +m }
+      {
+        \IfBooleanTF { ##1 }
+          {
+            \__showdata_save_global_group_prop:nnnx
+              { #1 } { ##2 } { ##3 } { ##4 }
+          }
+          {
+            \__showdata_save_local_group_prop:nnnx
+              { #1 } { ##2 } { ##3 } { ##4 }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_save_global_group_prop:nnnn
+  {
+    \__showdata_check_undefined:nnnn
+      { #1 } { global~group } { #2 } { \sdsave*~or~\sdesave* }
+    \__showdata_check_undefined:nnnn
+      { #1 } { prop=property } { #3 } { \sdsave*~or~\sdesave* }
+    \seq_gput_right:cn { g__showdata_#1_global_group_#2_prop_#3_seq } { #4 }
+  }
+\cs_generate_variant:Nn \__showdata_save_global_group_prop:nnnn { nnnx }
+\cs_new_protected:Nn \__showdata_save_local_group_prop:nnnn
+  {
+    \__showdata_check_undefined:nnnn
+      { #1 } { local~group } { #2 } { \sdsave~or~\sdesave }
+    \__showdata_check_undefined:nnnn
+      { #1 } { prop=property } { #3 } { \sdsave~or~\sdesave }
+    \seq_gput_right:cn
+      {
+        g__showdata_#1_local_group_#2_prop_#3_
+        \int_use:c { g__showdata_#1_reserved_counter_sdenv_int }
+        _seq
+      } { #4 }
+  }
+\cs_generate_variant:Nn \__showdata_save_local_group_prop:nnnn { nnnx }
+\cs_new_protected:Nn \__showdata_init_cs_addto_group:n
+  {
+    \seq_map_inline:cn { g__showdata_#1_local_group_seq }
+      {
+        \int_gzero_new:c { g__showdata_#1_addto_local_group_##1_counter_int }
+      }
+    \DeclareDocumentCommand { \sdaddtogroup } { m }
+      { \__showdata_addto_group:nn { #1 } { ##1 } }
+  }
+\cs_new_protected:Nn \__showdata_addto_group:nn
+  {
+    \clist_map_inline:nn { #2 }
+      {
+        \int_gincr:c
+          { g__showdata_#1_addto_local_group_##1_counter_int }
+        \__showdata_check_undefined:nnnn
+          { #1 } { local~group } { ##1 } { \sdaddtogroup }
+        \__showdata_check_group_add_once:nn { #1 } { ##1 }
+        \seq_gput_right:cx { g__showdata_#1_subgroup_##1_index_seq }
+          {
+            \int_use:c { g__showdata_#1_reserved_counter_sdenv_int }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_init_cs_counter:nn
+  {
+    \clist_map_inline:nn { arabic, alph, Alph, roman, Roman }
+      {
+        \exp_args:Nc \DeclareExpandableDocumentCommand { sdc##1 } { s m }
+          {
+            \IfBooleanTF { ####1 }
+              { \__showdata_use_counter:nnnnn { global } }
+              { \__showdata_use_counter:nnnnn { local } }
+            { #1 } { #2 } { ####2 } { ##1 }
+          }
+      }
+    \DeclareDocumentCommand { \sdcstep } { s m }
+      {
+        \IfBooleanTF { ##1 }
+          { \__showdata_step_counter:nnnn { global } }
+          { \__showdata_step_counter:nnnn { local } }
+        { #1 } { #2 } { ##2 }
+      }
+    \DeclareExpandableDocumentCommand { \sdcvalue } { s m }
+      {
+        \IfBooleanTF { ##1 }
+          { \__showdata_get_counter_value:nnnn { global } }
+          { \__showdata_get_counter_value:nnnn { local } }
+        { #1 } { #2 } { ##2 }
+      }
+    \DeclareDocumentCommand { \sdcset } { s m m }
+      {
+        \IfBooleanTF { ##1 }
+          { \__showdata_set_counter:nnnnx { global } }
+          { \__showdata_set_counter:nnnnx { local } }
+        { #1 } { #2 } { ##2 } { ##3 }
+      }
+  }
+\cs_new:Nn \__showdata_use_counter:nnnnn
+  {
+    \prop_if_in:NnTF \g__showdata_reserved_counter_prop { #4 }
+      {
+        \str_if_eq:nnT { #3 } { env }
+          {
+            \__showdata_check_counter_use:nn { #4 } { sdenv }
+          }
+        \__showdata_check_show_counter_use:nn { #3 } { #4 }
+        \cs_if_exist_use:c { int_to_#5:n }
+          {
+            \int_use:c { g__showdata_#2_reserved_counter_#4_int }
+          }
+      }
+      {
+        \__showdata_check_couter_not_define:nnnn { #2 } { #1 } { #4 } { sdc#5 }
+        \cs_if_exist_use:c { int_to_#5:n }
+          {
+            \int_use:c { g__showdata_#2_#3_#1_counter_#4_int }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_step_counter:nnnn
+  {
+    \__showdata_check_counter_not_allowed:nn { #3 } { sdcstep }
+    \seq_if_in:NnTF \g__showdata_reserved_counter_seq { #4 }
+      { \__showdata_msg_error:nn { counter-read-only } { #4 } }
+      {
+        \__showdata_check_couter_not_define:nnnn { #2 } { #1 } { #4 } { sdcstep }
+      }
+    \int_gincr:c { g__showdata_#2_#3_#1_counter_#4_int }
+  }
+\cs_new:Nn \__showdata_get_counter_value:nnnn
+  {
+    \prop_if_in:NnTF \g__showdata_reserved_counter_prop { #4 }
+      {
+        \str_if_eq:nnT { #3 } { env }
+          {
+            \__showdata_check_counter_use:nn { #4 } { sdenv }
+          }
+        \__showdata_check_show_counter_use:nn { #3 } { #4 }
+        \int_use:c { g__showdata_#2_reserved_counter_#4_int }
+      }
+      {
+        \__showdata_check_couter_not_define:nnnn { #2 } { #1 } { #4 } { sdcvalue }
+        \int_use:c { g__showdata_#2_#3_#1_counter_#4_int }
+      }
+  }
+\cs_new_protected:Nn \__showdata_set_counter:nnnnn
+  {
+    \__showdata_check_counter_not_allowed:nn { #3 } { sdcset }
+    \seq_if_in:NnT \g__showdata_reserved_counter_seq { #4 }
+      { \__showdata_msg_error:nn { counter-read-only } { #4 } }
+      {
+        \__showdata_check_couter_not_define:nnnn { #2 } { #1 } { #4 } { sdcset }
+      }
+    \int_gset:cn { g__showdata_#2_#3_#1_counter_#4_int } { #5 }
+  }
+\cs_generate_variant:Nn \__showdata_set_counter:nnnnn { nnnnx }
+\NewDocumentCommand { \sdshow } { s m m }
+  {
+    \IfBooleanTF { #1 }
+      { \__showdata_show:nnn { global } }
+      { \__showdata_show:nnn { local } }
+    { #2 } { #3 }
+  }
+\cs_new_protected:Nn \__showdata_show:nnn
+  {
+    \cs_if_exist_use:c { __showdata_#2_show_cs_#1_#3 }
+  }
+\NewDocumentCommand { \sdsetshowstyle } { s }
+  {
+    \IfBooleanTF { #1 }
+      { \__showdata_set_show_global_style:nnnnnn }
+      { \__showdata_set_show_local_style:nnnnnnnn }
+  }
+\cs_new_protected:Nn \__showdata_set_show_global_style:nnnnnn
+  {
+    \__showdata_check_domain_not_set:
+    \clist_map_inline:nn { #1 }
+      {
+        \__showdata_check_domain_not_define:nn { ##1 } { error }
+        \__showdata_check_undefined:nnnn
+          { ##1 } { prop=property } { #3 } { \sdsetshowstyle* }
+        \clist_map_inline:nn { #2 }
+          {
+            \__showdata_check_undefined:nnnn
+              { ##1 } { global~group } { ####1 } { \sdsetshowstyle* }
+            \cs_gset_protected:cpn { __showdata_##1_show_cs_global_####1 }
+              {
+                \__showdata_show_global:nnnnnn
+                  { #1 } { #2 } { #3 } { #4 } { #5 } { #6 }
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_show_global:nnnnnn
+  {
+    \int_zero_new:c { g__showdata_#1_reserved_counter_sditem_int }
+    \__showdata_init_cs_global_empty_prop:nnn { #1 } { #2 } { #3 }
+    \__showdata_init_cs_counter:nn { #1 } { show }
+    \__showdata_show_global_init_cs_use:nn { #1 } { #2 }
+    #4
+    \seq_map_inline:cn { g__showdata_#1_global_group_#2_prop_#3_seq }
+      {
+        \int_incr:c { g__showdata_#1_reserved_counter_sditem_int }
+        #6
+      }
+    #5
+  }
+\cs_new_protected:Nn \__showdata_init_cs_global_empty_prop:nnn
+  {
+    \prg_set_conditional:Nnn \__showdata_if_empty_prop: { T, F, TF, p}
+      {
+        \seq_if_empty:cTF { g__showdata_#1_global_group_#2_prop_#3_seq }
+          { \prg_return_true: }
+          { \prg_return_false: }
+      }
+    \cs_set_eq:NN \sdIfEmptyPropTF \__showdata_if_empty_prop:TF
+    \cs_set_eq:NN \sdIfEmptyPropT \__showdata_if_empty_prop:T
+    \cs_set_eq:NN \sdIfEmptyPropF \__showdata_if_empty_prop:F
+  }
+\cs_new_protected:Nn \__showdata_show_global_init_cs_use:nn
+  {
+    \DeclareDocumentCommand { \sduse } { o m }
+      {
+        \IfValueT { ##1 }
+          {
+            \__showdata_msg_warning:n { show-global-ignore-optional }
+          }
+        \__showdata_check_undefined:nnnn
+          { #1 } { prop=property } { ##2 } { \sduse }
+        \__showdata_check_invalid_index:nnnnnn { #1 } { global } { #2 } { ##2 }
+          { g__showdata_#1_global_group_#2_prop_##2_seq }
+          { g__showdata_#1_reserved_counter_sditem_int }
+        \seq_item:cn { g__showdata_#1_global_group_#2_prop_##2_seq }
+          { \int_use:c { g__showdata_#1_reserved_counter_sditem_int } }
+      }
+  }
+\cs_new_protected:Nn \__showdata_set_show_local_style:nnnnnnnn
+  {
+    \__showdata_check_domain_not_set:
+    \clist_map_inline:nn { #1 }
+      {
+        \__showdata_check_domain_not_define:nn { ##1 } { error }
+        \__showdata_check_undefined:nnnn
+          { ##1 } { prop=property } { #3 } { \setshowstyle }
+        \clist_map_inline:nn { #2 }
+          {
+            \__showdata_check_undefined:nnnn
+              { ##1 } { local~group } { ####1 } { \setshowstyle }
+            \cs_gset_protected:cpn { __showdata_##1_show_cs_local_####1 }
+              {
+                \__showdata_show_local:nnnnnnnn
+                  { #1 } { #2 } { #3 } { #4 }
+                  { #5 } { #6 } { #7 } { #8 }
+              }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_show_local:nnnnnnnn
+  {
+    \int_zero_new:c { g__showdata_#1_reserved_counter_sdgroup_int }
+    \__showdata_init_cs_no_subgroup:nn { #1 } { #2 }
+    \__showdata_init_cs_counter:nn { #1 } { show }
+    #4
+    \seq_map_inline:cn { g__showdata_#1_subgroup_#2_index_seq }
+      {
+        \int_gincr:c { g__showdata_#1_reserved_counter_sdgroup_int }
+        \__showdata_show_local_init_cs_use:nnn { #1 } { #2 } { ##1 }
+        \__showdata_show_local_sub:nnnnnnn { #1 } { #2 } { #3 }
+          { ##1 } { #6 } { #7 } { #8 }
+      }
+    #5
+  }
+\cs_new_protected:Nn \__showdata_init_cs_no_subgroup:nn
+  {
+    \prg_set_conditional:Nnn \__showdata_if_no_subgroup: { T, F, TF, p}
+      {
+        \seq_if_empty:cTF { g__showdata_#1_subgroup_#2_index_seq }
+          { \prg_return_true: }
+          { \prg_return_false: }
+      }
+    \cs_set_eq:NN \sdIfNoSubgroupTF \__showdata_if_no_subgroup:TF
+    \cs_set_eq:NN \sdIfNoSubgroupT \__showdata_if_no_subgroup:T
+    \cs_set_eq:NN \sdIfNoSubgroupF \__showdata_if_no_subgroup:F
+  }
+\cs_new_protected:Nn \__showdata_show_local_sub:nnnnnnn
+  {
+    \int_zero_new:c { g__showdata_#1_reserved_counter_sditem_int }
+    \__showdata_init_cs_local_empty_prop:nnnn { #1 } { #2 } { #3 } { #4 }
+    #5
+    \seq_map_inline:cn { g__showdata_#1_local_group_#2_prop_#3_#4_seq }
+      {
+        \int_incr:c { g__showdata_#1_reserved_counter_sditem_int }
+        #7
+      }
+    #6
+  }
+\cs_new_protected:Nn \__showdata_init_cs_local_empty_prop:nnnn
+  {
+    \prg_set_conditional:Nnn \__showdata_if_empty_prop: { T, F, TF, p}
+      {
+        \seq_if_empty:cTF { g__showdata_#1_local_group_#2_prop_#3_#4_seq }
+          { \prg_return_true: }
+          { \prg_return_false: }
+      }
+    \cs_set_eq:NN \sdIfEmptyPropTF \__showdata_if_empty_prop:TF
+    \cs_set_eq:NN \sdIfEmptyPropT \__showdata_if_empty_prop:T
+    \cs_set_eq:NN \sdIfEmptyPropF \__showdata_if_empty_prop:F
+  }
+\cs_new_protected:Nn \__showdata_show_local_init_cs_use:nnn
+  {
+    \DeclareDocumentCommand { \sduse } { o m }
+      {
+        \IfValueTF { ##1 }
+          {
+            \__showdata_show_local_use_global:nnn { #1 } { ##1 } { ##2 }
+          }
+          {
+            \__showdata_show_local_use_local:nnnn { #1 } { #2 } { ##2 } { #3 }
+          }
+      }
+  }
+\cs_new_protected:Nn \__showdata_show_local_use_global:nnn
+  {
+    \__showdata_check_undefined:nnnn
+      { #1 } { prop=property } { #3 } { \sduse }
+    \__showdata_check_invalid_index:nnnnnn { #1 } { global } { #2 } { #3 }
+      { g__showdata_#1_global_group_#2_prop_#3_seq }
+      { g__showdata_#1_reserved_counter_sdgroup_int }
+    \seq_item:cn { g__showdata_#1_global_group_#2_prop_#3_seq }
+      { \int_use:c { g__showdata_#1_reserved_counter_sdgroup_int } }
+  }
+\cs_new_protected:Nn \__showdata_show_local_use_local:nnnn
+  {
+    \__showdata_check_undefined:nnnn
+      { #1 } { prop=property } { #3 } { \sduse }
+    \__showdata_check_invalid_index:nnnnnn { #1 } { local } { #2 } { #3 }
+      { g__showdata_#1_local_group_#2_prop_#3_#4_seq }
+      { g__showdata_#1_reserved_counter_sditem_int }
+    \seq_item:cn { g__showdata_#1_local_group_#2_prop_#3_#4_seq }
+      { \int_use:c { g__showdata_#1_reserved_counter_sditem_int } }
+  }
+\NewDocumentCommand { \NewsdReviewPoint } { m m }
+  {
+    \seq_gset_from_clist:cn { g__showdata_review_point_#1_seq } {  #2 }
+  }
+\prg_new_conditional:Nnn \__showdata_if_review:nnn { T, F, TF }
+  {
+    \sdutil_if_review:cnnTF { g__showdata_review_point_#1_seq } { #2 } { #3 }
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+\cs_set_eq:NN \sdIfReviewTF \__showdata_if_review:nnnTF
+\cs_set_eq:NN \sdIfReviewT \__showdata_if_review:nnnT
+\cs_set_eq:NN \sdIfReviewF \__showdata_if_review:nnnF
+\endinput
+%%
+%% End of file `showdata.sty'.

@@ -1,10 +1,18 @@
 \usepackage{nicematrix}
+\usepackage{empheq}
 \usepackage{siunitx}
 \usepackage[bodytextleadingratio=2]{zhlineskip}
 \input preamble.tex
 \input review.code.tex
 \usetikzlibrary{arrows.meta}
+\usepackage{paracol}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{patterns}
+\pgfplotsset{compat=newest}
 \everymath{\displaystyle}
+\allowdisplaybreaks
 \setlength\parindent{0pt}
 
 \geometry{
@@ -19,6 +27,28 @@
   section/format=\huge\bfseries\sffamily\color{teal},
 }
 
+\pgfplotsset{
+  math/.style={
+    set layers=standard,
+    axis on top,
+    axis lines=middle,
+    unit vector ratio*=1 1 1,
+    width=.8\linewidth,
+    xlabel=$x$,
+    ylabel=$y$,
+    xlabel style={at={(current axis.right of origin)}, anchor=north},
+    ylabel style={at={(current axis.above origin)}, anchor=east},
+    enlargelimits={abs={0.5}},
+    tick align=inside,
+    /tikz/every pin/.style={
+      inner sep=1pt, font=\small
+    },
+    /tikz/every pin edge/.style={thick},
+    % xticklabel style={text height=2ex},
+    % ticks=none,
+  }
+}
+
 \newlist{queslist}{enumerate}{2}
 \setlist[queslist]{
   label=(\arabic*),
@@ -31,7 +61,7 @@
   topsep=2pt,
 }
 
-\newcommand{\mathproof}{\par{\itshape 证明：}}
+\newcommand{\mathproof}{\par{\kaiti 证明：}}
 
 \newcommand{\at}[2][]{#1|_{#2}}
 
@@ -305,7 +335,7 @@
       {
         \par\vspace{\l__math_solu_item_sep_dim}
         {\sffamily\bfseries 错因：}
-        {\itshape\color{red} \l__math_info_tl}
+        {\kaiti\color{red} \l__math_info_tl}
       }
     \par\vspace{\l__math_solu_item_sep_dim}
     {\sffamily\bfseries 答案：}
