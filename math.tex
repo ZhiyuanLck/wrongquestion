@@ -1,7 +1,7 @@
 \documentclass{ctexart}
 \input math.code.tex
 % 可以设置复习日期，默认\today
-\setdate{2020-11-05}
+\setdate{2020-11-08}
 % 显示所有题目
 \mathsetup{
   % show all,
@@ -1357,7 +1357,7 @@ $\int \frac{\dd x}{1 + \sin x + \cos x} =$\mathblank.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}(4){2020-10-21}{一元积分计算}[没有想到把整个式子直接进行换元]
+\begin{mathques}(5){2020-11-04}{一元积分计算}[没有想到把整个式子直接进行换元]
 \begin{ques}
   计算$\int \arcsin \sqrt{\frac{x}{a + x}}\dd x (a > 0\text{是常数})$.
 \end{ques}
@@ -2643,7 +2643,7 @@ A + 2B + 2C = 1,
 \end{solu}
 \end{mathques}
 
-\begin{mathques}(2){2020-11-02}{多元函数微分学}[抄错；需要合并]
+\begin{mathques}(3){2020-11-04}{多元函数微分学}[抄错；需要合并]
 \begin{ques}
   设$z = f(x^2y^2, e^{xy})$，其中$f(u, v)$有二阶连续偏导数，求$z''_{xx},
   z''_{yy}, z''_{xy}.$
@@ -2894,7 +2894,7 @@ A + 2B + 2C = 1,
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-11-03}{多元函数微分学}[求导符漏了]
+\begin{mathques}(2){2020-11-05}{多元函数微分学}[求导符漏了]
 \begin{ques}
   设$f(u)$具有二阶连续导数，且$z = xf(\frac{y}{x}) + yf(\frac{x}{y})$，求
   $\pdv{z}{x}{y}.$
@@ -2938,7 +2938,7 @@ A + 2B + 2C = 1,
   A = f''_{xx}\qty(\frac{1}{e}, 0) = e\qc B = f''_{xy}\qty(\frac{1}{e}, 0) = 0
   \qc A = f''_{yy}\qty(\frac{1}{e}, 0) = \frac{2}{e^2},
 \end{gather*}
-故$\matherror{AC - B^2 = \frac{2}{e} > 0, A = e > 0}$，则$\qty(\frac{1}{e}, 0)
+故$\matherror{B^2 - AC = - \frac{2}{e} < 0, A = e > 0}$，则$\qty(\frac{1}{e}, 0)
 $为$f(x, y)$的极小值点，极小值为$-\frac{1}{e}.$
 \end{solu}
 \end{mathques}
@@ -2993,6 +2993,79 @@ $为$f(x, y)$的极小值点，极小值为$-\frac{1}{e}.$
 
   \matherror*{要证明$\dd[2]{L} > 0$}
 
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-11-06}{二重积分}[不知道怎么求$y$的范围]
+\begin{ques}
+  累次积分$\int_{0}^{\frac{\pi}{2}}\dd\theta\int_{0}^{\cos\theta}f(r\cos\theta,
+  r\sin\theta)r\dd r$可以写成(\quad).
+  \begin{multichoice}
+    \task $\int_{0}^{1}\dd y\int_{0}^{\sqrt{y - y^2}}f(x, y)\dd x$
+    \task $\int_{0}^{1}\dd y\int_{0}^{\sqrt{1 - y^2}}f(x, y)\dd x$
+    \task $\int_{0}^{1}\dd x\int_{0}^{1}f(x, y)\dd y$
+    \task \answer{$\int_{0}^{1}\dd x\int_{0}^{\sqrt{x - x^2}}f(x, y)\dd y$}
+  \end{multichoice}
+\end{ques}
+\begin{solu}
+  积分区域$D = \Bqty{(r, \theta) \bigg| 0 \le \theta \le \frac{\pi}{2}, 0 \le
+  r \le \cos \theta}$
+
+  先对$r$积分，且$0 = r_1(\theta) \le r \le r_2(\theta)$，$r_2(\theta)$为圆的
+  方程$\qty(x - \frac{1}{2})^2 + y^2 = \frac{1}{4}$，然后对$\theta$积分且$0
+  \le \theta \le \frac{\pi}{2}$，实际上积分区域$D$就是圆$\qty(x - \frac{1}{2})
+  ^2 + y^2 = \frac{1}{4}$的上半部分。
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-11-06}{二重积分}[漏了$r$导致积分算错]
+\begin{ques}
+求二重积分$\iint\limits_{D}\frac{1 - x^2 - y^2}{1 + x^2 + y^2}\dd x\dd y$，
+其中$D$是$\{(x, y)|x^2 + y^2 \le 1\}$在第一象限的部分.
+\end{ques}
+\begin{solu}
+  利用极坐标得
+  \begin{align*}
+    \text{原式} &= \int_{0}^{\frac{\pi}{2}}\dd \theta \int_{0}^{1} \frac{1 -
+    r^2}{1 + r^2}\matherror{r}\dd r = \frac{\pi}{2}\int_{0}^{1}\qty(\frac{2}{1
+    + r^2} - 1)r\dd r\\
+    &= \eval{\frac{\pi}{2}\qty(\ln(1 + r^2) - \frac{1}{2}r^2)}_{0}^{1} =
+    \frac{\pi}{2}\qty(\ln 2 - \frac{1}{2}).
+  \end{align*}
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-11-06}{二重积分}[0-1的部分算错了]
+\begin{ques}
+  设$F(t) = \iint\limits_{x + y \le t}f(x, y)\dd x\dd y$，其中$f(x, y) =
+  \begin{dcases}
+    1, & 0 \le x \le 1, 0 \le y \le 1,\\
+    0, & \text{其他},\\
+  \end{dcases}
+  $求$F(t)$的表达式.
+\end{ques}
+\begin{solu}
+  由被积函数$f(x, y)$的表达式可知$F(t)$在数值上等于区域$x + y \le t$与正方形$0
+  \le x, y \le 1,$的公共部分的面积.
+
+  当$t \le 0$时，$F(t) = 0$;
+
+  当$0 < t \le 1$时，$F(t) = \frac{1}{2}t^2$;
+
+  当$1 < t \le 2$时，$F(t) = 1 - \frac{1}{2}(2 - t)^2$;
+
+  当$t > 2$时，$F(t) = 1.$
+
+  综上所述，
+  \[
+    F(t) =
+    \begin{dcases}
+      0,                        & t \le 0,\\
+      \frac{1}{2}t^2,           & 0 < t \le 1,\\
+      -\frac{1}{2}t^2 + 2t - 1, & 1 < t \le 2,\\
+      1,                        & t > 2.
+    \end{dcases}
+  \]
 \end{solu}
 \end{mathques}
 \end{document}
