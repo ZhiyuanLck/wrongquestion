@@ -1,12 +1,12 @@
 \documentclass{ctexart}
 \input math.code.tex
 % 可以设置复习日期，默认\today
-\setdate{2020-11-08}
+\setdate{2020-11-20}
 % 显示所有题目
 \mathsetup{
   % show all,
 % 设置复习时间点，默认2, 4, 7, 14, 30
-  % review point = { 2, 4, 7, 14, 30 }
+  review point = { 3, 10, 30 }
 }
 
 
@@ -1468,7 +1468,7 @@ $\int \frac{\dd x}{1 + \sin x + \cos x} =$\mathblank.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}(2){2020-10-12}{一元积分计算}[没能求出正确的通项公式来凑积分]
+\begin{mathques}(3){2020-11-11}{一元积分计算}[没能求出正确的通项公式来凑积分]
 \begin{ques}
   $\lim_{n \to \infty} \qty(\frac{1}{n} \cdot \frac{2}{n} \cdot \dotsi \cdot
   \frac{n}{n})^{\frac{1}{n}} =$\mathblank.
@@ -1513,7 +1513,7 @@ $\int \frac{\dd x}{1 + \sin x + \cos x} =$\mathblank.
 \end{solu}
 \end{mathques}
 
-\begin{mathques}(3){2020-10-19}{一元积分计算}[无思路]
+\begin{mathques}(4){2020-11-18}{一元积分计算}[无思路]
 \begin{ques}
 计算定积分$\int_{-\frac{\pi}{4}}^{\frac{\pi}{4}} e^{\frac{x}{2}} \frac{\cos
 x - \sin x}{\sqrt{\cos x}}\dd x.$
@@ -1705,7 +1705,7 @@ $求$\int_{-1}^{\frac{\pi}{4}}f(x)\dd x.$
 \end{solu}
 \end{mathques}
 
-\begin{mathques}(3){2020-10-17}{一元积分计算}[凑定积分的公式理解错误]
+\begin{mathques}(3){2020-11-16}{一元积分计算}[凑定积分的公式理解错误]
 \begin{ques}
   $\lim_{n \to \infty} \ln \sqrt[n]{\qty(1 + \frac{1}{n})^2 \qty(1 + \frac{2}
   {n})^2 \dotsi \qty(1 + \frac{n}{n})^2 } =$\mathblank.
@@ -3018,7 +3018,7 @@ $为$f(x, y)$的极小值点，极小值为$-\frac{1}{e}.$
 \end{solu}
 \end{mathques}
 
-\begin{mathques}{2020-11-06}{二重积分}[漏了$r$导致积分算错]
+\begin{mathques}(2){2020-11-08}{二重积分}[漏了$r$导致积分算错]
 \begin{ques}
 求二重积分$\iint\limits_{D}\frac{1 - x^2 - y^2}{1 + x^2 + y^2}\dd x\dd y$，
 其中$D$是$\{(x, y)|x^2 + y^2 \le 1\}$在第一象限的部分.
@@ -3066,6 +3066,94 @@ $为$f(x, y)$的极小值点，极小值为$-\frac{1}{e}.$
       1,                        & t > 2.
     \end{dcases}
   \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(2){2020-11-18}{二重积分}[半径忘记开平方]
+\begin{ques}
+  设函数$f(x, y)$连续，交换二次积分次序$\int_{0}^{1}\dd y\int_{\sqrt{y}}
+  ^{\sqrt{2 - y^2}}\dd x=$\mathblank.
+\end{ques}
+\begin{solu}
+  积分区域用不等式表示为
+  \[
+  0 \le y \le 1\qc \sqrt{y} \le x \le \sqrt{2 - y^2}
+  \]
+  求解
+  \[
+  \begin{dcases}
+  \sqrt{y} = x,\\
+  x = \sqrt{2 - y^2},\\
+  \end{dcases}
+  \]
+  得$x = 1, y = 1$
+
+  当$0 \le x \le 1$时，$0 \le y \le x^2$；当$1 \le x \le \sqrt{2}$时，$0 \le y
+  \le \sqrt{2 - x^2}$.
+
+  故$\int_{0}^{1}\dd y\int_{\sqrt{y}} ^{\sqrt{2 - y^2}}\dd x = \int_{0}^{1}\dd
+  x\int_{0}^{x^2}f(x, y)\dd y + \int_{1}^{\sqrt{2}}\dd x\int_{0}^{\sqrt{2 -
+  x^2}}f(x, y)\dd y$.
+\end{solu}
+\end{mathques}
+
+\begin{mathques}(3){2020-11-16}{二重积分}[范围画错]
+\begin{ques}
+  设$f(u)$为连续函数，则二次积分$\int_{0}^{\frac{\pi}{2}}\dd
+  \theta\int_{2\cos\theta}^{2}f(r^2)r\dd r$在直角坐标系下化为二次积分
+  \mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\int_{0}^{2}\dd x\int_{\sqrt{2x - x^2}}^{\sqrt{4 - x^2}}f(x^2 + y^2)
+  \dd y$}
+
+  区域$D$在极坐标系下表示为
+  \[
+  0 \le \theta \le \frac{\pi}{2}\qc 2\cos\theta \le r \le 2,
+  \]
+  则图像在第一象限.
+
+  \matherror*{由$r = 2\cos\theta$可得$r^2 = 2r\cos\theta$，对应$x^2 + y^2 =
+  2x$}.
+
+  \matherror*{由$r = 2$有$r^2 = 4$，对应$x^2 + y^2 = 4$}.
+
+  故在直角坐标系下（要画图）可表示为
+  \[
+  0 \le x \le 2, \sqrt{2x - x^2} \le y \le \sqrt{4 - x^2}.
+  \]
+  即
+  \[
+    \text{原式} = \int_{0}^{2}\dd x\int_{\sqrt{2x - x^2}}^{\sqrt{4 - x^2}}
+    f(x^2 + y^2) \dd y
+  \]
+\end{solu}
+\end{mathques}
+
+\begin{mathques}{2020-11-08}{二重积分}[画图画错]
+\begin{ques}
+  设$f(x, y)$为连续函数，直角坐标系下的二次积分$\int_{0}^{1}\dd x\int_{0}
+  ^{\sqrt{x - x^2}}f(x, y)\dd y$可化为极坐标系下的二次积分\mathblank.
+\end{ques}
+\begin{solu}
+  \answer{$\int_{0}^{\frac{\pi}{2}}\dd \theta\int_{0}^{\cos\theta}
+  f(r\cos\theta, r\sin\theta)r\dd r$}
+
+  所给积分区域$D$为
+  \[
+  0 \le x \le 1, 0 \le y \le \sqrt{x - x^2}.
+  \]
+  $y = \sqrt{x - x^2}$可化为$\qty(x - \frac{1}{2})^2 + y^2 = \qty(\frac{1}{2})
+  ^2$
+
+  画出图形，又$y = \sqrt{x - x^2}$在极坐标系下化为$r = \cos\theta$，故积分区域
+  $D$可以表示为
+  \[
+  0 \le \theta \le \frac{\pi}{2}\qc 0 \le r \le \cos\theta
+  \]
+  故$\int_{0}^{1}\dd x\int_{0}^{\sqrt{x - x^2}}f(x, y)\dd y = \int_{0}
+  ^{\frac{\pi}{2}}\dd \theta\int_{0}^{\cos\theta} f(r\cos\theta, r\sin\theta)
+  r\dd r$
 \end{solu}
 \end{mathques}
 \end{document}

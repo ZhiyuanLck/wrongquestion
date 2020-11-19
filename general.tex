@@ -1,79 +1,97 @@
 \documentclass{ctexart}
+\edef\mydate{2020-11-20}
+
 \usepackage{showdata}
-\usepackage{multicol}
+\usepackage[balancingshow]{multicol}
 \usepackage{xcolor}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{enumitem}
-
-\edef\mydate{2020-11-08}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usepackage{hyperref}
+\hypersetup{
+  bookmarksopen,
+  bookmarksnumbered,
+  bookmarksopenlevel=2,
+}
 
 \setCJKmainfont{Source Han Serif SC}
 \setCJKsansfont{Source Han Sans SC}
 
-
-\def\myright#1{%
-  \unskip\nobreak\xleaders\hbox to .75ex {\hss.\hss}%
-  \hfill\nobreak\hskip0.5em%
-  \makebox[2em]{\color{red}\bfseries#1}}
+\definecolor{label}{HTML}{ac8295}
+% \definecolor{error}{HTML}{4d243d}
+\definecolor{error}{HTML}{f53473}
+\newcommand\mylabel[1]{
+  \begin{tikzpicture}[baseline=(s.south)]
+    \node[scale=0.6, star, star point height=0.5ex, star point ratio=2,
+      fill=#1] (s) {};
+  \end{tikzpicture}
+}
+\SetEnumitemKey{multicol}{
+  topsep=0pt, partopsep=0pt,
+  before=\begin{multicols}{5},
+  after=\end{multicols},
+}
 
 \sdsetdomain{politics}
 \sdsetupsub{politics}{
-  group={normal},
-  global-group={star},
-  prop={index, info, count},
+  prop={part, index, error, color},
+  global-group={single, multi}
 }
 
-\NewsdReviewPoint{default}{2, 4, 7, 15, 30, 60}
-\NewsdBatchEnvironment { politics } { m m +b }
+% \NewsdReviewPoint{default}{2, 4, 7, 15, 30, 60}
+\NewsdReviewPoint{default}{3, 10, 30}
+% #1 * 单选，否则多选 #2 date #3 part number
+\NewsdBatchEnvironment { politics } { s m m +b }
   {
-    \sdIfReviewT{default}{#1}{\mydate}{
-      \sdaddtogroup{normal}
-      \sdsave*{normal}{info}{#2}
-    }
-    \DeclareDocumentCommand { \addto } { O{} D(){1} m }
+    % #1 date #2 error times #3 index
+    \DeclareDocumentCommand { \addto } { O{#2} D(){1} m }
       {
-        \IfBlankF { ##1 }
+        \sdIfReviewT{default}{##1}{\mydate}
           {
-            \sdIfReviewF{default}{#1}{\mydate}{
-              \sdIfReviewT{default}{##1}{\mydate}{
-                \sdsave*{star}{info}{#2}
-                \sdsave*{star}{count}{##2}
-                \sdsave*{star}{index}{##3}
-              }
+            \def\mysave####1{
+              \sdsave*{####1}{part}{#3}
+              \sdsave*{####1}{index}{##3}
+              \ifnum##2>1\sdsave*{####1}{error}{##2}
+                \sdsave*{####1}{color}{\protect\mylabel{error}}
+              \else\sdsave*{####1}{error}{}
+                \sdsave*{####1}{color}{\protect\mylabel{label}}
+              \fi
             }
+            \IfBooleanTF { #1 }
+              { \mysave{single} }
+              { \mysave{multi} }
           }
-        \sdsave{normal}{index}{##3}
       }
-    #3
-  } {}
+    #4
+  }
 
-\sdsetshowstyle*{politics}{star}{index}
-{
-  \section{\mydate 政治易错复习}
-  \sdIfEmptyPropF{\begin{multicols}{2}\begin{enumerate}}
+\newcommand\setpolitics[2]{
+  \sdsetshowstyle*{politics}{#1}{index}
+  {
+    \section{\mydate 政治#2选复习}
+    \sdIfEmptyPropF{\begin{itemize}[multicol]}
+  }
+  {
+    \sdIfEmptyPropF{\end{itemize}}
+  }
+  {
+  \item[\sduse{color}] \sduse{part}-\sduse{index}%
+      \textsubscript{%
+        {\color{error}\itshape\bfseries\sduse{error}}
+      }
+  }
 }
-{
-  \sdIfEmptyPropF{\end{enumerate}\end{multicols}}
-}
-{
-\item \textit{\sduse{info}}
-    \myright{\textcolor{red}{\textbf{\sduse{index}}}}
-}
-
-\sdsetshowstyle{politics}{normal}{index}
-{\section{\mydate 政治模块复习}}{}
-{\subsection{\sduse[normal]{info}}}{}
-{
-  \textbf{\sduse{index}}\hspace{1em}
-}
+\setpolitics{single}{单}
+\setpolitics{multi}{多}
 
 \AtEndDocument{
-  \sdshow*{politics}{star}
-  \sdshow{politics}{normal}
+  \sdshow*{politics}{single}
+  \sdshow*{politics}{multi}
 }
 
 \begin{document}
-\begin{sdpolitics}{2020-10-27}{导论，唯物论（单选）}
+\begin{sdpolitics}*{2020-10-27}{1}
   \addto[2020-10-29](2){2}
   \addto[2020-10-31](2){3}
   \addto{4}
@@ -85,7 +103,7 @@
   \addto[2020-10-31](3){25}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-10-28}{导论，唯物论（多选）}
+\begin{sdpolitics}{2020-10-28}{1}
   \addto[2020-10-30](2){1}
   \addto[2020-10-30](2){3}
   \addto[2020-11-01](3){8}
@@ -98,17 +116,17 @@
   \addto[2020-10-30](2){29}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-10-29}{辩证法（单选）}
+\begin{sdpolitics}*{2020-10-29}{1}
   \addto[2020-10-31](2){34}
   \addto[2020-10-31](2){36}
   \addto{45}
-  \addto[2020-11-02](2){52}
+  \addto[2020-11-09](3){52}
   \addto[2020-10-31](2){59}
   \addto{64}
   \addto{67}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-10-30}{辩证法（多选）}
+\begin{sdpolitics}{2020-10-30}{1}
   \addto{33}
   \addto[2020-11-06](4){35}
   \addto[2020-11-01](3){36}
@@ -122,21 +140,21 @@
   \addto[2020-11-01](3){47}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-10-31}{辩证法（多选）}
+\begin{sdpolitics}{2020-10-31}{1}
   \addto[2020-11-04](3){48}
   \addto[2020-11-04](3){49}
   \addto{51}
   \addto{53}
   \addto[2020-11-02](2){54}
   \addto[2020-11-04](3){55}
-  \addto[2020-11-02](2){57}
+  \addto[2020-11-10](3){57}
   \addto{58}
   \addto{59}
   \addto[2020-11-02](2){60}
   \addto[2020-11-02](2){61}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-01}{认识论（单选）}
+\begin{sdpolitics}*{2020-11-01}{1}
   \addto{68}
   \addto[2020-11-06](3){70}
   \addto{72}
@@ -147,100 +165,125 @@
   \addto{87}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-02}{认识论（多选）}
-  \addto[2020-11-04](2){64}
+\begin{sdpolitics}{2020-11-02}{1}
+  \addto[2020-11-18](4){64}
   \addto{67}
   \addto{69}
-  \addto[2020-11-04](2){71}
+  \addto[2020-11-08](3){71}
   \addto[2020-11-04](2){72}
   \addto[2020-11-06](3){73}
   \addto{75}
-  \addto[2020-11-06](3){78}
+  \addto[2020-11-08](4){78}
   \addto[2020-11-04](2){80}
   \addto[2020-11-06](3){83}
   \addto[2020-11-06](3){84}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-03}{认识论（多选）}
+\begin{sdpolitics}{2020-11-03}{1}
   \addto[2020-11-06](3){88}
   \addto[2020-11-06](3){89}
-  \addto{90}
+  \addto[2020-11-07](2){90}
   \addto{91}
   \addto[2020-11-06](3){92}
   \addto{93}
   \addto{94}
-  \addto[2020-11-06](3){95}
-  \addto{96}
+  \addto[2020-11-08](5){95}
+  \addto[2020-11-13](2){96}
   \addto[2020-11-06](3){97}
   \addto{99}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-04}{唯物史观（单选）}
+\begin{sdpolitics}*{2020-11-04}{1}
   \addto[2020-11-06](3){97}
-  \addto{100}
+  \addto[2020-11-08](2){100}
   \addto[2020-11-06](3){109}
   \addto[2020-11-06](3){114}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-05}{唯物史观（多选）}
-  \addto[2020-11-06](3){100}
+\begin{sdpolitics}{2020-11-05}{1}
+  \addto[2020-11-07](4){100}
   \addto{101}
-  \addto{104}
-  \addto{106}
+  \addto[2020-11-13](6){104}
+  \addto[2020-11-07](4){106}
   \addto{107}
-  \addto{108}
-  \addto[2020-11-06](3){109}
-  \addto{113}
+  \addto[2020-11-10](2){108}
+  \addto[2020-11-10](5){109}
+  \addto[2020-11-10](2){113}
   \addto{114}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-06}{唯物史观（多选）}
-  \addto{115}
-  \addto{116}
-  \addto{118}
+\begin{sdpolitics}{2020-11-06}{1}
+  \addto[2020-11-08](2){115}
+  \addto[2020-11-09](2){116}
+  \addto[2020-11-09](2){118}
   \addto{119}
   \addto{122}
-  \addto{123}
+  \addto[2020-11-09](2){123}
   \addto{124}
   \addto{126}
-  \addto{127}
+  \addto[2020-11-09](2){127}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-07}{政经第五章（单选）}
-  \addto{120}
-  \addto{121}
+\begin{sdpolitics}*{2020-11-07}{1}
+  \addto[2020-11-17](2){120}
+  \addto[2020-11-17](2){121}
   \addto{127}
   \addto{128}
   \addto{131}
   \addto{136}
   \addto{137}
-  \addto{139}
-  \addto{140}
+  \addto[2020-11-17](2){139}
+  \addto[2020-11-09](2){140}
   \addto{146}
   \addto{150}
   \addto{151}
-  \addto{152}
+  \addto[2020-11-17](2){152}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-08}{政经第五章（单选）}
+\begin{sdpolitics}*{2020-11-08}{1}
   \addto{153}
   \addto{154}
   \addto{155}
-  \addto{156}
-  \addto{159}
+  \addto[2020-11-14](3){156}
+  \addto[2020-11-11](2){159}
   \addto{160}
-  \addto{165}
-  \addto{166}
+  \addto[2020-11-14](3){165}
+  \addto[2020-11-18](2){166}
   \addto{167}
-  \addto{171}
+  \addto[2020-11-14](3){171}
   \addto{172}
-  \addto{174}
+  \addto[2020-11-14](3){174}
   \addto{178}
 \end{sdpolitics}
 
-\begin{sdpolitics}{2020-11-08}{政经第六章（单选）}
+\begin{sdpolitics}*{2020-11-08}{1}
   \addto{184}
-  \addto{190}
+  \addto[2020-11-11](2){190}
+\end{sdpolitics}
+
+\begin{sdpolitics}*{2020-11-09}{1}
+  \addto{191}
+  \addto{193}
+  \addto{195}
+  \addto[2020-11-12](2){196}
+  \addto{197}
+  \addto{198}
+  \addto[2020-11-12](2){199}
+  \addto[2020-11-12](2){201}
+\end{sdpolitics}
+
+\begin{sdpolitics}{2020-11-09}{1}
+  \addto{199}
+  \addto{204}
+  \addto[2020-11-12](2){205}
+  \addto{206}
+  \addto[2020-11-12](2){207}
+  \addto{209}
+  \addto{211}
+  \addto{216}
+  \addto[2020-11-12](2){221}
+  \addto{223}
+  \addto{224}
 \end{sdpolitics}
 
 \end{document}
